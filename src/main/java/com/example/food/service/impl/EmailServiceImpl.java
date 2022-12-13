@@ -23,7 +23,7 @@ public class EmailServiceImpl implements EmailService {
     private ResponseProvider response;
     private final static Logger LOGGER = LoggerFactory.getLogger(EmailService.class);
     @Override
-    public ResponseEntity<ApiResponse<Object>> sendMail(EmailSenderDto emailSenderDto) {
+    public void sendMail(EmailSenderDto emailSenderDto) {
         if (
                 (Objects.nonNull(emailSenderDto.getTo())) &&
                 (Objects.nonNull(emailSenderDto.getSubject())) &&
@@ -38,10 +38,8 @@ public class EmailServiceImpl implements EmailService {
 
             LOGGER.info("Mail has been sent");
 
-            return response.success(HttpStatus.OK, "Mail successfully sent", emailSenderDto);
         }
-        LOGGER.error(String.valueOf(emailSenderDto));
-         return response.failed(HttpStatus.BAD_REQUEST, "Mail sending failed", null);
+            LOGGER.error("Failed to send mail. Check the details you supplied " + String.valueOf(emailSenderDto));
     }
 
 }
