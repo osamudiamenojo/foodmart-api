@@ -22,9 +22,9 @@ public class SecurityConfiguration {
     private final String path = "/api/v1/auth";
 
     private final String[] AUTH_WHITELIST = {
-            path +"/register", path + "/forgot-password", path + "/reset-password" };
+            path +"/register", path + "/forgot-password", path + "/reset-password", path + "/login" };
     private final JwtAuthFilter jwtAuthFilter;
-    private CustomUserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
 
     @Bean

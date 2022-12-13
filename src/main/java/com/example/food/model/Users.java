@@ -1,5 +1,6 @@
 package com.example.food.model;
 
+import com.example.food.Enum.Role;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,7 +24,9 @@ public class Users {
     private String password;
     private Date createdAt;
     private Date modifiedAt;
-    private String role;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @OneToOne
     private Wallet wallet;
@@ -34,7 +37,7 @@ public class Users {
     @OneToMany
     private List <Product> favouriteList;
 
-   @OneToMany
+    @OneToMany
     private List <Message> messages;
 
 

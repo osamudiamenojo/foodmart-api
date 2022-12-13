@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -32,8 +30,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new User(user.getEmail(), user.getPassword(), getGrantedAuthorities(user.getRole()));
     }
 
-    private Collection< ? extends GrantedAuthority> getGrantedAuthorities(String roles){
+    private Collection<? extends GrantedAuthority> getGrantedAuthorities(Role roles) {
         return Collections
-                .singleton(new SimpleGrantedAuthority(roles));
+                .singleton(new SimpleGrantedAuthority(roles.toString()));
     }
 }
