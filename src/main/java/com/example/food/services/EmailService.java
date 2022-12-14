@@ -1,4 +1,4 @@
-package com.example.food.service;
+package com.example.food.services;
 
 import com.example.food.dto.EmailSenderDto;
 
