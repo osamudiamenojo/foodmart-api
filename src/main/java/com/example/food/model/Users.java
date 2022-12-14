@@ -31,6 +31,4 @@ public class Users {
 
    @OneToMany
     private List <Message> messages;
-
-
 }
