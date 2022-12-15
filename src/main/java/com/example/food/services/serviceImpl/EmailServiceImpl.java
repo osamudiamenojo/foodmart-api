@@ -36,7 +36,7 @@ public class EmailServiceImpl implements EmailService {
                 emailSender.send(mimeMessage);
 
             } catch (MessagingException e) {
-                LOGGER.error("Wrong details Supplied");
+                LOGGER.error(e.getMessage());
             }
                 LOGGER.info("Mail has been sent");
         }
