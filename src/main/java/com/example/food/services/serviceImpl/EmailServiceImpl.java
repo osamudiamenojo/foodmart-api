@@ -36,7 +36,11 @@ public class EmailServiceImpl implements EmailService {
                 emailSender.send(mimeMessage);
 
             } catch (MessagingException e) {
+<<<<<<< HEAD
                 throw new RuntimeException(e);
+=======
+                LOGGER.error("An error occurred while sending an email to address : " + emailSenderDto.getTo() + "; error: " + e.getMessage());
+>>>>>>> ddf7ba4 (Updated the catch block)
             }
                 LOGGER.info("Mail has been sent");
         }
