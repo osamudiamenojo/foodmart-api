@@ -8,9 +8,4 @@ public interface UserService {
 
     ResponseEntity<String> login(LoginRequestDto request);
 
-    boolean requestPasswordReset(String email);
-
-    boolean resetPassword(String token, String password);
-
-
 }
