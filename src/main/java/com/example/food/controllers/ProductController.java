@@ -1,6 +1,6 @@
-package com.example.food.controller;
+package com.example.food.controllers;
 
-import com.example.food.pojo.ProductDto;
+import com.example.food.pojos.models.ProductDto;
 import com.example.food.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("api/v1")
@@ -20,8 +22,7 @@ public class ProductController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add-new-product")
-    public ResponseEntity<ProductDto> addNewProduct(@RequestBody ProductDto productDto) {
-
+    public ResponseEntity<String> addNewProduct (@Valid @RequestBody ProductDto productDto)  {
         return new ResponseEntity<>(productService.addNewProduct(productDto), HttpStatus.CREATED);
 
     }

@@ -30,10 +30,10 @@ public class Category {
     private Date modifiedAt;
 
     @OneToMany(mappedBy = "category",fetch = FetchType.EAGER)
-    private List <Product> categoryList;
+    private List<Product> productList;
 
     @OneToMany
-    private List <Product> favoriteCategory;
+    private List<Product> favoriteCategory;
 
 }
 

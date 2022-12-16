@@ -1,15 +1,15 @@
-package com.example.food.pojo;
+package com.example.food.pojos.models;
 
-import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import javax.validation.constraints.NotEmpty;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryDto {
 
-    @NotNull
+    @NotEmpty
     private String categoryName;
 }
