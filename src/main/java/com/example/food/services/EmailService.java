@@ -1,8 +1,6 @@
-package com.example.food.service;
+package com.example.food.services;
 
 import com.example.food.dto.EmailSenderDto;
-import com.example.food.utils.ApiResponse;
-import org.springframework.http.ResponseEntity;
 
 public interface EmailService {
     void sendMail(EmailSenderDto emailSenderDto);

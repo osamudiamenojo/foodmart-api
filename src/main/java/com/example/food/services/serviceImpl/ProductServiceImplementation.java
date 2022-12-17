@@ -1,10 +1,10 @@
-package com.example.food.service.impl;
+package com.example.food.services.serviceImpl;
 
 import com.example.food.exceptions.InstanceAlreadyExistsException;
 import com.example.food.model.Product;
 import com.example.food.pojos.models.ProductDto;
 import com.example.food.repositories.ProductRepository;
-import com.example.food.service.ProductService;
+import com.example.food.services.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package com.example.food.controllers;
 
 import com.example.food.pojos.models.CategoryDto;
-import com.example.food.service.CategoryService;
+import com.example.food.services.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
