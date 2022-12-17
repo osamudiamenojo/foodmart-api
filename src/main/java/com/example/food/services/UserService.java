@@ -12,7 +12,4 @@ public interface UserService {
     PasswordResetTokenEntity requestPasswordReset(String email);
 
     String resetPassword(String token, String password);
-
-
-
 }
