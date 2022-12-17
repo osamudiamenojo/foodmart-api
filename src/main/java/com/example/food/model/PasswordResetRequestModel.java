@@ -2,13 +2,12 @@ package com.example.food.model;
 
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+
 @Data
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class PasswordResetRequestModel {
 
+    @NotBlank(message = "email not blank")
     private String email;
 
 }

@@ -4,10 +4,13 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
+import javax.validation.constraints.NotBlank;
+
+
 @Data
 public class PasswordResetModel {
+
     private String token;
+
     private String password;
 }

@@ -8,7 +8,7 @@ import com.example.food.model.Users;
 import com.example.food.pojos.login.LoginRequestDto;
 import com.example.food.repositories.PasswordResetTokenRepository;
 import com.example.food.repositories.UserRepository;
-import com.example.food.service.EmailService;
+import com.example.food.services.EmailService;
 import com.example.food.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +17,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 
 @RequiredArgsConstructor
@@ -46,52 +48,56 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean requestPasswordReset(String email) {
-        Users users = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("email null"));
+    public PasswordResetTokenEntity requestPasswordReset(String email) {
 
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
+        Optional<Users> users = userRepository.findByEmail(email);
 
-        String token = new JwtUtil().generateToken(userDetails);
+        if(users.isPresent())
+        {
+            Users users1 = users.get();
+            UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
+            String token = new JwtUtil().generateToken(userDetails);
+            PasswordResetTokenEntity passwordResetTokenEntity = new PasswordResetTokenEntity();
+            passwordResetTokenEntity.setToken(token);
+            passwordResetTokenEntity.setUsersDetails(users1);
 
-        PasswordResetTokenEntity passwordResetTokenEntity = new PasswordResetTokenEntity();
-        passwordResetTokenEntity.setToken(token);
-        passwordResetTokenEntity.setUsersDetails(users);
-        passwordResetTokenRepository.save(passwordResetTokenEntity);
+            EmailSenderDto emailSenderDto = new EmailSenderDto();
+            emailSenderDto.setTo(email);
+            emailSenderDto.setSubject("Password reset link");
+            emailSenderDto.setContent("http://localhost:8080/users/reset-password/" + token);
+            emailService.sendMail(emailSenderDto);
 
-        EmailSenderDto emailSenderDto = new EmailSenderDto();
-        emailSenderDto.setTo(email);
-        emailSenderDto.setSubject("Password reset link");
-        emailSenderDto.setContent("http://localhost:8080/users/reset-password/" + token);
+            return passwordResetTokenEntity;
+        }
 
-        emailService.sendMail(emailSenderDto);
 
-        return true;
+        return null;
     }
 
     @Override
-    public boolean resetPassword(String token, String password) {
+    public String resetPassword(String token, String password) {
+
         JwtUtil jwtUtil = new JwtUtil();
         String email = jwtUtil.extractUsername(token);
 
-        userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("email null"));
+        Optional<Users> users = userRepository.findByEmail(email);
 
+        if(users.isPresent())
+        {
+            PasswordResetTokenEntity passwordResetTokenEntity = passwordResetTokenRepository.findByToken(token);
 
-        PasswordResetTokenEntity passwordResetTokenEntity = passwordResetTokenRepository.findByToken(token);
+            if (passwordResetTokenEntity == null){
+                return "denied!!!";
+            }
+            String encodePassword = passwordEncoder.encode(password);
+            Users user = passwordResetTokenEntity.getUsersDetails();
+            user.setPassword(encodePassword);
+            userRepository.save(user);
+            passwordResetTokenRepository.delete(passwordResetTokenEntity);
 
-        if (passwordResetTokenEntity == null){
-            return false;
+            return "password successfully replaced";
         }
 
-        String encodePassword = passwordEncoder.encode(password);
-
-        Users users = passwordResetTokenEntity.getUsersDetails();
-        users.setPassword(encodePassword);
-        userRepository.save(users);
-
-        passwordResetTokenRepository.delete(passwordResetTokenEntity);
-
-        return true;
+        return "sorry can't access";
     }
 }
