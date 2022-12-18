@@ -4,6 +4,7 @@ import com.example.food.model.PasswordResetModel;
 import com.example.food.model.PasswordResetRequestModel;
 import com.example.food.model.PasswordResetTokenEntity;
 import com.example.food.services.UserService;
+import com.example.food.services.serviceImpl.UserServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     @PostMapping(path = "/password-reset-request")
     public PasswordResetTokenEntity requestReset(@RequestBody PasswordResetRequestModel passwordResetRequestModel) {
