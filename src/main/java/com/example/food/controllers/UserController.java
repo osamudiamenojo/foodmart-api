@@ -20,7 +20,7 @@ import javax.mail.MessagingException;
 public class UserController {
     private final UserServiceImpl userService;
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<Object>> createUser(@RequestBody UserRequest userRequest) throws MessagingException{
+    public ResponseEntity<ApiResponse<Object>> createUser(@RequestBody UserRequest userRequest){
         return userService.signUp(userRequest);
     }
 
