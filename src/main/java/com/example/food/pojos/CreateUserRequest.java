@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 @Data
 @Builder
-public class UserRequest implements Serializable {
+public class CreateUserRequest implements Serializable {
     private  String firstName;
     private  String lastName;
     private  String email;
