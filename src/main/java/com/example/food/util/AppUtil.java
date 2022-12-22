@@ -1,16 +1,11 @@
 package com.example.food.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
+import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -21,32 +16,6 @@ import java.util.stream.Collectors;
 @Data
 @Service
 public class AppUtil {
-    @Autowired
-    JavaMailSenderImpl mailSender;
-    public List<String> split(String delimitedString){
-        if (delimitedString!=null)
-            return  Arrays.stream(delimitedString.split(",")).collect(Collectors.toList());
-        return null;
-    }
-    private final Logger logger = LoggerFactory.getLogger(AppUtil.class);
-
-    public void log(String message) {
-        logger.info(message);
-    }
-    public void print(Object obj){
-        try {
-            logger.info(new ObjectMapper().writeValueAsString(obj));
-        }
-        catch (Exception ex){
-            ex.printStackTrace();
-        }
-    }
-
-    public  String generateSerialNumber(String prefix) {
-        Random rand = new Random();
-        long x = (long)(rand.nextDouble()*100000000000000L);
-        return  prefix + String.format("%014d", x);
-    }
 
     public boolean validImage(String fileName)
     {
@@ -59,6 +28,7 @@ public class AppUtil {
         return m.matches();
     }
 
+    //Email validation
     public boolean validEmail(String email) {
         String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
         return email.matches(regex);
@@ -80,46 +50,5 @@ public class AppUtil {
         return  number;
     }
 
-    public Long generateOTP(){
-        Random rnd = new Random();
-        Long number = (long) rnd.nextInt(999999);
-        return  number;
-    }
-    public String  getString(Object o){
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.writeValueAsString(o);
-        }catch (Exception ex){
-            ex.printStackTrace();
-            return null;
-        }
-    }
-    public  Object getObject(String content, Class cls){
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(content,cls);
-        }catch (Exception ex){
-            ex.printStackTrace();
-            return null;
-        }
-    }
-    public ObjectMapper getMapper(){
-        ObjectMapper mapper= new ObjectMapper();
-        return mapper;
-    }
-    public void sendVerificationEmail(String toEmail, String subject, String body) throws MessagingException {
-        MimeMessage mimeMessage = mailSender.createMimeMessage();
-        MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "utf-8");
-        message.setTo(toEmail);
-        message.setFrom("Food-mart-Team");
-        message.setText(body,true);
-        message.setSubject(subject);
-
-        mailSender.send(mimeMessage);
-
-    }
-    public String generateToken(Integer length){
-        return RandomString.make(length);
-    }
 
 }
