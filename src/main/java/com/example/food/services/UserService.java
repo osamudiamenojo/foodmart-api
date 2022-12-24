@@ -1,7 +1,9 @@
 package com.example.food.services;
 
-import com.example.food.model.PasswordResetTokenEntity;
+import com.example.food.dto.PasswordResetDto;
+import com.example.food.dto.PasswordResetRequestDto;
 import com.example.food.pojos.login.LoginRequestDto;
+import com.example.food.restartifacts.BaseResponse;
 import org.springframework.http.ResponseEntity;
 
 
@@ -9,7 +11,7 @@ public interface UserService {
 
     ResponseEntity<String> login(LoginRequestDto request);
 
-    PasswordResetTokenEntity requestPasswordReset(String email);
+    BaseResponse requestPassword(PasswordResetRequestDto passwordResetRequestModel);
 
-    String resetPassword(String token, String password);
+    BaseResponse resetPassword(PasswordResetDto passwordResetModel);
 }
