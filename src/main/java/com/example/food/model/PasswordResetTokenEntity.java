@@ -4,13 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 @Table(name = "password_reset_tokens")
 @Entity
 @Setter
 @Getter
-public class PasswordResetTokenEntity implements Serializable {
+public class PasswordResetTokenEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)

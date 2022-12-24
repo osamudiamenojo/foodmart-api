@@ -16,6 +16,7 @@ public enum ResponseCodeEnum {
     ERROR_PASSWORD_MISMATCH(-3,"Password does not match"),
     ERROR_DUPLICATE_USER(-4,"User already exist.")
 
+    ERROR_PASSWORD_RESET(-2, "An error occurred. Error message : ${errorMessage}")
 //    you can add your custom error codes as shown below just ensure that error codes have a minus sign
 //    ERROR_SETTING_THRESHOLD(-2, "An error occurred"),
     ;
