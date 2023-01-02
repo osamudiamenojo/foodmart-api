@@ -32,7 +32,7 @@ public class Users {
     private Wallet wallet;
 
     @OneToMany
-    private List <Product> productList;
+    private List <Product> cart;
 
     @OneToMany
     private List <Product> favouriteList;
