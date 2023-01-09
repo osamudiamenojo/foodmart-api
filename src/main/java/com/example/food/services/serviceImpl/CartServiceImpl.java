@@ -29,26 +29,6 @@ public class CartServiceImpl implements CartService {
                 .orElseThrow(() -> new RuntimeException("User not authorized"));
     }
 
-    private void removeItem(long cartItemId, Cart cart, CartItem cartItem) {
-        cartItemRepository.deleteById(cartItemId);
-        cart.setCartTotal(cart.getCartTotal() - cartItem.getSubTotal());
-        cart.setQuantity(cart.getQuantity() - 1);
-        cartRepository.save(cart);
-    }
-
-    @Override
-    @Transactional
-    public ResponseEntity<String> clearCart() {
-        Users user = getLoggedInUser();
-        Cart userCart = user.getCart();
-        cartItemRepository.deleteAllByCart_CartId(userCart.getCartId());
-        userCart.setCartTotal(0);
-        userCart.setQuantity(0);
-        cartRepository.save(userCart);
-        return ResponseEntity.ok("Cart cleared successfully");
-
-    }
-
     @Override
     public ResponseEntity<String> removeCartItem(long cartItemId) {
         Users user = getLoggedInUser();
@@ -61,5 +41,12 @@ public class CartServiceImpl implements CartService {
         } else {
             throw new RuntimeException("Item is not in user cart");
         }
+    }
+
+    private void removeItem(long cartItemId, Cart cart, CartItem cartItem) {
+        cartItemRepository.deleteById(cartItemId);
+        cart.setCartTotal(cart.getCartTotal() - cartItem.getSubTotal());
+        cart.setQuantity(cart.getQuantity() - 1);
+        cartRepository.save(cart);
     }
 }
