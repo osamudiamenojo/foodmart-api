@@ -18,6 +18,4 @@ public class CartItemDto {
     private double subTotal;
     private long cartId;
 
-    /*Product image, Product name, Product size, Product quantity, Unit price , SubTotal.
-     */
 }
