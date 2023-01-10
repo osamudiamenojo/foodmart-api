@@ -11,7 +11,6 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class PaginatedProductResponse extends BaseResponse {
     private List<Product> productList;
     private Long numberOfProducts;
