@@ -1,17 +1,9 @@
 package com.example.food.util;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Data;
-import lombok.experimental.UtilityClass;
-import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.utility.RandomString;
-import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import lombok.Data;
+import org.springframework.stereotype.Service;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Data
 @Service

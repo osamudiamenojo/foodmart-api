@@ -12,6 +12,7 @@ import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.EmailService;
 import com.example.food.services.UserService;
 import com.example.food.util.AppUtil;
+import com.example.food.util.ResponseCodeUtil;
 import lombok.RequiredArgsConstructor;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public BaseResponse signUp(CreateUserRequest createUserRequest){
+        BaseResponse response = new BaseResponse();
         if (!appUtil.validEmail(createUserRequest.getEmail()))
             return new BaseResponse(ResponseCodeEnum.ERROR_EMAIL_INVALID);
 
@@ -67,7 +69,7 @@ public class UserServiceImpl implements UserService {
         emailSenderDto.setContent(link);
         emailService.sendMail(emailSenderDto);
 
-        return new BaseResponse(ResponseCodeEnum.SUCCESSFUL_REGISTRATION);
+        return new ResponseCodeUtil().updateResponseData(response, ResponseCodeEnum.SUCCESSFUL_REGISTRATION);
     }
 
     @Override
