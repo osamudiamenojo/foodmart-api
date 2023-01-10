@@ -1,6 +1,7 @@
 package com.example.food.services.serviceImpl;
 
 import com.example.food.Enum.ResponseCodeEnum;
+import com.example.food.dto.ProductSearchDto;
 import com.example.food.model.Product;
 import com.example.food.pojos.PaginatedProductResponse;
 import com.example.food.repositories.ProductRepository;
@@ -19,19 +20,20 @@ import org.springframework.stereotype.Service;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ResponseCodeUtil responseCodeUtil;
-    public PaginatedProductResponse searchProduct(int pageNumber, int pageSize, String sortDirection, String sortBy, String filter){
+    public PaginatedProductResponse searchProduct(ProductSearchDto productSearchDto){
 
-        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Pageable pageRequest = PageRequest.of(pageNumber,pageSize,sort);
+        Sort sort = productSearchDto.getSortDirection()
+                .equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(productSearchDto.getSortBy()).ascending() : Sort.by(productSearchDto.getSortBy()).descending();
+        Pageable pageRequest = PageRequest.of(productSearchDto.getPageNumber(),productSearchDto.getPageSize(),sort);
 
         log.info("Sort: " + sort + " pageRequest: "+ pageRequest);
 
         Page<Product> products;
-        if (filter.isBlank()) {
+        if (productSearchDto.getFilter().isBlank()) {
             products = productRepository.findAll(pageRequest);
             log.info("Filter is null or Empty. All Products: {}",products);
         } else {
-            products = productRepository.findByProductNameContainingIgnoreCase(filter, pageRequest);
+            products = productRepository.findByProductNameContainingIgnoreCase(productSearchDto.getFilter(), pageRequest);
         }
         PaginatedProductResponse paginatedResponse = PaginatedProductResponse.builder()
                 .numberOfProducts(products.getTotalElements())

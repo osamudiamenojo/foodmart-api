@@ -1,6 +1,7 @@
 package com.example.food.services.serviceImpl;
 
 import com.example.food.Enum.ResponseCodeEnum;
+import com.example.food.dto.ProductSearchDto;
 import com.example.food.model.Product;
 import com.example.food.pojos.PaginatedProductResponse;
 import com.example.food.repositories.ProductRepository;
@@ -50,8 +51,14 @@ class ProductServiceImplTest {
         when(responseCodeUtil.updateResponseData(eq(paginatedProductResponse), (ResponseCodeEnum) any()))
                 .thenReturn(paginatedProductResponse);
         //VERIFICATION OF THR MOCK BEHAVIOUR
+
+        ProductSearchDto productSearchDto = new ProductSearchDto();
+        productSearchDto.setFilter("filter");
+        productSearchDto.setPageSize(1);
+        productSearchDto.setPageNumber(0);
+        productSearchDto.setSortDirection("asc");
         assertSame(paginatedProductResponse,
-                productServiceImpl.searchProduct(0, 1, "Sort Direction", "Sort By", "Filter"));
+                productServiceImpl.searchProduct(productSearchDto));
         verify(productRepository).findByProductNameContainingIgnoreCase((String) any(), (Pageable) any());
         verify(responseCodeUtil).updateResponseData((PaginatedProductResponse) any(), (ResponseCodeEnum) any());
     }
@@ -77,8 +84,9 @@ class ProductServiceImplTest {
         when(responseCodeUtil.updateResponseData(eq(paginatedProductResponse), (ResponseCodeEnum) any()))
                 .thenReturn(paginatedProductResponse);
         //VERIFICATION OF THR MOCK BEHAVIOUR
+        ProductSearchDto productSearchDto = new ProductSearchDto();
         assertSame(paginatedProductResponse,
-                productServiceImpl.searchProduct(0, 1, "Sort Direction", "Sort By", ""));
+                productServiceImpl.searchProduct(productSearchDto));
         verify(productRepository).findAll((Pageable) any());
         verify(responseCodeUtil).updateResponseData((PaginatedProductResponse) any(), (ResponseCodeEnum) any());
     }
@@ -99,8 +107,9 @@ class ProductServiceImplTest {
         when(responseCodeUtil.updateResponseData(eq(paginatedProductResponse), (ResponseCodeEnum) any()))
                 .thenReturn(paginatedProductResponse);
         //VERIFICATION OF THR MOCK BEHAVIOUR
+        ProductSearchDto productSearchDto = new ProductSearchDto();
         assertSame(paginatedProductResponse,
-                productServiceImpl.searchProduct(0, 1, "Sort Direction", "Sort By", ""));
+                productServiceImpl.searchProduct(productSearchDto));
         verify(productRepository).findAll((Pageable) any());
         verify(responseCodeUtil).updateResponseData((PaginatedProductResponse) any(), (ResponseCodeEnum) any());
     }
