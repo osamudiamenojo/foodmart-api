@@ -13,7 +13,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -28,9 +27,9 @@ public class ProductServiceImpl implements ProductService {
         log.info("Sort: " + sort + " pageRequest: "+ pageRequest);
 
         Page<Product> products;
-        if (filter.isEmpty()) {
-               products = productRepository.findAll(pageRequest);
-               log.info("Filter is null or Empty."+" All Products: "+ products);
+        if (filter.isBlank()) {
+            products = productRepository.findAll(pageRequest);
+            log.info("Filter is null or Empty. All Products: {}",products);
         } else {
             products = productRepository.findByProductNameContainingIgnoreCase(filter, pageRequest);
         }
@@ -39,7 +38,7 @@ public class ProductServiceImpl implements ProductService {
                 .numberOfPages(products.getTotalPages())
                 .productList(products.getContent())
                 .build();
-        log.info("Paginated Response generated "+ paginatedResponse);
+        log.info("Paginated Response generated. PaginatedResponse:{}",paginatedResponse);
         return responseCodeUtil.updateResponseData(paginatedResponse, ResponseCodeEnum.SUCCESS);
     }
 }
