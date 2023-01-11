@@ -1,9 +1,11 @@
 package com.example.food.services.serviceImpl;
 
 import com.example.food.Enum.ResponseCodeEnum;
+import com.example.food.dto.ProductDto;
 import com.example.food.dto.ProductSearchDto;
 import com.example.food.model.Product;
 import com.example.food.pojos.PaginatedProductResponse;
+import com.example.food.pojos.ProductResponse;
 import com.example.food.repositories.ProductRepository;
 import com.example.food.services.ProductService;
 import com.example.food.util.ResponseCodeUtil;
@@ -14,6 +16,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -42,5 +49,19 @@ public class ProductServiceImpl implements ProductService {
                 .build();
         log.info("Paginated Response generated. PaginatedResponse:{}",paginatedResponse);
         return responseCodeUtil.updateResponseData(paginatedResponse, ResponseCodeEnum.SUCCESS);
+    }
+
+    @Override
+    public ProductResponse fetchAllProducts() {
+        List<Product> products = productRepository.findAll();
+        if (products == null || products.isEmpty()) {
+            return new ProductResponse(false, "No products found", Collections.emptyList());
+        }
+        List<ProductDto> productDto = products.stream()
+                .map(product -> new ProductDto(product.getImageUrl(), product.getProductName(),
+                        product.getProductPrice(), product.getProductDescription(),
+                        product.getQuantity(), product.getCreatedAt(), product.getModifiedAt()))
+                .collect(Collectors.toList());
+        return new ProductResponse(true, "Products fetched successfully", productDto);
     }
 }
