@@ -44,10 +44,10 @@ public class CartServiceImplTest {
     void setUp() {
         product1 = Product.builder().productId(1L)
                 .productName("Burger")
-                .price(2000L).build();
+                .price(2000D).build();
         product2 = Product.builder().productId(2L)
                 .productName("Apple")
-                .price(2000L).build();
+                .price(2000D).build();
         user = Users.builder().usersId(1L).email("mensa@gmail.com").password("password").build();
         cart = Cart.builder().cartId(1L).users(user).cartItemList(new ArrayList<>()).cartTotal(0).quantity(0).build();
         user.setCart(cart);

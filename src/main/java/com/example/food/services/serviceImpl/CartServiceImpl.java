@@ -28,7 +28,7 @@ public class CartServiceImpl implements CartService {
 
     private Users getLoggedInUser() {
         var authentication = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByUsernameOrEmail(authentication, authentication)
+        return userRepository.findByEmail(authentication)
                 .orElseThrow(() -> new RuntimeException("User not authorized"));
     }
 
