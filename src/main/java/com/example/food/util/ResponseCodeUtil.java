@@ -8,7 +8,6 @@ import org.apache.commons.text.StringSubstitutor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.annotation.RequestScope;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;

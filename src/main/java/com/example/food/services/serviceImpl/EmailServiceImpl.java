@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.util.Objects;
@@ -15,8 +15,10 @@ import java.util.Objects;
 @Component
 @AllArgsConstructor
 public class EmailServiceImpl implements EmailService {
+
     private JavaMailSender emailSender;
     private final static Logger LOGGER = LoggerFactory.getLogger(EmailService.class);
+
     @Override
     public void sendMail(EmailSenderDto emailSenderDto){
         if (
