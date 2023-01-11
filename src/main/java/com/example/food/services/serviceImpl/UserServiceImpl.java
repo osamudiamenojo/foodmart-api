@@ -62,14 +62,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public BaseResponse requestPassword(PasswordResetRequestDto passwordResetRequestModel) {
+    public BaseResponse requestPassword(PasswordResetRequestDto passwordResetRequest) {
 
-        Optional<Users> users = userRepository.findByEmail(passwordResetRequestModel.getEmail());
+        Optional<Users> users = userRepository.findByEmail(passwordResetRequest.getEmail());
 
         if(users.isPresent())
         {
             Users users1 = users.get();
-            UserDetails userDetails = customUserDetailsService.loadUserByUsername(passwordResetRequestModel.getEmail());
+            UserDetails userDetails = customUserDetailsService.loadUserByUsername(passwordResetRequest.getEmail());
             String token = new JwtUtil().generateToken(userDetails);
             PasswordResetTokenEntity passwordResetTokenEntity = new PasswordResetTokenEntity();
             passwordResetTokenEntity.setToken(token);
@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
             passwordResetTokenRepository.save(passwordResetTokenEntity);
 
             EmailSenderDto emailSenderDto = new EmailSenderDto();
-            emailSenderDto.setTo(passwordResetRequestModel.getEmail());
+            emailSenderDto.setTo(passwordResetRequest.getEmail());
             emailSenderDto.setSubject("Password reset link");
             emailSenderDto.setContent("http://localhost:8080/users/reset-password/" + token);
             emailService.sendMail(emailSenderDto);
@@ -90,20 +90,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public BaseResponse resetPassword(PasswordResetDto passwordResetModel) {
+    public BaseResponse resetPassword(PasswordResetDto passwordReset) {
 
-        String email = jwtUtil.extractUsername(passwordResetModel.getToken());
+        String email = jwtUtil.extractUsername(passwordReset.getToken());
 
         Optional<Users> users = userRepository.findByEmail(email);
 
         if(users.isPresent()) {
             Users user = users.get();
-            PasswordResetTokenEntity passwordResetTokenEntity = passwordResetTokenRepository.findByToken(passwordResetModel.getToken());
+            PasswordResetTokenEntity passwordResetTokenEntity = passwordResetTokenRepository.findByToken(passwordReset.getToken());
 
             if (passwordResetTokenEntity == null){
                 return new BaseResponse(ResponseCodeEnum.ERROR);
             }
-            String encodePassword = passwordEncoder.encode(passwordResetModel.getPassword());
+            String encodePassword = passwordEncoder.encode(passwordReset.getPassword());
             user.setPassword(encodePassword);
             userRepository.save(user);
             passwordResetTokenRepository.delete(passwordResetTokenEntity);

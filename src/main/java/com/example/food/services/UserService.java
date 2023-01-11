@@ -11,7 +11,8 @@ public interface UserService {
 
     ResponseEntity<String> login(LoginRequestDto request);
 
-    BaseResponse requestPassword(PasswordResetRequestDto passwordResetRequestModel);
+    BaseResponse requestPassword(PasswordResetRequestDto passwordResetRequest);
 
-    BaseResponse resetPassword(PasswordResetDto passwordResetModel);
+    BaseResponse resetPassword(PasswordResetDto passwordReset);
 }
+

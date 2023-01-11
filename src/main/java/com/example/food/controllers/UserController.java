@@ -19,13 +19,13 @@ public class UserController {
     private UserService userService;
 
     @PostMapping(path = "/password-reset-request")
-    public BaseResponse requestReset(@RequestBody PasswordResetRequestDto passwordResetRequestModel) {
-        return userService.requestPassword(passwordResetRequestModel);
+    public BaseResponse requestReset(@RequestBody PasswordResetRequestDto passwordResetRequest) {
+        return userService.requestPassword(passwordResetRequest);
     }
 
     @PostMapping(path = "/password-reset")
-    public BaseResponse resetPassword(@RequestBody PasswordResetDto passwordResetDto) {
-        return userService.resetPassword(passwordResetDto);
+    public BaseResponse resetPassword(@RequestBody PasswordResetDto passwordReset) {
+        return userService.resetPassword(passwordReset);
     }
 
 }
