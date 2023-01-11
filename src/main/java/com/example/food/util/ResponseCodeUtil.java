@@ -5,6 +5,7 @@ import com.example.food.pojos.ResponseParam;
 import com.example.food.restartifacts.BaseResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.annotation.RequestScope;
 
@@ -14,6 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequestScope
+@Component
 public class ResponseCodeUtil {
 
     public <T extends BaseResponse> T updateResponseData(T baseResponse, ResponseCodeEnum responseCodeEnum) {
