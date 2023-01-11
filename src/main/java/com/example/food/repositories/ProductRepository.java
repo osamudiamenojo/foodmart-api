@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    @Query("SELECT p FROM Product p WHERE " + "LOWER(" + "CONCAT(p.productId, p.productName, p.quantity, p.productImage, p.productPrice,p.category.categoryName))" + "LIKE %?1%")
+    @Query("SELECT p FROM Product p WHERE " + "LOWER(" + "CONCAT(p.productId, p.productName, p.quantity, p.productImage, p.price,p.category.categoryName))" + "LIKE %?1%")
     Page<Product> findAllByFilterParam (Pageable pageable, String filterParam);
 
     @Query("SELECT p FROM Product p WHERE " + "LOWER(" + "p.productName)" + "LIKE %?1%")
@@ -28,6 +28,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Optional<Product> findProductByProductId(Long productId);
 
-    @Query(value = "SELECT p FROM Product p JOIN Favorites f ON p.productId = f.product.productId WHERE f.user.userId = ?1")
+    @Query(value = "SELECT p FROM Product p JOIN Favorites f ON p.productId = f.product.productId WHERE f.user.usersId = ?1")
     List<Product> findAllFavoriteProductsByUserId(Long userId);
+
+    Page<Product> findByProductNameContainingIgnoreCase(String filter, Pageable pageRequest);
 }

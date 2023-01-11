@@ -1,14 +1,16 @@
 package com.example.food.services.serviceImpl;
 
+import com.example.food.Enum.ResponseCodeEnum;
 import com.example.food.model.Cart;
 import com.example.food.model.CartItem;
 import com.example.food.model.Users;
 import com.example.food.repositories.CartItemRepository;
 import com.example.food.repositories.CartRepository;
 import com.example.food.repositories.UserRepository;
+import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.CartService;
+import com.example.food.util.ResponseCodeUtil;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,7 @@ public class CartServiceImpl implements CartService {
     private CartRepository cartRepository;
     private UserRepository userRepository;
     private CartItemRepository cartItemRepository;
+    private ResponseCodeUtil responseCodeUtil;
 
     private Users getLoggedInUser() {
         var authentication = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -30,17 +33,21 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public ResponseEntity<String> removeCartItem(long cartItemId) {
+    public BaseResponse removeCartItem(long cartItemId) {
         Users user = getLoggedInUser();
         Cart cart = user.getCart();
         Optional<CartItem> cartItemCheck = cartItemRepository.findByCart_CartIdAndCartItemId(cart.getCartId(), cartItemId);
+        BaseResponse baseResponse = new BaseResponse();
         if (cartItemCheck.isPresent()) {
             CartItem cartItem = cartItemCheck.get();
             removeItem(cartItemId, cart, cartItem);
-            return ResponseEntity.ok("Item removed from user cart");
+            baseResponse.setCode(0);
+            baseResponse.setDescription("Item removed from user cart");
         } else {
-            throw new RuntimeException("Item is not in user cart");
+            baseResponse.setCode(1);
+            baseResponse.setDescription("Item is not in user cart");
         }
+        return responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.SUCCESS);
     }
 
     private void removeItem(long cartItemId, Cart cart, CartItem cartItem) {

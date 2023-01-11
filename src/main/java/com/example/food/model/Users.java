@@ -1,8 +1,7 @@
 package com.example.food.model;
 
 import com.example.food.Enum.Role;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -11,6 +10,9 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Users {
 
     @Id
@@ -31,7 +33,7 @@ public class Users {
     @OneToOne
     private Wallet wallet;
 
-    @OneToMany
+    @OneToOne
     private Cart cart;
 
     @OneToMany
