@@ -4,6 +4,7 @@ import com.example.food.Enum.Role;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long usersId;
     private String baseCurrency;
-    private Integer dateOfBirth;
+    private LocalDate dateOfBirth;
     private String firstName;
     private String lastName;
     private String email;
