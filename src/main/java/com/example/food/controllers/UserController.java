@@ -1,22 +1,28 @@
 package com.example.food.controllers;
 
+import com.example.food.dto.EditUserDto;
 import com.example.food.dto.PasswordResetDto;
 import com.example.food.dto.PasswordResetRequestDto;
 import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+import javax.validation.Valid;
+
 @RequestMapping("/users")
 @AllArgsConstructor
 public class UserController {
-    @Autowired
-    private UserService userService;
+
+    private final UserService userService;
+
+    @PutMapping("/edit-user")
+    public BaseResponse editUserDetails(@Valid @RequestBody EditUserDto editUserDto) {
+        return userService.editUserDetails(editUserDto);
+    }
 
     @PostMapping(path = "/password-reset-request")
     public BaseResponse requestReset(@RequestBody PasswordResetRequestDto passwordResetRequest) {
@@ -27,5 +33,4 @@ public class UserController {
     public BaseResponse resetPassword(@RequestBody PasswordResetDto passwordReset) {
         return userService.resetPassword(passwordReset);
     }
-
 }
