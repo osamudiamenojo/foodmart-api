@@ -1,15 +1,14 @@
 package com.example.food.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.*;
 import java.util.Date;
-@Getter
-@Setter
+
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class Product {
 
     @Id
