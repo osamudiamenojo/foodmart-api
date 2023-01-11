@@ -11,10 +11,11 @@ import com.example.food.pojos.login.LoginRequestDto;
 import com.example.food.repositories.PasswordResetTokenRepository;
 import com.example.food.repositories.UserRepository;
 import com.example.food.restartifacts.BaseResponse;
-import com.example.food.restartifacts.PasswordResetResponse;
 import com.example.food.services.EmailService;
 import com.example.food.services.UserService;
+import com.example.food.util.ResponseCodeUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,13 +29,23 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final AuthenticationManager authenticationManager;
-    private final PasswordEncoder passwordEncoder;
-    private final PasswordResetTokenRepository passwordResetTokenRepository;
-    private final UserRepository userRepository;
-    private final JwtUtil jwtUtil;
-    private final CustomUserDetailsService customUserDetailsService;
-    private final EmailService emailService;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordResetTokenRepository passwordResetTokenRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private JwtUtil jwtUtil;
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
+    @Autowired
+    private EmailService emailService;
+
+    ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
+
 
 
     @Override
@@ -63,7 +74,7 @@ public class UserServiceImpl implements UserService {
             PasswordResetTokenEntity passwordResetTokenEntity = new PasswordResetTokenEntity();
             passwordResetTokenEntity.setToken(token);
             passwordResetTokenEntity.setUsersDetails(users1);
-
+            passwordResetTokenRepository.save(passwordResetTokenEntity);
 
             EmailSenderDto emailSenderDto = new EmailSenderDto();
             emailSenderDto.setTo(passwordResetRequestModel.getEmail());
@@ -71,35 +82,37 @@ public class UserServiceImpl implements UserService {
             emailSenderDto.setContent("http://localhost:8080/users/reset-password/" + token);
             emailService.sendMail(emailSenderDto);
 
-            return PasswordResetResponse.success(200, "Password reset successful kindly check your email");
+            var response = new BaseResponse(ResponseCodeEnum.SUCCESS);
+            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS);
         }
-        return new BaseResponse(ResponseCodeEnum.ERROR_PASSWORD_RESET);
+
+        return responseCodeUtil.updateResponseData(new BaseResponse(), ResponseCodeEnum.ERROR);
     }
 
     @Override
     public BaseResponse resetPassword(PasswordResetDto passwordResetModel) {
 
-        JwtUtil jwtUtil = new JwtUtil();
         String email = jwtUtil.extractUsername(passwordResetModel.getToken());
 
         Optional<Users> users = userRepository.findByEmail(email);
 
-        if(users.isPresent())
-        {
+        if(users.isPresent()) {
+            Users user = users.get();
             PasswordResetTokenEntity passwordResetTokenEntity = passwordResetTokenRepository.findByToken(passwordResetModel.getToken());
 
             if (passwordResetTokenEntity == null){
-                return PasswordResetResponse.error(-400, "Access Denied");
+                return new BaseResponse(ResponseCodeEnum.ERROR);
             }
             String encodePassword = passwordEncoder.encode(passwordResetModel.getPassword());
-            Users user = passwordResetTokenEntity.getUsersDetails();
             user.setPassword(encodePassword);
             userRepository.save(user);
             passwordResetTokenRepository.delete(passwordResetTokenEntity);
 
-            return new BaseResponse(ResponseCodeEnum.SUCCESS);
+            var response = new BaseResponse(ResponseCodeEnum.SUCCESS);
+            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS);
         }
 
-        return new BaseResponse(ResponseCodeEnum.ERROR);
+        return responseCodeUtil.updateResponseData(new BaseResponse(), ResponseCodeEnum.ERROR);
     }
+
 }
