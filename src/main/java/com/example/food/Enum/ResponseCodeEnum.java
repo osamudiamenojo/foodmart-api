@@ -10,7 +10,7 @@ import lombok.Getter;
 public enum ResponseCodeEnum {
 
     SUCCESS(0, "Success"),
-    ERROR(-1, "An error occurred. Error message : ${errorMessage}")
+    ERROR(-1, "An error occurred. Error message : ${errorMessage}"),
 //    you can add your custom error codes as shown below just ensure that error codes have a minus sign
 //    ERROR_SETTING_THRESHOLD(-2, "An error occurred"),
     ;
