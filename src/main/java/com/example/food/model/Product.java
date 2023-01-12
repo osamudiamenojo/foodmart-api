@@ -1,7 +1,10 @@
 package com.example.food.model;
 
-import lombok.*;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.Builder;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -9,7 +12,6 @@ import java.util.Date;
 @Entity
 @RequiredArgsConstructor
 @AllArgsConstructor
-//@NoArgsConstructor
 @Setter
 @Getter
 @Builder
