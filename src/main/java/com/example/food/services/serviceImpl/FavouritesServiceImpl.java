@@ -1,5 +1,6 @@
 package com.example.food.services.serviceImpl;
 
+import com.example.food.Enum.ResponseCodeEnum;
 import com.example.food.exceptions.ResourceNotFoundException;
 import com.example.food.exceptions.UserNotFoundException;
 import com.example.food.model.Favourites;
@@ -8,11 +9,11 @@ import com.example.food.model.Users;
 import com.example.food.repositories.FavouritesRepository;
 import com.example.food.repositories.ProductRepository;
 import com.example.food.repositories.UserRepository;
+import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.FavouritesService;
+import com.example.food.util.ResponseCodeUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -24,9 +25,10 @@ public class FavouritesServiceImpl implements FavouritesService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final FavouritesRepository favouritesRepository;
+    private final ResponseCodeUtil responseCodeUtil;
 
     @Override
-    public ResponseEntity addToFavourites(Long productId) {
+    public BaseResponse addToFavourites(Long productId) {
         UserDetails loggedInUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         log.info(loggedInUser.toString());
 
@@ -38,14 +40,19 @@ public class FavouritesServiceImpl implements FavouritesService {
 
         Boolean alreadyInFavourite = favouritesRepository.existsByUsersAndProducts(user, favouriteProduct);
 
+        BaseResponse response = new BaseResponse();
+
         if (!alreadyInFavourite) {
             Favourites favourites = new Favourites();
             favourites.setUsers(user);
             favourites.setProducts(favouriteProduct);
             favouritesRepository.save(favourites);
-            return new ResponseEntity<>(favouriteProduct.getProductName() + "added to favourite", HttpStatus.OK);
+            response.setCode(0);
+            response.setDescription("added to favourite");
+            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS);
         }
-
-        return new ResponseEntity<>(favouriteProduct.getProductName() + " is already your favourite", HttpStatus.BAD_REQUEST);
+        response.setCode(-1);
+        response.setDescription(favouriteProduct.getProductName() + " is already your favourite");
+        return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.ERROR);
     }
 }

@@ -5,5 +5,5 @@ import com.example.food.restartifacts.BaseResponse;
 import org.springframework.http.ResponseEntity;
 
 public interface FavouritesService {
-    public ResponseEntity addToFavourites(Long productId);
+    public BaseResponse addToFavourites(Long productId);
 }
