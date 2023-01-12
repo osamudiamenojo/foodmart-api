@@ -126,7 +126,7 @@ public class UserServiceImpl implements UserService {
         PasswordResetTokenEntity passwordResetTokenEntity = passwordResetTokenRepository.findByToken(passwordReset.getToken());
 
         if (passwordResetTokenEntity == null){
-            return new BaseResponse(ResponseCodeEnum.ERROR);
+            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.ERROR, "Invalid token");
         }
         String encodePassword = passwordEncoder.encode(passwordReset.getPassword());
         user.setPassword(encodePassword);
