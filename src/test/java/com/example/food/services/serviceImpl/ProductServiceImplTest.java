@@ -1,6 +1,7 @@
 package com.example.food.services.serviceImpl;
 
 import com.example.food.Enum.ResponseCodeEnum;
+import com.example.food.dto.ProductDto;
 import com.example.food.dto.ProductSearchDto;
 import com.example.food.model.Product;
 import com.example.food.pojos.PaginatedProductResponse;
@@ -14,10 +15,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+
+import java.util.*;
+
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -113,4 +113,24 @@ class ProductServiceImplTest {
         verify(productRepository).findAll((Pageable) any());
         verify(responseCodeUtil).updateResponseData((PaginatedProductResponse) any(), (ResponseCodeEnum) any());
     }
+
+    @Test
+    void testFetchSingleProduct(){
+
+        String productName = "Spicy Burger";
+        Product product = new Product();
+        ProductDto productDto = new ProductDto();
+
+        //when
+        when(productRepository.findByProductName(productName))
+                .thenReturn(Optional.of(product));
+
+        when(responseCodeUtil.updateResponseData(productDto, ResponseCodeEnum.SUCCESS))
+                .thenReturn(productDto);
+
+        ProductDto actual = productServiceImpl.fetchSingleProduct(productName);
+
+        assertSame(productDto, actual);
+    }
+
 }

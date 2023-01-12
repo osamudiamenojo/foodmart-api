@@ -1,5 +1,6 @@
 package com.example.food.model;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import javax.persistence.*;
 import java.util.Date;

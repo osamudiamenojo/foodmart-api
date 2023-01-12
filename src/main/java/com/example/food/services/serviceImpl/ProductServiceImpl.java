@@ -1,19 +1,25 @@
 package com.example.food.services.serviceImpl;
 
 import com.example.food.Enum.ResponseCodeEnum;
+import com.example.food.dto.ProductDto;
 import com.example.food.dto.ProductSearchDto;
 import com.example.food.model.Product;
 import com.example.food.pojos.PaginatedProductResponse;
 import com.example.food.repositories.ProductRepository;
+import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.ProductService;
 import com.example.food.util.ResponseCodeUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -43,4 +49,23 @@ public class ProductServiceImpl implements ProductService {
         log.info("Paginated Response generated. PaginatedResponse:{}",paginatedResponse);
         return responseCodeUtil.updateResponseData(paginatedResponse, ResponseCodeEnum.SUCCESS);
     }
+
+    @Override
+    public ProductDto fetchSingleProduct(String productName) {
+
+        Optional<Product> fetchedProduct = productRepository.findByProductName(productName);
+
+        BaseResponse baseResponse = new BaseResponse();
+
+        if(fetchedProduct.isEmpty()){
+            responseCodeUtil.updateResponseData(baseResponse,
+                    ResponseCodeEnum.ERROR, "Product Name not found");
+        }
+
+        ProductDto productDto = new ProductDto();
+        BeanUtils.copyProperties(fetchedProduct, productDto);
+
+        return  responseCodeUtil.updateResponseData(productDto, ResponseCodeEnum.SUCCESS);
+    }
+
 }
