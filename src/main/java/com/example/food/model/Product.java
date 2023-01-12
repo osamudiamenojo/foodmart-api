@@ -21,7 +21,7 @@ public class Product {
 
     private String productName;
 
-    private Double productPrice;
+    private Double price;
 
     private String productDescription;
 

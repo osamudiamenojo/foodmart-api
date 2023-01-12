@@ -14,16 +14,10 @@ import java.util.Date;
 public class ProductDto {
 
     private String imageUrl;
-
     private String productName;
-
-    private Double productPrice;
-
+    private Double price;
     private String productDescription;
-
     private int quantity;
-
     private Date createdAt;
-
     private Date modifiedAt;
 }

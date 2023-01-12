@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1")
+@RequestMapping("/api/v1")
 public class ProductController {
     private final ProductService productService;
 
@@ -27,7 +27,7 @@ public class ProductController {
 
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ProductResponse fetchAllProducts() {
-        return productService.fetchAllProducts();
+    public ResponseEntity<ProductResponse> fetchAllProducts() {
+        return new ResponseEntity<>(productService.fetchAllProducts(),HttpStatus.ACCEPTED);
     }
 }

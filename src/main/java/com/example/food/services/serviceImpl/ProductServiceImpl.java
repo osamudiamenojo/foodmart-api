@@ -53,15 +53,22 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse fetchAllProducts() {
+
+        ProductResponse response = new ProductResponse();
+
         List<Product> products = productRepository.findAll();
-        if (products == null || products.isEmpty()) {
-            return new ProductResponse(false, "No products found", Collections.emptyList());
+
+        if (products.isEmpty()) {
+            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.PRODUCT_NOT_FOUND);
         }
         List<ProductDto> productDto = products.stream()
                 .map(product -> new ProductDto(product.getImageUrl(), product.getProductName(),
-                        product.getProductPrice(), product.getProductDescription(),
+                        product.getPrice(), product.getProductDescription(),
                         product.getQuantity(), product.getCreatedAt(), product.getModifiedAt()))
                 .collect(Collectors.toList());
-        return new ProductResponse(true, "Products fetched successfully", productDto);
+
+        response.setProductDto(productDto);
+
+        return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS);
     }
 }
