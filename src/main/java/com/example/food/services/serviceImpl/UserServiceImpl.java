@@ -4,18 +4,26 @@ import com.example.food.Enum.ResponseCodeEnum;
 import com.example.food.configurations.security.CustomUserDetailsService;
 import com.example.food.configurations.security.JwtUtil;
 import com.example.food.dto.EditUserDto;
+import com.example.food.dto.EmailSenderDto;
+import com.example.food.dto.PasswordResetDto;
+import com.example.food.dto.PasswordResetRequestDto;
+import com.example.food.model.PasswordResetTokenEntity;
 import com.example.food.model.Users;
 import com.example.food.pojos.login.LoginRequestDto;
+import com.example.food.repositories.PasswordResetTokenRepository;
 import com.example.food.repositories.UserRepository;
 import com.example.food.restartifacts.BaseResponse;
+import com.example.food.services.EmailService;
 import com.example.food.services.UserService;
 import com.example.food.util.ResponseCodeUtil;
 import com.example.food.util.UserUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
@@ -29,7 +37,9 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserUtil userUtil;
     private final ResponseCodeUtil responseCodeUtil;
-
+    private final PasswordEncoder passwordEncoder;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final EmailService emailService;
 
     @Override
     public ResponseEntity<String> login(LoginRequestDto request) {
@@ -68,5 +78,61 @@ public class UserServiceImpl implements UserService {
 
         return responseCodeUtil.updateResponseData(baseResponse,
                 ResponseCodeEnum.SUCCESS," User Information Updated successfully");
+    }
+
+    @Override
+    public BaseResponse requestPassword(PasswordResetRequestDto passwordResetRequest) {
+
+        Optional<Users> users = userRepository.findByEmail(passwordResetRequest.getEmail());
+
+        BaseResponse response = new BaseResponse();
+
+        if(!users.isPresent())
+        {
+            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.ERROR, "User with provided Email not found");
+        }
+
+        Users users1 = users.get();
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(passwordResetRequest.getEmail());
+        String token = new JwtUtil().generateToken(userDetails);
+        PasswordResetTokenEntity passwordResetTokenEntity = new PasswordResetTokenEntity();
+        passwordResetTokenEntity.setToken(token);
+        passwordResetTokenEntity.setUsersDetails(users1);
+        passwordResetTokenRepository.save(passwordResetTokenEntity);
+
+        EmailSenderDto emailSenderDto = new EmailSenderDto();
+        emailSenderDto.setTo(passwordResetRequest.getEmail());
+        emailSenderDto.setSubject("Password reset link");
+        emailSenderDto.setContent("http://localhost:8080/users/reset-password/" + token);
+        emailService.sendMail(emailSenderDto);
+
+        return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS, "Password reset successful kindly check your email");
+    }
+
+    @Override
+    public BaseResponse resetPassword(PasswordResetDto passwordReset) {
+
+        String email = jwtUtil.extractUsername(passwordReset.getToken());
+
+        Optional<Users> users = userRepository.findByEmail(email);
+
+        BaseResponse response = new BaseResponse();
+
+        if(!users.isPresent()) {
+            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.ERROR, "User not found");
+        }
+
+        Users user = users.get();
+        PasswordResetTokenEntity passwordResetTokenEntity = passwordResetTokenRepository.findByToken(passwordReset.getToken());
+
+        if (passwordResetTokenEntity == null){
+            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.ERROR, "Invalid token");
+        }
+        String encodePassword = passwordEncoder.encode(passwordReset.getPassword());
+        user.setPassword(encodePassword);
+        userRepository.save(user);
+        passwordResetTokenRepository.delete(passwordResetTokenEntity);
+
+        return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS, "Password Successfuly reset");
     }
 }
