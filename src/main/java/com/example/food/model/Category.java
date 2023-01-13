@@ -31,5 +31,6 @@ public class Category {
     @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
     private List<Product> productList;
 
+    @OneToMany
+    private List<Product> favoriteCategory;
 }
-

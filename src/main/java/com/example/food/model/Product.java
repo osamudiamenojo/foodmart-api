@@ -6,7 +6,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.util.Date;
 
-
 @Entity
 @Getter
 @Setter
@@ -27,6 +26,7 @@ public class Product {
     private Long quantity;
 
     @CreationTimestamp
+    private Double price;
     private Date createdAt;
 
     @UpdateTimestamp

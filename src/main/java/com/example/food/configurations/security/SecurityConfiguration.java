@@ -23,7 +23,8 @@ public class SecurityConfiguration {
 
     private final String[] AUTH_WHITELIST = {
             path +"/register", path + "/forgot-password", path + "/reset-password", path + "/login",
-            "/swagger-ui/**", "/configuration/**", "swagger**/**", "/webjars/**", "/v3/api-docs/**"
+            "/swagger-ui/**", "/configuration/**", "swagger**/**", "/webjars/**", "/v3/api-docs/**",
+            "/users/password-reset-request", "/users/password-reset"
     };
     private final JwtAuthFilter jwtAuthFilter;
     private final CustomUserDetailsService userDetailsService;
