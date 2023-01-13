@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Data
@@ -13,19 +12,19 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class ProductDto {
 
-    @NotEmpty
+    @NotNull (message = "Name must not be null")
     private Category category;
 
-    @NotBlank
+    @NotBlank(message = "Name must not be null")
     private String productName;
 
-    @NotEmpty
+    @NotNull (message = "Price must not be null")
     private double productPrice;
 
-    @NotBlank
+    @NotBlank (message = "Image must not be null")
     private String imageUrl;
 
-    @NotNull
+    @NotNull (message = "Quantity must not be null")
     private Long quantity;
 
 }

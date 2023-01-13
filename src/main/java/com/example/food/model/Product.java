@@ -1,18 +1,15 @@
 package com.example.food.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.lang.Nullable;
-
 import javax.persistence.*;
 import java.util.Date;
 
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Product {
@@ -37,5 +34,7 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "categoryId",insertable = false,updatable = false)
     private Category category;
+
+
 
 }

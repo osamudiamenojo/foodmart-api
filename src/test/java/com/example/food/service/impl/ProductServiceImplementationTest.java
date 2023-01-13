@@ -3,6 +3,7 @@ package com.example.food.service.impl;
 import com.example.food.model.Product;
 import com.example.food.pojos.models.ProductDto;
 import com.example.food.repositories.ProductRepository;
+import com.example.food.services.serviceImpl.ProductServiceImplementation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -38,7 +39,7 @@ class ProductServiceImplementationTest {
         when(productRepository.save(product))
                 .thenReturn(product);
 
-        String status = productService.addNewProduct(productDto);
+        String status = String.valueOf(productService.addNewProduct(productDto));
         assertEquals("New Product Saved!", status);
 
     }

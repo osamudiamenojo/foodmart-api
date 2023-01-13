@@ -1,9 +1,10 @@
 package com.example.food.services;
 
 import com.example.food.pojos.models.CategoryDto;
+import com.example.food.restartifacts.BaseResponse;
 import org.springframework.stereotype.Service;
 
-@Service
+//@Service
 public interface CategoryService {
-    public String createCategory(CategoryDto categoryDto);
+     BaseResponse createCategory(CategoryDto categoryDto);
 }

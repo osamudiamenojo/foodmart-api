@@ -1,8 +1,6 @@
 package com.example.food.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -10,10 +8,11 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
-@Data
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
+@Getter
+@Setter
 @Table(name = "category")
 public class Category {
 
@@ -29,11 +28,8 @@ public class Category {
     @UpdateTimestamp
     private Date modifiedAt;
 
-    @OneToMany(mappedBy = "category",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
     private List<Product> productList;
-
-    @OneToMany
-    private List<Product> favoriteCategory;
 
 }
 

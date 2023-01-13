@@ -3,6 +3,7 @@ package com.example.food.service.impl;
 import com.example.food.model.Category;
 import com.example.food.pojos.models.CategoryDto;
 import com.example.food.repositories.CategoryRepository;
+import com.example.food.services.serviceImpl.CategoryServiceImplementation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -38,7 +39,7 @@ class CategoryServiceImplementationTest {
         when(categoryRepository.save(category))
                 .thenReturn(category);
 
-        String status = categoryService.createCategory(categoryDto);
+        String status = String.valueOf(categoryService.createCategory(categoryDto));
         assertEquals("New Category Added.", status);
     }
 
