@@ -25,9 +25,9 @@ public class ProductController {
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/product/{productName}")
-    public ResponseEntity<ProductDto>fetchSingleProduct(@PathVariable("productName") String productName){
-        ProductDto productDto = productService.fetchSingleProduct(productName);
+    @GetMapping("/product/{productId}")
+    public ResponseEntity<ProductDto>fetchSingleProduct(@PathVariable("productId") Long productId){
+        ProductDto productDto = productService.fetchSingleProduct(productId);
         return new ResponseEntity<>(productDto, HttpStatus.OK);
     }
 }

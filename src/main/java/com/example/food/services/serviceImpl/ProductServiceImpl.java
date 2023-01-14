@@ -51,15 +51,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto fetchSingleProduct(String productName) {
+    public ProductDto fetchSingleProduct(Long productId) {
 
-        Optional<Product> fetchedProduct = productRepository.findByProductName(productName);
+        Optional<Product> fetchedProduct = productRepository.findByProductId(productId);
 
         BaseResponse baseResponse = new BaseResponse();
 
         if(fetchedProduct.isEmpty()){
             responseCodeUtil.updateResponseData(baseResponse,
-                    ResponseCodeEnum.ERROR, "Product Name not found");
+                    ResponseCodeEnum.ERROR, "Product ID not found");
         }
 
         ProductDto productDto = new ProductDto();

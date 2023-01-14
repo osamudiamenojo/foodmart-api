@@ -8,5 +8,5 @@ import com.example.food.restartifacts.BaseResponse;
 public interface ProductService {
     PaginatedProductResponse searchProduct(ProductSearchDto productSearchDto);
 
-    ProductDto fetchSingleProduct(String productName);
+    ProductDto fetchSingleProduct(Long productId);
 }

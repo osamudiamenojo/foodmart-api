@@ -117,18 +117,18 @@ class ProductServiceImplTest {
     @Test
     void testFetchSingleProduct(){
 
-        String productName = "Spicy Burger";
+        Long productId = 1L;
         Product product = new Product();
         ProductDto productDto = new ProductDto();
 
         //when
-        when(productRepository.findByProductName(productName))
+        when(productRepository.findByProductId(productId))
                 .thenReturn(Optional.of(product));
 
         when(responseCodeUtil.updateResponseData(productDto, ResponseCodeEnum.SUCCESS))
                 .thenReturn(productDto);
 
-        ProductDto actual = productServiceImpl.fetchSingleProduct(productName);
+        ProductDto actual = productServiceImpl.fetchSingleProduct(productId);
 
         assertSame(productDto, actual);
     }

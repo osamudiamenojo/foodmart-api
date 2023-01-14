@@ -11,6 +11,7 @@ import java.util.Date;
     @Setter
     @ToString
     public class ProductDto extends BaseResponse {
+        private Long productId;
         private String imageUrl;
         private String productName;
         private Double productPrice;
