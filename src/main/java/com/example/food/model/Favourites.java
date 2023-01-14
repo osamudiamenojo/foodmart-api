@@ -18,8 +18,6 @@ import java.util.List;
 public class Favourites {
     @Id
     private Long id;
-    @ManyToOne
-    private Users users;
-    @ManyToOne
-    private Product products;
+    private Long userId;
+    private Long productId;
 }

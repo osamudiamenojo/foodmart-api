@@ -6,5 +6,5 @@ import com.example.food.model.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FavouritesRepository extends JpaRepository<Favourites, Long> {
-    Boolean existsByUsersAndProducts(Users user, Product product);
+    Boolean existsByUserIdAndProductsId(Long userId, Long productId);
 }
