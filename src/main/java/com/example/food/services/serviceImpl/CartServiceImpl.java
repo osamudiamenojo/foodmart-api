@@ -36,7 +36,7 @@ public class CartServiceImpl implements CartService {
     public BaseResponse removeCartItem(long cartItemId) {
         Users user = getLoggedInUser();
         Cart cart = user.getCart();
-        Optional<CartItem> cartItemCheck = cartItemRepository.findByCart_CartIdAndCartItemId(cart.getCartId(), cartItemId);
+        Optional<CartItem> cartItemCheck = cartItemRepository.findByCartItemId(cartItemId);
         BaseResponse baseResponse = new BaseResponse();
         if (cartItemCheck.isPresent()) {
             CartItem cartItem = cartItemCheck.get();

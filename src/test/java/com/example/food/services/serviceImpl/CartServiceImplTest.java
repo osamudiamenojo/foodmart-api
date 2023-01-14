@@ -67,7 +67,7 @@ public class CartServiceImplTest {
     }
     @Test
     public void testRemoveCartItemSuccess() {
-        Mockito.when(cartItemRepository.findByCart_CartIdAndCartItemId(anyLong(), anyLong())).thenReturn(Optional.of(cartItem1));
+        Mockito.when(cartItemRepository.findByCartItemId(anyLong())).thenReturn(Optional.of(cartItem1));
         Mockito.when(userRepository.findByEmail( any())).thenReturn(Optional.ofNullable(user));
         Mockito.doNothing().when(cartItemRepository).deleteById(anyLong());
         Mockito.when(cartRepository.save(any())).thenReturn(cart);
