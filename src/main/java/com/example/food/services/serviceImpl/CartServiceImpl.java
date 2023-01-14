@@ -34,20 +34,24 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public BaseResponse removeCartItem(long cartItemId) {
-        Users user = getLoggedInUser();
-        Cart cart = user.getCart();
-        Optional<CartItem> cartItemCheck = cartItemRepository.findByCartItemId(cartItemId);
-        BaseResponse baseResponse = new BaseResponse();
-        if (cartItemCheck.isPresent()) {
-            CartItem cartItem = cartItemCheck.get();
-            removeItem(cartItemId, cart, cartItem);
-            baseResponse.setCode(0);
-            baseResponse.setDescription("Item removed from user cart");
-        } else {
-            baseResponse.setCode(1);
-            baseResponse.setDescription("Item is not in user cart");
+        try {
+            Users user = getLoggedInUser();
+            Cart cart = user.getCart();
+            Optional<CartItem> cartItemCheck = cartItemRepository.findByCartItemId(cartItemId);
+            BaseResponse baseResponse = new BaseResponse();
+            if (cartItemCheck.isPresent()) {
+                CartItem cartItem = cartItemCheck.get();
+                removeItem(cartItemId, cart, cartItem);
+                baseResponse.setCode(0);
+                baseResponse.setDescription("Item removed from user cart");
+            } else {
+                baseResponse.setCode(1);
+                baseResponse.setDescription("Item is not in user cart");
+            }
+            return responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.SUCCESS);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.SUCCESS);
     }
 
     private void removeItem(long cartItemId, Cart cart, CartItem cartItem) {
