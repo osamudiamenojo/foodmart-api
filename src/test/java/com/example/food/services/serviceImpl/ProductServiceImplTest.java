@@ -1,10 +1,13 @@
 package com.example.food.services.serviceImpl;
 
 import com.example.food.Enum.ResponseCodeEnum;
+import com.example.food.dto.ProductDto;
 import com.example.food.dto.ProductSearchDto;
 import com.example.food.model.Product;
 import com.example.food.pojos.PaginatedProductResponse;
+import com.example.food.pojos.ProductResponse;
 import com.example.food.repositories.ProductRepository;
+import com.example.food.services.ProductService;
 import com.example.food.util.ResponseCodeUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,11 +17,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import static org.junit.jupiter.api.Assertions.assertSame;
+
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -31,6 +33,8 @@ class ProductServiceImplTest {
     private ProductServiceImpl productServiceImpl;
     @Mock
     private ResponseCodeUtil responseCodeUtil;
+    @Mock
+    private ProductService productService;
     @Test
     void testSearchProduct() {
         // Setting up test data
