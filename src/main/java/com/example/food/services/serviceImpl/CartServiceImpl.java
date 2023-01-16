@@ -11,12 +11,14 @@ import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.CartService;
 import com.example.food.util.ResponseCodeUtil;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
 
+@Slf4j
 @Transactional
 @AllArgsConstructor
 @Service
@@ -34,11 +36,11 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public BaseResponse removeCartItem(long cartItemId) {
+            BaseResponse baseResponse = new BaseResponse();
         try {
             Users user = getLoggedInUser();
             Cart cart = user.getCart();
             Optional<CartItem> cartItemCheck = cartItemRepository.findByCartItemId(cartItemId);
-            BaseResponse baseResponse = new BaseResponse();
             if (cartItemCheck.isPresent()) {
                 CartItem cartItem = cartItemCheck.get();
                 removeItem(cartItemId, cart, cartItem);
@@ -50,8 +52,9 @@ public class CartServiceImpl implements CartService {
             }
             return responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.SUCCESS);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.info("Email not registered, Product cannot be removed");
         }
+        return responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.ERROR);
     }
 
     private void removeItem(long cartItemId, Cart cart, CartItem cartItem) {
