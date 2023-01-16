@@ -53,7 +53,7 @@ public class FavouritesServiceImplTest {
         BaseResponse expectedResponse = new BaseResponse();
         expectedResponse.setCode(0);
         expectedResponse.setDescription("added to favourite");
-        when(favouritesRepository.existsByUsersAndProducts(any(), any())).thenReturn(false);
+        when(favouritesRepository.existsByUsersIdAndProductId(any(), any())).thenReturn(false);
         when(responseCodeUtil.updateResponseData(any(), any())).thenReturn(expectedResponse);
         BaseResponse actualResponse = favouritesServiceImpl.addToFavourites(1L);
         assertEquals(expectedResponse, actualResponse);
@@ -63,7 +63,7 @@ public class FavouritesServiceImplTest {
         BaseResponse expectedResponse = new BaseResponse();
         expectedResponse.setCode(-1);
         expectedResponse.setDescription(mockedProduct.getProductName() + " is already your favourite");
-        when(favouritesRepository.existsByUsersAndProducts(any(), any())).thenReturn(true);
+        when(favouritesRepository.existsByUsersIdAndProductId(any(), any())).thenReturn(true);
         when(responseCodeUtil.updateResponseData(any(), any())).thenReturn(expectedResponse);
         BaseResponse actualResponse = favouritesServiceImpl.addToFavourites(1L);
         assertEquals(expectedResponse, actualResponse);
