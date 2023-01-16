@@ -4,6 +4,7 @@ import com.example.food.Enum.Role;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.Builder;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -16,8 +17,6 @@ import java.util.List;
 @Setter
 @Entity
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class Users {
 
     @Id
@@ -46,6 +45,8 @@ public class Users {
 
     @OneToMany
     private List <Message> messages;
+    @OneToOne
+    private Cart cart;
 
 
 }
