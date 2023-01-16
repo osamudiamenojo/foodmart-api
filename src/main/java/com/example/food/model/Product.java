@@ -1,16 +1,15 @@
 package com.example.food.model;
 
 import lombok.*;
-
 import javax.persistence.*;
 import java.util.Date;
-
 @Entity
 @Getter
 @Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class Product {
 
     @Id
