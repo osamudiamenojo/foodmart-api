@@ -4,6 +4,9 @@ import com.example.food.Enum.Role;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -42,6 +45,8 @@ public class Users {
 
     @OneToMany
     private List <Message> messages;
+    @OneToOne
+    private Cart cart;
 
 
 }
