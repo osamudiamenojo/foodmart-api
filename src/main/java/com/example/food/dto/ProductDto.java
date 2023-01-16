@@ -1,30 +1,22 @@
-package com.example.food.model;
+package com.example.food.dto;
 
 import lombok.*;
-import javax.persistence.*;
+
 import java.util.Date;
-@Entity
+
 @Getter
 @Setter
-@RequiredArgsConstructor
+@ToString
 @AllArgsConstructor
-public class Product {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long productId;
-
-    private String productName;
-
-    private Double price;
-
-    private String productDescription;
-
-    private int quantity;
+@NoArgsConstructor
+@Builder
+public class ProductDto {
 
     private String imageUrl;
-
+    private String productName;
+    private Double price;
+    private String productDescription;
+    private int quantity;
     private Date createdAt;
-
     private Date modifiedAt;
 }

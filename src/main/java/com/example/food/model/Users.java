@@ -1,7 +1,9 @@
 package com.example.food.model;
 
 import com.example.food.Enum.Role;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -11,6 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Builder
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

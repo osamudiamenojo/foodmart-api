@@ -1,5 +1,6 @@
 package com.example.food.controllers;
 
+import com.example.food.configurations.security.JwtUtil;
 import com.example.food.pojos.login.LoginRequestDto;
 import com.example.food.services.serviceImpl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -18,11 +19,12 @@ import javax.validation.Valid;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
     private final UserServiceImpl userServiceImpl;
-
+    private final JwtUtil jwtUtil;
     @PostMapping("/login")
     public ResponseEntity<String> login(@Valid @RequestBody LoginRequestDto request) {
-        userServiceImpl.login(request);
-        return new ResponseEntity<>("Login Successful", HttpStatus.ACCEPTED);
+      return userServiceImpl.login(request);
+
+//        return new ResponseEntity<>("Login Successful", HttpStatus.ACCEPTED);
     }
 }
 
