@@ -1,9 +1,6 @@
 package com.example.food.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Date;
 
@@ -11,6 +8,8 @@ import java.util.Date;
 @Setter
 @ToString
 @AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class ProductDto {
 
     private String imageUrl;
