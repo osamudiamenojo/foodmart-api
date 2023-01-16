@@ -6,6 +6,7 @@ import com.example.food.dto.ProductSearchDto;
 import com.example.food.model.Product;
 import com.example.food.pojos.PaginatedProductResponse;
 import com.example.food.pojos.ProductResponse;
+import com.example.food.pojos.ProductResponseDto;
 import com.example.food.repositories.ProductRepository;
 import com.example.food.services.ProductService;
 import com.example.food.util.ResponseCodeUtil;
@@ -31,6 +32,8 @@ class ProductServiceImplTest {
     private ProductRepository productRepository;
     @InjectMocks
     private ProductServiceImpl productServiceImpl;
+    private Product product;
+    private ProductDto productDto;
 
     @Test
     void testSearchProduct() {
@@ -96,5 +99,19 @@ class ProductServiceImplTest {
         PaginatedProductResponse response = productServiceImpl.searchProduct(new ProductSearchDto());
         assertTrue(response.getProductList().isEmpty());
         verify(productRepository).findAll((Pageable) any());
+    }
+
+    @Test
+    public void testFetchSingleProduct_success() {
+        Product product = createNewProduct(1L,"apple1",290D);
+        when(productRepository.findByProductId(1L)).thenReturn(Optional.of(product));
+        ProductResponseDto response = productServiceImpl.fetchSingleProduct(1L);
+        assertTrue(response.getDescription().startsWith("Success"));
+    }
+    @Test
+    public void testFetchSingleProduct_Error() {
+        when(productRepository.findByProductId(anyLong())).thenReturn(null);
+        ProductResponseDto response = productServiceImpl.fetchSingleProduct(2l);
+        assertTrue(response.getDescription().startsWith("No products"));
     }
 }
