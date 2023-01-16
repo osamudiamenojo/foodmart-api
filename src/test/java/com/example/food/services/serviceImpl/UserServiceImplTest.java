@@ -60,7 +60,7 @@ class UserServiceImplTest {
 
     @InjectMocks
     private UserServiceImpl userServiceImpl;
-    private ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
+    private ResponseCodeUtil responseCodeUtil;
     private CreateUserRequest createUserRequest;
     private Users users;
     LoginRequestDto loginRequestDto;
@@ -87,7 +87,7 @@ class UserServiceImplTest {
         users.setEmail(createUserRequest.getEmail());
         users.setPassword(passwordEncoder.encode(createUserRequest.getPassword()));
 
-//        responseCodeUtil = new ResponseCodeUtil();
+        responseCodeUtil = new ResponseCodeUtil();
     }
 
     @Test
