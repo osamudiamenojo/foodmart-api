@@ -75,7 +75,7 @@ public class AdminServiceImpl implements AdminService {
 
             return responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.SUCCESS);
         } else {
-            baseResponse.setCode(-2);
+            baseResponse.setCode(-6);
         }
         return responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.ERROR_RESETTING_PASSWORD);
     }
@@ -98,7 +98,7 @@ public class AdminServiceImpl implements AdminService {
                 baseResponse.setDescription("Password reset was successful.");
                 return responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.SUCCESS);
             }
-            baseResponse.setCode(-2);
+            baseResponse.setCode(-6);
 
         }
         return responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.ERROR_RESETTING_PASSWORD);
