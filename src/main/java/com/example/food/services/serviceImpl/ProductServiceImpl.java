@@ -6,11 +6,13 @@ import com.example.food.dto.ProductSearchDto;
 import com.example.food.model.Product;
 import com.example.food.pojos.PaginatedProductResponse;
 import com.example.food.pojos.ProductResponse;
+import com.example.food.pojos.ProductResponseDto;
 import com.example.food.repositories.ProductRepository;
 import com.example.food.services.ProductService;
 import com.example.food.util.ResponseCodeUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -70,5 +73,22 @@ public class ProductServiceImpl implements ProductService {
         response.setProductDto(productDto);
 
         return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS);
+    }
+
+    public ProductResponseDto fetchSingleProduct(Long productId) {
+        ProductResponseDto productResponseDto;
+        Optional<Product> fetchedProduct = productRepository.findByProductId(productId);
+
+        if(fetchedProduct == null){
+            productResponseDto = ProductResponseDto.builder().build();
+            return responseCodeUtil.updateResponseData(productResponseDto,
+                ResponseCodeEnum.PRODUCT_NOT_FOUND);
+        }
+        ProductDto productDto = new ProductDto();
+        BeanUtils.copyProperties(fetchedProduct, productDto);
+        productResponseDto = ProductResponseDto.builder()
+                .productDto(productDto)
+                .build();
+        return  responseCodeUtil.updateResponseData(productResponseDto, ResponseCodeEnum.SUCCESS);
     }
 }
