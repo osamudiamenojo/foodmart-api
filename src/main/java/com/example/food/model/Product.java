@@ -8,6 +8,8 @@ import java.util.Date;
 @Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
+@Builder
+@ToString
 public class Product {
 
     @Id
