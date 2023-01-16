@@ -1,6 +1,7 @@
 package com.example.food.controllers;
 
 import com.example.food.dto.ProductSearchDto;
+import com.example.food.pojos.CreateProductResponse;
 import com.example.food.pojos.PaginatedProductResponse;
 import com.example.food.dto.ProductDto;
 import com.example.food.restartifacts.BaseResponse;
@@ -23,8 +24,9 @@ public class ProductController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add-new-product")
-    public ResponseEntity<BaseResponse> addNewProduct (@Valid @RequestBody ProductDto productDto)  {
-        return new ResponseEntity<>(productService.addNewProduct(productDto), HttpStatus.CREATED);
+    public ResponseEntity<CreateProductResponse> addNewProduct (@Valid @RequestBody ProductDto productDto)  {
+        CreateProductResponse productResponse = productService.addNewProduct(productDto);
+        return new ResponseEntity<>(productResponse, HttpStatus.CREATED);
     }
 
     @GetMapping("/search")

@@ -1,7 +1,7 @@
 package com.example.food.controllers;
 
 import com.example.food.dto.CategoryDto;
-import com.example.food.restartifacts.BaseResponse;
+import com.example.food.pojos.CreateCategoryResponse;
 import com.example.food.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,8 @@ public class CategoryController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create-category")
-    public ResponseEntity<BaseResponse> createCategory(@Valid @RequestBody CategoryDto categoryDto) {
-        return new ResponseEntity<>(categoryService.createCategory(categoryDto), HttpStatus.CREATED);
+    public ResponseEntity<CreateCategoryResponse> createCategory(@Valid @RequestBody CategoryDto categoryDto) {
+        CreateCategoryResponse categoryResponse = (CreateCategoryResponse) categoryService.createCategory(categoryDto);
+        return new ResponseEntity<>(categoryResponse, HttpStatus.CREATED);
     }
 }
