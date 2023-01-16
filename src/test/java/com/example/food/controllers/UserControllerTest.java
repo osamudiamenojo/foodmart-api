@@ -53,7 +53,7 @@ class UserControllerTest {
 
        when(userService.editUserDetails(any(EditUserDto.class))).thenReturn(new BaseResponse(ResponseCodeEnum.SUCCESS));
 
-       mockMvc.perform(MockMvcRequestBuilders.put("/users/edit-user")
+       mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/auth/edit-user")
                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(requestBody))
                         .andDo(print())
                     .andExpect(status().isAccepted());
