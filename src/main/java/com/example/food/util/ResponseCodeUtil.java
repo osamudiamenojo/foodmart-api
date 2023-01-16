@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@RequestScope
+@Component
 @NoArgsConstructor
 public class ResponseCodeUtil {
 
