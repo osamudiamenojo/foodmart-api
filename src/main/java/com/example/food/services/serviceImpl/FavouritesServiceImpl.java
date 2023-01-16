@@ -43,13 +43,17 @@ public class FavouritesServiceImpl implements FavouritesService {
         BaseResponse response = new BaseResponse();
 
         if (!alreadyInFavourite) {
-            Favourites favourites = new Favourites();
-            favourites.setUsersId(user.getUsersId());
-            favourites.setProductId(favouriteProduct.getProductId());
-            favouritesRepository.save(favourites);
-            response.setCode(0);
-            response.setDescription("added to favourite");
-            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS);
+            try {
+                Favourites favourites = new Favourites();
+                favourites.setUsersId(user.getUsersId());
+                favourites.setProductId(favouriteProduct.getProductId());
+                favouritesRepository.save(favourites);
+                response.setCode(0);
+                response.setDescription("added to favourite");
+                return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS);
+            } catch (Exception e) {
+                log.error("Either User or Product not registered: {}", e.getMessage());
+            }
         }
         response.setCode(-1);
         response.setDescription(favouriteProduct.getProductName() + " is already your favourite");
