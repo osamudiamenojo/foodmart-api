@@ -31,68 +31,57 @@ class ProductServiceImplTest {
     private ProductRepository productRepository;
     @InjectMocks
     private ProductServiceImpl productServiceImpl;
-    @Mock
-    private ResponseCodeUtil responseCodeUtil;
-    @Mock
-    private ProductService productService;
+
     @Test
     void testSearchProduct() {
         // Setting up test data
         List<Product> expectedProducts = Arrays.asList(
-                new Product(1L,"apple1",290D, new Date(),new Date()),
-                new Product(2L,"apple2",290D, new Date(),new Date()),
-                new Product(3L,"apple3",290D, new Date(),new Date())
+                createNewProduct(1L,"apple1",290D),
+                createNewProduct(2L,"apple2",290D),
+                createNewProduct(3L,"apple3",290D)
         );
         Page<Product> expectedPage = new PageImpl<>(expectedProducts);
         //MOCKING THE BEHAVIOUR
         when(productRepository.findByProductNameContainingIgnoreCase( anyString(), any(Pageable.class)))
                 .thenReturn(expectedPage);
-        PaginatedProductResponse paginatedProductResponse = PaginatedProductResponse.builder()
-                .numberOfProducts(expectedPage.getTotalElements())
-                .numberOfPages(expectedPage.getTotalPages())
-                .productList(expectedPage.getContent())
-                .build();
-        when(responseCodeUtil.updateResponseData(eq(paginatedProductResponse), (ResponseCodeEnum) any()))
-                .thenReturn(paginatedProductResponse);
-        //VERIFICATION OF THR MOCK BEHAVIOUR
 
         ProductSearchDto productSearchDto = new ProductSearchDto();
         productSearchDto.setFilter("filter");
         productSearchDto.setPageSize(1);
         productSearchDto.setPageNumber(0);
         productSearchDto.setSortDirection("asc");
-        assertSame(paginatedProductResponse,
-                productServiceImpl.searchProduct(productSearchDto));
+
+        PaginatedProductResponse response = productServiceImpl.searchProduct(productSearchDto);
+        assertSame(response.getNumberOfProducts().intValue(), expectedProducts.size());
         verify(productRepository).findByProductNameContainingIgnoreCase((String) any(), (Pageable) any());
-        verify(responseCodeUtil).updateResponseData((PaginatedProductResponse) any(), (ResponseCodeEnum) any());
     }
 
+    private Product createNewProduct(final Long productId, final String productName, final Double productPrice) {
+        Product product = new Product();
+        product.setProductName(productName);
+        product.setProductId(productId);
+        product.setPrice(productPrice);
+        product.setCreatedAt(new Date());
+        product.setModifiedAt(new Date());
+        return product;
+    }
 
     @Test
     void testSearchProductWhenFilterIsBlank() {
         // Setting up test data
         List<Product> expectedProducts = Arrays.asList(
-                new Product(1L,"apple1",290D, new Date(),new Date()),
-                new Product(2L,"apple2",290D, new Date(),new Date()),
-                new Product(3L,"apple3",290D, new Date(),new Date())
+                createNewProduct(1L,"apple1",290D),
+                createNewProduct(2L,"apple2",290D),
+                createNewProduct(3L,"apple3",290D)
         );
         Page<Product> expectedPage = new PageImpl<>(expectedProducts);
         //MOCKING THE BEHAVIOUR
-        when(productRepository.findAll(any(Pageable.class)))
-                .thenReturn(expectedPage);
-        PaginatedProductResponse paginatedProductResponse = PaginatedProductResponse.builder()
-                .numberOfProducts(expectedPage.getTotalElements())
-                .numberOfPages(expectedPage.getTotalPages())
-                .productList(expectedPage.getContent())
-                .build();
-        when(responseCodeUtil.updateResponseData(eq(paginatedProductResponse), (ResponseCodeEnum) any()))
-                .thenReturn(paginatedProductResponse);
+        when(productRepository.findAll(any(Pageable.class))).thenReturn(expectedPage);
         //VERIFICATION OF THR MOCK BEHAVIOUR
-        ProductSearchDto productSearchDto = new ProductSearchDto();
-        assertSame(paginatedProductResponse,
-                productServiceImpl.searchProduct(productSearchDto));
+
+        PaginatedProductResponse response = productServiceImpl.searchProduct(new ProductSearchDto());
+        assertSame(response.getNumberOfProducts().intValue(), expectedProducts.size());
         verify(productRepository).findAll((Pageable) any());
-        verify(responseCodeUtil).updateResponseData((PaginatedProductResponse) any(), (ResponseCodeEnum) any());
     }
 
 
@@ -101,20 +90,11 @@ class ProductServiceImplTest {
         // Setting up test data
         Page<Product> expectedPage = new PageImpl<>(new ArrayList<>());
         //MOCKING THE BEHAVIOUR
-        when(productRepository.findAll(any(Pageable.class)))
-                .thenReturn(expectedPage);
-        PaginatedProductResponse paginatedProductResponse = PaginatedProductResponse.builder()
-                .numberOfProducts(expectedPage.getTotalElements())
-                .numberOfPages(expectedPage.getTotalPages())
-                .productList(expectedPage.getContent())
-                .build();
-        when(responseCodeUtil.updateResponseData(eq(paginatedProductResponse), (ResponseCodeEnum) any()))
-                .thenReturn(paginatedProductResponse);
+        when(productRepository.findAll(any(Pageable.class))).thenReturn(expectedPage);
+
         //VERIFICATION OF THR MOCK BEHAVIOUR
-        ProductSearchDto productSearchDto = new ProductSearchDto();
-        assertSame(paginatedProductResponse,
-                productServiceImpl.searchProduct(productSearchDto));
+        PaginatedProductResponse response = productServiceImpl.searchProduct(new ProductSearchDto());
+        assertTrue(response.getProductList().isEmpty());
         verify(productRepository).findAll((Pageable) any());
-        verify(responseCodeUtil).updateResponseData((PaginatedProductResponse) any(), (ResponseCodeEnum) any());
     }
 }

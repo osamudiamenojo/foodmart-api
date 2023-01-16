@@ -40,8 +40,8 @@ public class UserServiceImpl implements UserService {
     private final EmailService emailService;
     private final AppUtil appUtil;
     private final UserUtil userUtil;
-    private final ResponseCodeUtil responseCodeUtil;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
 
     @Override
     public ResponseEntity<String> login(LoginRequestDto request) {
@@ -142,15 +142,15 @@ public class UserServiceImpl implements UserService {
     public BaseResponse signUp(CreateUserRequest createUserRequest){
         BaseResponse response = new BaseResponse();
         if (!appUtil.validEmail(createUserRequest.getEmail()))
-            return new BaseResponse(ResponseCodeEnum.ERROR_EMAIL_INVALID);
+            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.ERROR_EMAIL_INVALID);
 
         if (!createUserRequest.getPassword().equals(createUserRequest.getConfirmPassword()))
-            return new BaseResponse(ResponseCodeEnum.ERROR_PASSWORD_MISMATCH);
+            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.ERROR_PASSWORD_MISMATCH);
 
         Boolean isUserExist = userRepository.existsByEmail(createUserRequest.getEmail());
 
         if (isUserExist)
-            return new BaseResponse(ResponseCodeEnum.ERROR_DUPLICATE_USER);
+            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.ERROR_DUPLICATE_USER);
 
         Users newUser = new Users();
         newUser.setFirstName(createUserRequest.getFirstName());
@@ -172,7 +172,7 @@ public class UserServiceImpl implements UserService {
         emailSenderDto.setContent(link);
         emailService.sendMail(emailSenderDto);
 
-        return new ResponseCodeUtil().updateResponseData(response, ResponseCodeEnum.SUCCESS,
+        return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS,
                 "You have successful registered. Check your email for verification link to validate your account");
     }
 }

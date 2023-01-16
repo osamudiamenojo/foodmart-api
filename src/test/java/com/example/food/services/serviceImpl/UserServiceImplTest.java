@@ -60,6 +60,7 @@ class UserServiceImplTest {
 
     @InjectMocks
     private UserServiceImpl userServiceImpl;
+    private ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
     private CreateUserRequest createUserRequest;
     private Users users;
     LoginRequestDto loginRequestDto;
@@ -85,6 +86,8 @@ class UserServiceImplTest {
         users.setLastName(createUserRequest.getLastName());
         users.setEmail(createUserRequest.getEmail());
         users.setPassword(passwordEncoder.encode(createUserRequest.getPassword()));
+
+//        responseCodeUtil = new ResponseCodeUtil();
     }
 
     @Test
@@ -105,7 +108,7 @@ class UserServiceImplTest {
     public void shouldReturnInvalidEmailAddressWhenUserTriesToRegisterWithInvalidEmail(){
         when(appUtil.validEmail(createUserRequest.getEmail())).thenReturn(false);
         BaseResponse baseResponse = userServiceImpl.signUp(createUserRequest);
-        Assertions.assertThat(new ResponseCodeUtil().updateResponseData(baseResponse, ResponseCodeEnum.ERROR_EMAIL_INVALID)
+        Assertions.assertThat(responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.ERROR_EMAIL_INVALID)
                 .getDescription()).isEqualTo("Invalid email address.");
     }
 
@@ -113,7 +116,7 @@ class UserServiceImplTest {
     public void shouldReturnUserAlreadyExistWhenUserTriesToSignUpWithAlreadyRegisteredEmail(){
         when(userRepository.existsByEmail(createUserRequest.getEmail())).thenReturn(true);
         BaseResponse baseResponse = userServiceImpl.signUp(createUserRequest);
-        Assertions.assertThat(new ResponseCodeUtil().updateResponseData(baseResponse, ResponseCodeEnum.ERROR_DUPLICATE_USER)
+        Assertions.assertThat(responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.ERROR_DUPLICATE_USER)
                 .getDescription()).isEqualTo("User already exist.");
     }
     @Test
@@ -125,7 +128,7 @@ class UserServiceImplTest {
         emailService.sendMail(emailSenderDto);
         verify(emailService, times(1)).sendMail(emailSenderDto);
         BaseResponse baseResponse = userServiceImpl.signUp(createUserRequest);
-        Assertions.assertThat(new ResponseCodeUtil().updateResponseData(baseResponse, ResponseCodeEnum.SUCCESS, "You have successful registered. Check your email for verification link to validate your account")
-                .getDescription()).isEqualTo("You have successful registered. Check your email for verification link to validate your account");
+        Assertions.assertThat(baseResponse.getDescription())
+                .isEqualTo("You have successful registered. Check your email for verification link to validate your account");
     }
 }
