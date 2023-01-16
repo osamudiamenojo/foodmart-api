@@ -2,11 +2,13 @@ package com.example.food.services.serviceImpl;
 
 import com.example.food.Enum.ResponseCodeEnum;
 import com.example.food.model.Category;
-import com.example.food.pojos.models.CategoryDto;
+import com.example.food.dto.CategoryDto;
+import com.example.food.pojos.CreateCategoryResponse;
 import com.example.food.repositories.CategoryRepository;
 import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.CategoryService;
 import com.example.food.util.ResponseCodeUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,19 +22,20 @@ public class CategoryServiceImplementation implements CategoryService {
     @Autowired
     private ResponseCodeUtil responseCodeUtil;
     @Override
-    public BaseResponse createCategory(CategoryDto categoryDto) {
+    public CreateCategoryResponse createCategory(CategoryDto categoryDto) {
         Optional<Category> newCategory = Optional.ofNullable(categoryRepository.findByCategoryName(categoryDto.getCategoryName()));
 
-        BaseResponse baseResponse = new BaseResponse();
+        CreateCategoryResponse categoryResponse = CreateCategoryResponse.builder()
+                .categoryName(categoryDto.getCategoryName())
+                .build();
 
-       if (newCategory.isEmpty()) {
-            return responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.ERROR, "Category Does Not Exist");
+        if (newCategory.isPresent()) {
+            return responseCodeUtil.updateResponseData(categoryResponse, ResponseCodeEnum.ERROR, "Category Already Exists!");
        }
-
             Category category = new Category();
             BeanUtils.copyProperties(categoryDto, category);
             categoryRepository.save(category);
-            return responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.SUCCESS, "Category Created");
+            return responseCodeUtil.updateResponseData(categoryResponse, ResponseCodeEnum.SUCCESS, "New Category Added");
 
         }
 

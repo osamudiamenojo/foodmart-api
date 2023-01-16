@@ -1,6 +1,6 @@
 package com.example.food.controllers;
 
-import com.example.food.pojos.models.CategoryDto;
+import com.example.food.dto.CategoryDto;
 import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;

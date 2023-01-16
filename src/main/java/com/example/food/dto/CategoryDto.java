@@ -1,4 +1,4 @@
-package com.example.food.pojos.models;
+package com.example.food.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

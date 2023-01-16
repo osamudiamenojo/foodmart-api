@@ -1,23 +1,27 @@
 package com.example.food.services.serviceImpl;
 
 import com.example.food.Enum.ResponseCodeEnum;
+import com.example.food.dto.ProductDto;
 import com.example.food.dto.ProductSearchDto;
 import com.example.food.model.Product;
 import com.example.food.pojos.PaginatedProductResponse;
 import com.example.food.repositories.ProductRepository;
+import com.example.food.restartifacts.BaseResponse;
 import com.example.food.util.ResponseCodeUtil;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -31,9 +35,11 @@ class ProductServiceImplTest {
     private ProductServiceImpl productServiceImpl;
     @Mock
     private ResponseCodeUtil responseCodeUtil;
+
     @Test
     void testSearchProduct() {
-        // Setting up test data
+        //Setting up test data
+
         List<Product> expectedProducts = Arrays.asList(
                 new Product(1L,"apple1",290D, new Date(),new Date()),
                 new Product(2L,"apple2",290D, new Date(),new Date()),
@@ -113,4 +119,32 @@ class ProductServiceImplTest {
         verify(productRepository).findAll((Pageable) any());
         verify(responseCodeUtil).updateResponseData((PaginatedProductResponse) any(), (ResponseCodeEnum) any());
     }
+
+
+//    @InjectMocks
+//    ProductServiceImpl productService;
+//
+//    Product product;
+//    ProductDto productDto;
+//
+//
+//    @BeforeEach
+//    void setUp() {
+//        MockitoAnnotations.openMocks(this);
+//        product = new Product();
+//        productDto = new ProductDto();
+//    }
+//
+//    @Test
+//    void addNewProduct() {
+//        when(productRepository.findByProductName(anyString()))
+//                .thenReturn();
+//        when(productRepository.save(product))
+//                .thenReturn(product);
+//
+//        String status = String.valueOf(productService.addNewProduct(productDto));
+//        assertEquals("New Product Saved!", status);
+//
+//    }
 }
+//Optional.of(product)
