@@ -38,14 +38,15 @@ public class Users {
     @OneToOne
     private Wallet wallet;
 
-    @OneToOne
-    private Cart cart;
-
+    @OneToMany
+    private List <Product> productList;
     @OneToMany
     private List <Product> favouriteList;
 
     @OneToMany
     private List <Message> messages;
+    @OneToOne
+    private Cart cart;
 
 
 }
