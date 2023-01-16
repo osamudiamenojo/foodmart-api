@@ -16,8 +16,6 @@ import java.util.List;
 @Setter
 @Entity
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class Users {
 
     @Id
