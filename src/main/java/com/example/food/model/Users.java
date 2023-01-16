@@ -40,6 +40,7 @@ public class Users {
 
     @OneToMany
     private List <Product> productList;
+
     @OneToMany
     private List <Product> favouriteList;
 
