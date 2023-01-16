@@ -12,6 +12,10 @@ public enum ResponseCodeEnum {
     SUCCESS(0, "Success"),
     ERROR(-1, "An error occurred. Error message : ${errorMessage}"),
 
+    UNAUTHORISED_ACCESS(-2,"unauthorised access"),
+
+
+
 //    you can add your custom error codes as shown below just ensure that error codes have a minus sign
 //    ERROR_SETTING_THRESHOLD(-2, "An error occurred"),
     ;

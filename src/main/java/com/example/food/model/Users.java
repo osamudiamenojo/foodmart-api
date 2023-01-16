@@ -1,8 +1,12 @@
 package com.example.food.model;
 
 import com.example.food.Enum.Role;
+import jdk.jfr.Timestamp;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -12,6 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@ToString
 public class Users {
 
     @Id
@@ -23,7 +28,9 @@ public class Users {
     private String lastName;
     private String email;
     private String password;
+    @CreationTimestamp
     private Date createdAt;
+    @UpdateTimestamp
     private Date modifiedAt;
 
     @Enumerated(EnumType.STRING)
