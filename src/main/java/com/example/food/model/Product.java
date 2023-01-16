@@ -1,8 +1,6 @@
 package com.example.food.model;
 
-import lombok.Builder;
-import lombok.RequiredArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
 import javax.persistence.*;
 import java.util.Date;
 
@@ -10,6 +8,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class Product {
 
     @Id
