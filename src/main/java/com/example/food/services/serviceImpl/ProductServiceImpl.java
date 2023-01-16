@@ -25,7 +25,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
-    private final ResponseCodeUtil responseCodeUtil;
+    private final ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
     public PaginatedProductResponse searchProduct(ProductSearchDto productSearchDto){
 
         Sort sort = productSearchDto.getSortDirection()
