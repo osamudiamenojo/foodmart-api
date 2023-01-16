@@ -5,20 +5,21 @@ import com.example.food.dto.ProductDto;
 import com.example.food.dto.ProductSearchDto;
 import com.example.food.model.Product;
 import com.example.food.pojos.PaginatedProductResponse;
+import com.example.food.pojos.ProductResponse;
 import com.example.food.repositories.ProductRepository;
-import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.ProductService;
 import com.example.food.util.ResponseCodeUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -51,21 +52,23 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto fetchSingleProduct(Long productId) {
+    public ProductResponse fetchAllProducts() {
 
-        Optional<Product> fetchedProduct = productRepository.findByProductId(productId);
+        ProductResponse response = new ProductResponse();
 
-        BaseResponse baseResponse = new BaseResponse();
+        List<Product> products = productRepository.findAll();
 
-        if(fetchedProduct.isEmpty()){
-            responseCodeUtil.updateResponseData(baseResponse,
-                    ResponseCodeEnum.ERROR, "Product ID not found");
+        if (products.isEmpty()) {
+            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.PRODUCT_NOT_FOUND);
         }
+        List<ProductDto> productDto = products.stream()
+                .map(product -> new ProductDto(product.getImageUrl(), product.getProductName(),
+                        product.getPrice(), product.getProductDescription(),
+                        product.getQuantity(), product.getCreatedAt(), product.getModifiedAt()))
+                .collect(Collectors.toList());
 
-        ProductDto productDto = new ProductDto();
-        BeanUtils.copyProperties(fetchedProduct, productDto);
+        response.setProductDto(productDto);
 
-        return  responseCodeUtil.updateResponseData(productDto, ResponseCodeEnum.SUCCESS);
+        return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS);
     }
-
 }
