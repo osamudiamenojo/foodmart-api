@@ -52,7 +52,7 @@ public class CartServiceImpl implements CartService {
             }
             return responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.SUCCESS);
         } catch (Exception e) {
-            log.info("Email not registered, Product cannot be removed");
+            log.error("Email not registered, Product cannot be removed: {}", e.getMessage());
         }
         return responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.ERROR);
     }
