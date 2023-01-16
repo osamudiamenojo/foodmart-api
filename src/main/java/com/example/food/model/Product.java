@@ -13,6 +13,9 @@ import java.util.Date;
 @Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
+@Setter
+@Getter
+@ToString
 public class Product {
 
     @Id
