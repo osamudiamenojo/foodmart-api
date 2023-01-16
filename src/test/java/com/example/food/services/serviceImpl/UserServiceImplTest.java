@@ -125,7 +125,7 @@ class UserServiceImplTest {
         emailService.sendMail(emailSenderDto);
         verify(emailService, times(1)).sendMail(emailSenderDto);
         BaseResponse baseResponse = userServiceImpl.signUp(createUserRequest);
-        Assertions.assertThat(new ResponseCodeUtil().updateResponseData(baseResponse, ResponseCodeEnum.SUCCESSFUL_REGISTRATION)
+        Assertions.assertThat(new ResponseCodeUtil().updateResponseData(baseResponse, ResponseCodeEnum.SUCCESS, "You have successful registered. Check your email for verification link to validate your account")
                 .getDescription()).isEqualTo("You have successful registered. Check your email for verification link to validate your account");
     }
 }
