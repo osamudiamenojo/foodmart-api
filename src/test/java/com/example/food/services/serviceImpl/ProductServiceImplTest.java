@@ -71,7 +71,7 @@ class ProductServiceImplTest {
         Product product = new Product();
         product.setProductName(productName);
         product.setProductId(productId);
-        product.setPrice(productPrice);
+        product.setProductPrice(productPrice);
         product.setCreatedAt(new Date());
         product.setModifiedAt(new Date());
         return product;
