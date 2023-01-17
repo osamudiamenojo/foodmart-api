@@ -1,7 +1,6 @@
 package com.example.food.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -9,6 +8,9 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Wallet {
 
     @Id
