@@ -13,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -21,7 +22,7 @@ import static org.mockito.Mockito.*;
 class UserServiceImplTest {
 
     @Mock
-    private  AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
 
     @Mock
     private JwtUtil jwtUtil;
@@ -43,7 +44,7 @@ class UserServiceImplTest {
 
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
         MockitoAnnotations.openMocks(this);
         loginRequestDto = new LoginRequestDto();
         loginRequestDto.setEmail("opeyemialbert20@gmail.com");
@@ -64,4 +65,7 @@ class UserServiceImplTest {
 
         verify(customUserDetailsService, times(1)).loadUserByUsername(anyString());
     }
+
 }
+
+

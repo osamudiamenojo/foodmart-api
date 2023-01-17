@@ -74,4 +74,17 @@ public class ProductServiceImpl implements ProductService {
 
         return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS, "Product updated successfully");
     }
+
+//    @Override
+//    public BaseResponse view_Detail_Of_A_Particular_Order(Long orderId) {
+//        BaseResponse response = new BaseResponse();
+//        String email = userUtil.getAuthenticatedUserEmail();
+//        Users users = userRepository.findByEmail(email).orElse(null);
+//        if (users.equals(null)) {
+//            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.ERROR, "Not a valid request");
+//        }
+//        return response;
+//    }
+
+//    }
 }
