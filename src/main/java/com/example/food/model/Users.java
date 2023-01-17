@@ -41,12 +41,12 @@ public class Users {
     private List <Product> productList;
 
     @OneToMany
-    private List <Product> favouriteList;
+    private List <Product> favouriteProducts;
 
     @OneToMany
     private List <Message> messages;
+
     @OneToOne
     private Cart cart;
-
 
 }

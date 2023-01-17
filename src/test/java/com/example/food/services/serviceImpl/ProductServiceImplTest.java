@@ -8,12 +8,15 @@ import com.example.food.pojos.PaginatedProductResponse;
 import com.example.food.pojos.ProductResponse;
 import com.example.food.pojos.ProductResponseDto;
 import com.example.food.repositories.ProductRepository;
+import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.ProductService;
 import com.example.food.util.ResponseCodeUtil;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -32,12 +35,17 @@ class ProductServiceImplTest {
     private ProductRepository productRepository;
     @InjectMocks
     private ProductServiceImpl productServiceImpl;
+
+    @Mock
+    private ResponseCodeUtil responseCodeUtil;
+
     private Product product;
     private ProductDto productDto;
 
     @Test
     void testSearchProduct() {
-        // Setting up test data
+        //Setting up test data
+
         List<Product> expectedProducts = Arrays.asList(
                 createNewProduct(1L,"apple1",290D),
                 createNewProduct(2L,"apple2",290D),
@@ -63,7 +71,7 @@ class ProductServiceImplTest {
         Product product = new Product();
         product.setProductName(productName);
         product.setProductId(productId);
-        product.setPrice(productPrice);
+        product.setProductPrice(productPrice);
         product.setCreatedAt(new Date());
         product.setModifiedAt(new Date());
         return product;
