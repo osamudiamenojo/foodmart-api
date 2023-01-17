@@ -1,5 +1,5 @@
 HELP.md
-target/
+/target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -35,3 +35,5 @@ mvnw*
 
 ##custom
 /src/main/resources/application-dev.properties
+
+src/main/java/com/example/food/util/DbPopulator.java

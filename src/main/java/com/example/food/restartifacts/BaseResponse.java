@@ -21,4 +21,9 @@ public class BaseResponse {
         this.code = code;
         this.description = description;
     }
+
+    public BaseResponse(ResponseCodeEnum responseCode, String description) {
+        this.code = responseCode.getCode();
+        this.description = description;
+    }
 }

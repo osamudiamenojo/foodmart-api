@@ -1,23 +1,33 @@
 package com.example.food.model;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.RequiredArgsConstructor;
 import javax.persistence.*;
 import java.util.Date;
-
 @Entity
-@Builder
-@RequiredArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@RequiredArgsConstructor
+@Builder
+@ToString
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
+
     private String productName;
-    private Double price;
+
+    private double productPrice;
+
+    private String imageUrl;
+
+    private Long quantity;
+
+    @CreationTimestamp
     private Date createdAt;
+
+    @UpdateTimestamp
     private Date modifiedAt;
+    @ManyToOne
+    @JoinColumn(name = "categoryId",insertable = false,updatable = false)
+    private Category category;
 
 }

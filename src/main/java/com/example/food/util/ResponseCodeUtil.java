@@ -3,6 +3,7 @@ package com.example.food.util;
 import com.example.food.Enum.ResponseCodeEnum;
 import com.example.food.pojos.ResponseParam;
 import com.example.food.restartifacts.BaseResponse;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 
 @RequestScope
 @Component
+@NoArgsConstructor
 public class ResponseCodeUtil {
 
     public <T extends BaseResponse> T updateResponseData(T baseResponse, ResponseCodeEnum responseCodeEnum) {
