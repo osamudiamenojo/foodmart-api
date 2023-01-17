@@ -3,10 +3,7 @@ package com.example.food.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Getter
@@ -20,4 +17,6 @@ public class Wallet {
     private Integer walletBalance;
     private Date createdAt;
     private Date modifiedAt;
+    @OneToOne
+    private Users users;
 }
