@@ -13,10 +13,10 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class LoginRequestDto {
 
-    @Email(message = "Email must not be null")
+//    @Email(message = "Email must not be null")
     private String email;
 
-    @NotNull(message = "Password must not be null")
+//    @NotNull(message = "Password must not be null")
     private String password;
 
 }

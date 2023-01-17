@@ -1,8 +1,12 @@
 package com.example.food.model;
 
 import com.example.food.Enum.Role;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -12,6 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Builder
 public class Users {
 
     @Id
@@ -40,4 +45,8 @@ public class Users {
 
     @OneToMany
     private List <Message> messages;
+
+    @OneToOne
+    private Cart cart;
+
 }

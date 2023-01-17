@@ -3,14 +3,17 @@ package com.example.food.model;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
 import javax.persistence.*;
 import java.util.Date;
-
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@RequiredArgsConstructor
+@Builder
+@ToString
 public class Product {
 
     @Id
@@ -34,6 +37,4 @@ public class Product {
     @JoinColumn(name = "categoryId",insertable = false,updatable = false)
     private Category category;
 
-    public Product(long l, String apple3, double v, Date date, Date date1) {
-    }
 }

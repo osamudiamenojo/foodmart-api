@@ -1,11 +1,13 @@
 package com.example.food.services.serviceImpl;
 
 import com.example.food.Enum.ResponseCodeEnum;
+import com.example.food.dto.ProductDto;
 import com.example.food.dto.ProductSearchDto;
 import com.example.food.model.Product;
 import com.example.food.pojos.CreateProductResponse;
 import com.example.food.pojos.PaginatedProductResponse;
-import com.example.food.dto.ProductDto;
+import com.example.food.pojos.ProductResponse;
+import com.example.food.pojos.ProductResponseDto;
 import com.example.food.repositories.ProductRepository;
 import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.ProductService;
@@ -18,15 +20,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
-    private final ResponseCodeUtil responseCodeUtil;
+    private final ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
     public PaginatedProductResponse searchProduct(ProductSearchDto productSearchDto){
 
         Sort sort = productSearchDto.getSortDirection()
@@ -66,7 +70,42 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(product);
         return responseCodeUtil.updateResponseData(createProductResponse, ResponseCodeEnum.SUCCESS, "New Product Has Been Added");
     }
+    
 
+    public ProductResponse fetchAllProducts() {
+
+        ProductResponse response = new ProductResponse();
+
+        List<Product> products = productRepository.findAll();
+
+        if (products.isEmpty()) {
+            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.PRODUCT_NOT_FOUND);
+        }
+        List<ProductDto> productDto = products.stream()
+                .map(product -> new ProductDto(product.getImageUrl(), product.getProductName(),
+                        product.getPrice(), product.getProductDescription(),
+                        product.getQuantity(), product.getCreatedAt(), product.getModifiedAt()))
+                .collect(Collectors.toList());
+
+        response.setProductDto(productDto);
+
+        return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS);
+    }
+
+    public ProductResponseDto fetchSingleProduct(Long productId) {
+        ProductResponseDto productResponseDto;
+        Optional<Product> fetchedProduct = productRepository.findByProductId(productId);
+
+        if(fetchedProduct == null){
+            productResponseDto = ProductResponseDto.builder().build();
+            return responseCodeUtil.updateResponseData(productResponseDto,
+                ResponseCodeEnum.PRODUCT_NOT_FOUND);
+        }
+        ProductDto productDto = new ProductDto();
+        BeanUtils.copyProperties(fetchedProduct, productDto);
+        productResponseDto = ProductResponseDto.builder()
+                .productDto(productDto)
+                .build();
+        return  responseCodeUtil.updateResponseData(productResponseDto, ResponseCodeEnum.SUCCESS);
+    }
 }
-
-

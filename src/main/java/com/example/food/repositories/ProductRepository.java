@@ -8,9 +8,15 @@ import org.springframework.stereotype.Repository;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
+import java.util.Optional;
+
 @Repository
 @Transactional
 public interface ProductRepository extends JpaRepository<Product,Long> {
     Page<Product> findByProductNameContainingIgnoreCase(String filter, Pageable pageable);
+
     Optional<Product> findByProductName(String productName);
+
+    Optional<Product> findByProductId(Long productId);
+
 }
