@@ -14,10 +14,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+
+import java.util.*;
+
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -50,7 +49,7 @@ class ProductServiceImplTest {
                 .build();
         when(responseCodeUtil.updateResponseData(eq(paginatedProductResponse), (ResponseCodeEnum) any()))
                 .thenReturn(paginatedProductResponse);
-        //VERIFICATION OF THR MOCK BEHAVIOUR
+        //VERIFICATION OF THE MOCK BEHAVIOUR
 
         ProductSearchDto productSearchDto = new ProductSearchDto();
         productSearchDto.setFilter("filter");
@@ -106,11 +105,23 @@ class ProductServiceImplTest {
                 .build();
         when(responseCodeUtil.updateResponseData(eq(paginatedProductResponse), (ResponseCodeEnum) any()))
                 .thenReturn(paginatedProductResponse);
-        //VERIFICATION OF THR MOCK BEHAVIOUR
+        //VERIFICATION OF THE MOCK BEHAVIOUR
         ProductSearchDto productSearchDto = new ProductSearchDto();
         assertSame(paginatedProductResponse,
                 productServiceImpl.searchProduct(productSearchDto));
         verify(productRepository).findAll((Pageable) any());
         verify(responseCodeUtil).updateResponseData((PaginatedProductResponse) any(), (ResponseCodeEnum) any());
+    }
+
+    @Test
+    void deleteProduct() {
+        Product product = Product.builder()
+                .productId(1L)
+                .price(26.37)
+                .productName("Sprouts - Onion")
+                .build();
+        when(productRepository.findById(1l)).thenReturn(Optional.ofNullable(product));
+        productServiceImpl.deleteProduct(1L);
+        verify(productRepository).delete(product);
     }
 }

@@ -5,4 +5,5 @@ import com.example.food.pojos.PaginatedProductResponse;
 
 public interface ProductService {
     PaginatedProductResponse searchProduct(ProductSearchDto productSearchDto);
+    void deleteProduct(Long productId);
 }

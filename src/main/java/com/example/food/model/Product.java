@@ -1,11 +1,13 @@
 package com.example.food.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class Product {
