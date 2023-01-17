@@ -1,13 +1,15 @@
 package com.example.food.model;
-
 import com.example.food.Enum.Role;
 import jdk.jfr.Timestamp;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Date;
@@ -17,6 +19,7 @@ import java.util.List;
 @Setter
 @Entity
 @ToString
+@Builder
 public class Users {
 
     @Id
@@ -43,9 +46,12 @@ public class Users {
     private List <Product> productList;
 
     @OneToMany
-    private List <Product> favouriteList;
+    private List <Product> favouriteProducts;
 
     @OneToMany
     private List <Message> messages;
+
+    @OneToOne
+    private Cart cart;
 
 }
