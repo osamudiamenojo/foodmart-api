@@ -28,6 +28,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import java.util.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -126,6 +129,11 @@ class ProductServiceImplTest {
         // Setting up test data
         Page<Product> expectedPage = new PageImpl<>(new ArrayList<>());
         //MOCKING THE BEHAVIOUR
+        when(productRepository.findAll(any(Pageable.class))).thenReturn(expectedPage);
+
+        //VERIFICATION OF THR MOCK BEHAVIOUR
+        PaginatedProductResponse response = productServiceImpl.searchProduct(new ProductSearchDto());
+        assertTrue(response.getProductList().isEmpty());
         verify(productRepository).findAll((Pageable) any());
     }
 
@@ -145,4 +153,48 @@ class ProductServiceImplTest {
     }
 
     @Test
+    public void updateProduct_withAdminRole_shouldReturnSuccessResponse() {
+        // given
+        Long productId = 1L;
+        UpdateProductDto productDto = new UpdateProductDto();
+
+        Users user = new Users();
+        user.setEmail("test@email.com");
+        user.setFirstName("Test_First_Name");
+        user.setLastName("Test_Last_Name");
+        user.setRole(Role.ROLE_ADMIN);
+        Product product = new Product();
+        UpdatedProductResponse expectedResponse = new UpdatedProductResponse();
+
+        when(userUtil.getAuthenticatedUserEmail()).thenReturn("test@email.com");
+        when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.of(user));
+        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+        when(responseCodeUtil.updateResponseData(any(UpdatedProductResponse.class), eq(ResponseCodeEnum.SUCCESS), eq("Product updated successfully"))).thenReturn(expectedResponse);
+
+        UpdatedProductResponse actualResponse = productServiceImpl.updateProduct(productId, productDto);
+
+        verify(productRepository, times(1)).save(product);
+        assertEquals(expectedResponse, actualResponse);
+    }
+
+        @Test
+    public void updateProduct_withNonAdminRole_shouldReturnUnauthorizedResponse() {
+
+        Long productId = 1L;
+        UpdateProductDto productDto = new UpdateProductDto();
+        Users user = new Users();
+        user.setRole(Role.ROLE_USER);
+        UpdatedProductResponse expectedResponse = new UpdatedProductResponse();
+
+        when(userUtil.getAuthenticatedUserEmail()).thenReturn("test@email.com");
+        when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.of(user));
+        when(responseCodeUtil.updateResponseData(any(UpdatedProductResponse.class), eq(ResponseCodeEnum.UNAUTHORISED_ACCESS),
+                eq("You are not authorised to perform this operation"))).thenReturn(expectedResponse);
+
+        UpdatedProductResponse actualResponse = productServiceImpl.updateProduct(productId, productDto);
+
+        verify(productRepository, times(0)).save(any());
+        assertEquals(expectedResponse, actualResponse);
+    }
+
 }
