@@ -144,11 +144,12 @@ class ProductServiceImplTest {
         ProductResponseDto response = productServiceImpl.fetchSingleProduct(1L);
         assertTrue(response.getDescription().startsWith("Success"));
     }
+
     @Test
     public void testFetchSingleProduct_Error() {
-        when(productRepository.findByProductId(anyLong())).thenReturn(null);
-        ProductResponseDto response = productServiceImpl.fetchSingleProduct(2l);
-        assertTrue(response.getDescription().startsWith("No products"));
+        when(productRepository.findByProductId(anyLong())).thenReturn(Optional.empty());
+        ProductResponseDto response = productServiceImpl.fetchSingleProduct(2L);
+        assertTrue(response.getDescription().startsWith("Product not found"));
     }
 
     @Test

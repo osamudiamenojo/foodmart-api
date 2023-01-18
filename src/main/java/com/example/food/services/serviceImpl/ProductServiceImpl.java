@@ -24,6 +24,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
@@ -42,7 +44,8 @@ public class ProductServiceImpl implements ProductService {
 
     public PaginatedProductResponse searchProduct(ProductSearchDto productSearchDto) {
     private final ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
-    public PaginatedProductResponse searchProduct(ProductSearchDto productSearchDto){
+
+    public PaginatedProductResponse searchProduct(ProductSearchDto productSearchDto) {
 
         Sort sort = productSearchDto.getSortDirection()
                 .equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(productSearchDto.getSortBy()).ascending() : Sort.by(productSearchDto.getSortBy()).descending();
@@ -128,20 +131,21 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public ProductResponseDto fetchSingleProduct(Long productId) {
-        ProductResponseDto productResponseDto;
+
+        ProductResponseDto responseDto = new ProductResponseDto();
         Optional<Product> fetchedProduct = productRepository.findByProductId(productId);
 
-        if(fetchedProduct == null){
-            productResponseDto = ProductResponseDto.builder().build();
-            return responseCodeUtil.updateResponseData(productResponseDto,
-                ResponseCodeEnum.PRODUCT_NOT_FOUND);
+        if (fetchedProduct.isEmpty()) {
+            return responseCodeUtil.updateResponseData(responseDto,
+                    ResponseCodeEnum.PRODUCT_NOT_FOUND, "Product not found for ID:" + productId);
         }
+        Product product = fetchedProduct.get();
+        log.info("response object {}",product);
         ProductDto productDto = new ProductDto();
-        BeanUtils.copyProperties(fetchedProduct, productDto);
-        productResponseDto = ProductResponseDto.builder()
-                .productDto(productDto)
-                .build();
-        return  responseCodeUtil.updateResponseData(productResponseDto, ResponseCodeEnum.SUCCESS);
+        BeanUtils.copyProperties(product, productDto);
+        responseDto.setProductDto(productDto);
+
+        return responseCodeUtil.updateResponseData(responseDto, ResponseCodeEnum.SUCCESS);
     }
 
 }
