@@ -19,6 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
@@ -31,18 +33,19 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
-    public PaginatedProductResponse searchProduct(ProductSearchDto productSearchDto){
+
+    public PaginatedProductResponse searchProduct(ProductSearchDto productSearchDto) {
 
         Sort sort = productSearchDto.getSortDirection()
                 .equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(productSearchDto.getSortBy()).ascending() : Sort.by(productSearchDto.getSortBy()).descending();
-        Pageable pageRequest = PageRequest.of(productSearchDto.getPageNumber(),productSearchDto.getPageSize(),sort);
+        Pageable pageRequest = PageRequest.of(productSearchDto.getPageNumber(), productSearchDto.getPageSize(), sort);
 
-        log.info("Sort: " + sort + " pageRequest: "+ pageRequest);
+        log.info("Sort: " + sort + " pageRequest: " + pageRequest);
 
         Page<Product> products;
         if (productSearchDto.getFilter().isBlank()) {
             products = productRepository.findAll(pageRequest);
-            log.info("Filter is null or Empty. All Products: {}",products);
+            log.info("Filter is null or Empty. All Products: {}", products);
         } else {
             products = productRepository.findByProductNameContainingIgnoreCase(productSearchDto.getFilter(), pageRequest);
         }
@@ -51,7 +54,7 @@ public class ProductServiceImpl implements ProductService {
                 .numberOfPages(products.getTotalPages())
                 .productList(products.getContent())
                 .build();
-        log.info("Paginated Response generated. PaginatedResponse:{}",paginatedResponse);
+        log.info("Paginated Response generated. PaginatedResponse:{}", paginatedResponse);
         return responseCodeUtil.updateResponseData(paginatedResponse, ResponseCodeEnum.SUCCESS);
     }
 
@@ -97,19 +100,20 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public ProductResponseDto fetchSingleProduct(Long productId) {
-        ProductResponseDto productResponseDto;
+
+        ProductResponseDto responseDto = new ProductResponseDto();
         Optional<Product> fetchedProduct = productRepository.findByProductId(productId);
 
-        if(fetchedProduct == null){
-            productResponseDto = ProductResponseDto.builder().build();
-            return responseCodeUtil.updateResponseData(productResponseDto,
-                ResponseCodeEnum.PRODUCT_NOT_FOUND);
+        if (fetchedProduct.isEmpty()) {
+            return responseCodeUtil.updateResponseData(responseDto,
+                    ResponseCodeEnum.PRODUCT_NOT_FOUND, "Product not found for ID:" + productId);
         }
+        Product product = fetchedProduct.get();
+        log.info("response object {}",product);
         ProductDto productDto = new ProductDto();
-        BeanUtils.copyProperties(fetchedProduct, productDto);
-        productResponseDto = ProductResponseDto.builder()
-                .productDto(productDto)
-                .build();
-        return  responseCodeUtil.updateResponseData(productResponseDto, ResponseCodeEnum.SUCCESS);
+        BeanUtils.copyProperties(product, productDto);
+        responseDto.setProductDto(productDto);
+
+        return responseCodeUtil.updateResponseData(responseDto, ResponseCodeEnum.SUCCESS);
     }
 }
