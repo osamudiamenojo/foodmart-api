@@ -9,9 +9,11 @@ import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.WalletService;
 import com.example.food.util.ResponseCodeUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class WalletServiceImpl implements WalletService {
@@ -26,11 +28,18 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     public BaseResponse getWalletBalance() {
-        Users walletOwner = getLoggedInUser();
-        Wallet wallet = walletRepository.findWalletByUsers_Email(walletOwner.getEmail());
         BaseResponse baseResponse = new BaseResponse();
-        baseResponse.setCode(0);
-        baseResponse.setDescription(wallet.getWalletBalance().toString());
-        return responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.SUCCESS);
+        try {
+            Users walletOwner = getLoggedInUser();
+            Wallet wallet = walletRepository.findWalletByUsers_Email(walletOwner.getEmail());
+            baseResponse.setCode(0);
+            baseResponse.setDescription(wallet.getWalletBalance().toString());
+            return responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.SUCCESS, baseResponse.getDescription());
+        } catch (Exception e) {
+        log.error("Email not registered, Wallet balance cannot be displayed: {}", e.getMessage());
+            baseResponse.setCode(-1);
+            baseResponse.setDescription("Not Available at the moment");
+            return responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.ERROR);
+        }
     }
 }
