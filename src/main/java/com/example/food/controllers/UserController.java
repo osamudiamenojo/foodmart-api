@@ -1,5 +1,6 @@
 package com.example.food.controllers;
 
+import com.example.food.dto.ConfirmRegistrationRequestDto;
 import com.example.food.pojos.CreateUserRequest;
 import com.example.food.restartifacts.BaseResponse;
 import lombok.AllArgsConstructor;
@@ -43,5 +44,10 @@ public class UserController {
     @PostMapping("/register")
     public BaseResponse createUser(@RequestBody CreateUserRequest createUserRequest){
         return userService.signUp(createUserRequest);
+    }
+    @PutMapping("/confirmRegistration")
+    public BaseResponse confirmRegistration(@RequestBody ConfirmRegistrationRequestDto confirmRegistrationRequestDto) {
+        return userService.confirmRegistration(confirmRegistrationRequestDto);
+
     }
 }

@@ -38,11 +38,10 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
-    
+
 
     private final UserUtil userUtil;
 
-    public PaginatedProductResponse searchProduct(ProductSearchDto productSearchDto) {
     private final ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
 
     public PaginatedProductResponse searchProduct(ProductSearchDto productSearchDto) {
@@ -104,7 +103,7 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(product);
         return responseCodeUtil.updateResponseData(createProductResponse, ResponseCodeEnum.SUCCESS, "New Product Has Been Added");
     }
-    
+
 
     public ProductResponse fetchAllProducts() {
 

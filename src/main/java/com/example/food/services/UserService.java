@@ -1,5 +1,6 @@
 package com.example.food.services;
 
+import com.example.food.dto.ConfirmRegistrationRequestDto;
 import com.example.food.pojos.CreateUserRequest;
 import com.example.food.dto.EditUserDto;
 import com.example.food.dto.PasswordResetDto;
@@ -19,4 +20,5 @@ public interface UserService {
     BaseResponse requestPassword(PasswordResetRequestDto passwordResetRequest);
 
     BaseResponse resetPassword(PasswordResetDto passwordReset);
+    BaseResponse confirmRegistration(ConfirmRegistrationRequestDto confirmRegistrationRequestDto);
 }

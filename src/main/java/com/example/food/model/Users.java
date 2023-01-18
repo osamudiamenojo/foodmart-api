@@ -44,6 +44,8 @@ public class Users {
 
     @OneToOne
     private Wallet wallet;
+    private String confirmationToken;
+    private Boolean isActive;
 
     @OneToMany
     private List <Product> productList;
