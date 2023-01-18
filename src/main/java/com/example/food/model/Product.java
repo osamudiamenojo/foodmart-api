@@ -4,7 +4,6 @@ import java.util.Date;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@RequiredArgsConstructor
 @Builder
 @ToString
 public class Product {
@@ -14,6 +13,7 @@ public class Product {
     private Long productId;
 
     private String productName;
+
 
     private double productPrice;
 

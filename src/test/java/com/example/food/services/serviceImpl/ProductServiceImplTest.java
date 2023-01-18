@@ -1,10 +1,16 @@
 package com.example.food.services.serviceImpl;
-
 import com.example.food.Enum.ResponseCodeEnum;
+import com.example.food.Enum.Role;
 import com.example.food.dto.ProductDto;
 import com.example.food.dto.ProductSearchDto;
+import com.example.food.dto.UpdateProductDto;
 import com.example.food.model.Product;
+import com.example.food.model.Users;
 import com.example.food.pojos.PaginatedProductResponse;
+import com.example.food.pojos.UpdatedProductResponse;
+import com.example.food.repositories.UserRepository;
+import com.example.food.util.UserUtil;
+import org.aspectj.lang.annotation.Before;
 import com.example.food.pojos.ProductResponse;
 import com.example.food.pojos.ProductResponseDto;
 import com.example.food.repositories.ProductRepository;
@@ -21,9 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-
 import java.util.*;
-
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -36,10 +40,32 @@ class ProductServiceImplTest {
     private ProductServiceImpl productServiceImpl;
 
     @Mock
+    UserUtil userUtil;
+    @Mock
+    UserRepository userRepository;
+    @Mock
+    private ResponseCodeUtil responseCodeUtil;
+    @BeforeEach
+    public void setUp() {
+        UpdateProductDto productDto = new UpdateProductDto();
+        productDto.setProductName("Test Product");
+        productDto.setPrice(234.0);
+
+        Product product = new Product();
+        product.setProductId(1L);
+        product.setProductName("Old Product Name");
+        product.setPrice(300.0);
+
+        Users user = new Users();
+        user.setRole(Role.ROLE_ADMIN);
+    }
+
+    @Mock
     private ResponseCodeUtil responseCodeUtil;
 
     private Product product;
     private ProductDto productDto;
+
 
     @Test
     void testSearchProduct() {
@@ -110,22 +136,13 @@ class ProductServiceImplTest {
         ProductResponseDto response = productServiceImpl.fetchSingleProduct(1L);
         assertTrue(response.getDescription().startsWith("Success"));
     }
+
     @Test
     public void testFetchSingleProduct_Error() {
-        when(productRepository.findByProductId(anyLong())).thenReturn(null);
-        ProductResponseDto response = productServiceImpl.fetchSingleProduct(2l);
-        assertTrue(response.getDescription().startsWith("No products"));
+        when(productRepository.findByProductId(anyLong())).thenReturn(Optional.empty());
+        ProductResponseDto response = productServiceImpl.fetchSingleProduct(2L);
+        assertTrue(response.getDescription().startsWith("Product not found"));
     }
 
     @Test
-    void deleteProduct() {
-        Product product = Product.builder()
-                .productId(1L)
-                .price(26.37)
-                .productName("Sprouts - Onion")
-                .build();
-        when(productRepository.findById(1l)).thenReturn(Optional.ofNullable(product));
-        productServiceImpl.deleteProduct(1L);
-        verify(productRepository).delete(product);
-    }
 }

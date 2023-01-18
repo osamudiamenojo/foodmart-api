@@ -24,7 +24,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -33,7 +32,7 @@ import static org.mockito.Mockito.*;
 class UserServiceImplTest {
 
     @Mock
-    private  AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
 
     @Mock
     private JwtUtil jwtUtil;
@@ -68,7 +67,7 @@ class UserServiceImplTest {
 
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
         MockitoAnnotations.openMocks(this);
         loginRequestDto = new LoginRequestDto();
         loginRequestDto.setEmail("opeyemialbert20@gmail.com");
@@ -104,6 +103,7 @@ class UserServiceImplTest {
 
         verify(customUserDetailsService, times(1)).loadUserByUsername(anyString());
     }
+    
     @Test
     public void shouldReturnInvalidEmailAddressWhenUserTriesToRegisterWithInvalidEmail(){
         when(appUtil.validEmail(createUserRequest.getEmail())).thenReturn(false);
@@ -132,3 +132,4 @@ class UserServiceImplTest {
                 .isEqualTo("You have successful registered. Check your email for verification link to validate your account");
     }
 }
+
