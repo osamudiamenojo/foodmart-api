@@ -3,6 +3,7 @@ package com.example.food.services.serviceImpl;
 import com.example.food.Enum.ResponseCodeEnum;
 import com.example.food.model.Users;
 import com.example.food.model.Wallet;
+import com.example.food.pojos.WalletResponse;
 import com.example.food.repositories.UserRepository;
 import com.example.food.repositories.WalletRepository;
 import com.example.food.restartifacts.BaseResponse;
@@ -21,25 +22,27 @@ public class WalletServiceImpl implements WalletService {
     private final WalletRepository walletRepository;
     private final ResponseCodeUtil responseCodeUtil;
 
-    private Users getLoggedInUser() {
+    public Users getLoggedInUser() {
         String authentication = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByEmail(authentication).orElseThrow(() -> new RuntimeException("User not authorized"));
     }
 
     @Override
-    public BaseResponse getWalletBalance() {
-        BaseResponse baseResponse = new BaseResponse();
+    public WalletResponse getWalletBalance() {
+        WalletResponse walletResponse;
         try {
             Users walletOwner = getLoggedInUser();
             Wallet wallet = walletRepository.findWalletByUsers_Email(walletOwner.getEmail());
-            baseResponse.setCode(0);
-            baseResponse.setDescription(wallet.getWalletBalance().toString());
-            return responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.SUCCESS, baseResponse.getDescription());
+            walletResponse = WalletResponse.builder()
+                    .balance(wallet.getWalletBalance())
+                    .build();
+            return responseCodeUtil.updateResponseData(walletResponse, ResponseCodeEnum.SUCCESS);
         } catch (Exception e) {
-        log.error("Email not registered, Wallet balance cannot be displayed: {}", e.getMessage());
-            baseResponse.setCode(-1);
-            baseResponse.setDescription("Not Available at the moment");
-            return responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.ERROR);
+            log.error("Email not registered, Wallet balance cannot be displayed: {}", e.getMessage());
+            walletResponse = WalletResponse.builder()
+                    .balance(null)
+                    .build();
+            return responseCodeUtil.updateResponseData(walletResponse, ResponseCodeEnum.ERROR);
         }
     }
 }
