@@ -19,6 +19,9 @@ import java.util.List;
 @Setter
 @Entity
 @ToString
+
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class Users {
 
