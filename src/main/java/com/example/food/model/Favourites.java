@@ -17,6 +17,7 @@ import java.util.List;
 @Table(name = "Favourites")
 public class Favourites {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long usersId;
     private Long productId;

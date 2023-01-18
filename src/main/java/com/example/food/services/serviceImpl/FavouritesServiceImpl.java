@@ -31,7 +31,7 @@ public class FavouritesServiceImpl implements FavouritesService {
     public BaseResponse addToFavourites(Long productId) {
         UserDetails loggedInUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         log.info(loggedInUser.toString());
-
+        
         Users user = userRepository.findByEmail(loggedInUser.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("User does not exist. Please check and try again."));
 
