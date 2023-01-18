@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.Date;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
@@ -59,7 +58,7 @@ class ProductControllerTest {
     @WithMockUser("Kefas")
     @Test
     void fetchAllProducts() throws Exception {
-        ProductDto productDto = new ProductDto("", "", 20000.00, "", 20, new Date(), new Date());
+        ProductDto productDto = new ProductDto();
         when(productService.fetchAllProducts()).thenReturn(new ProductResponse(List.of(productDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/get-all")

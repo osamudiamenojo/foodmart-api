@@ -25,7 +25,7 @@ public class FavouritesServiceImpl implements FavouritesService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final FavouritesRepository favouritesRepository;
-    private final ResponseCodeUtil responseCodeUtil;
+    private final ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
 
     @Override
     public BaseResponse addToFavourites(Long productId) {
@@ -48,15 +48,11 @@ public class FavouritesServiceImpl implements FavouritesService {
                 favourites.setUsersId(user.getUsersId());
                 favourites.setProductId(favouriteProduct.getProductId());
                 favouritesRepository.save(favourites);
-                response.setCode(0);
-                response.setDescription("added to favourite");
-                return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS);
+                return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS, "added to favourite");
             } catch (Exception e) {
                 log.error("Either User or Product not registered: {}", e.getMessage());
             }
         }
-        response.setCode(-1);
-        response.setDescription(favouriteProduct.getProductName() + " is already your favourite");
-        return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.ERROR);
+        return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.ERROR, favouriteProduct.getProductName() + " is already your favourite");
     }
 }
