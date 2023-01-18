@@ -1,5 +1,6 @@
 package com.example.food.model;
-
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -20,6 +21,7 @@ public class Product {
     private Long productId;
 
     private String productName;
+
 
     private double productPrice;
 

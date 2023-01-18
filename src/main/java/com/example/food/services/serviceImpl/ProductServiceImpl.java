@@ -1,9 +1,13 @@
 package com.example.food.services.serviceImpl;
-
 import com.example.food.Enum.ResponseCodeEnum;
+import com.example.food.Enum.Role;
 import com.example.food.dto.ProductDto;
 import com.example.food.dto.ProductSearchDto;
+import com.example.food.dto.UpdateProductDto;
 import com.example.food.model.Product;
+import com.example.food.model.Users;
+import com.example.food.pojos.UpdatedProductResponse;
+import com.example.food.repositories.UserRepository;
 import com.example.food.pojos.CreateProductResponse;
 import com.example.food.pojos.PaginatedProductResponse;
 import com.example.food.pojos.ProductResponse;
@@ -12,6 +16,7 @@ import com.example.food.repositories.ProductRepository;
 import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.ProductService;
 import com.example.food.util.ResponseCodeUtil;
+import com.example.food.util.UserUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -31,7 +36,13 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
+    private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    
+
+    private final UserUtil userUtil;
+
+    public PaginatedProductResponse searchProduct(ProductSearchDto productSearchDto) {
     private final ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
 
     public PaginatedProductResponse searchProduct(ProductSearchDto productSearchDto) {
@@ -59,6 +70,26 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public UpdatedProductResponse updateProduct(Long productId, UpdateProductDto productDto) {
+        UpdatedProductResponse response = new UpdatedProductResponse();
+        String email = userUtil.getAuthenticatedUserEmail();
+        Users user = userRepository.findByEmail(email).get();
+        System.out.println(user);
+        if (!user.getRole().equals(Role.ROLE_ADMIN)) {
+            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.UNAUTHORISED_ACCESS, "You are not authorised to perform this operation");
+        }
+        Product product = productRepository.findById(productId).orElse(null);
+        if (product.equals(null)){
+            return responseCodeUtil.updateResponseData(response,ResponseCodeEnum.ERROR,"Product does not exist");
+        }
+
+        BeanUtils.copyProperties(productDto, product);
+        productRepository.save(product);
+
+        return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS, "Product updated successfully");
+    }
+
+
     public CreateProductResponse addNewProduct(ProductDto productDto) {
         Optional<Product> newProduct = productRepository.findByProductName(productDto.getProductName());
 
@@ -116,4 +147,5 @@ public class ProductServiceImpl implements ProductService {
 
         return responseCodeUtil.updateResponseData(responseDto, ResponseCodeEnum.SUCCESS);
     }
+
 }

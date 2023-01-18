@@ -1,5 +1,7 @@
 package com.example.food.controllers;
-
+import com.example.food.Enum.Role;
+import com.example.food.dto.UpdateProductDto;
+import com.example.food.pojos.UpdatedProductResponse;
 import com.example.food.dto.ProductDto;
 import com.example.food.dto.ProductSearchDto;
 import com.example.food.pojos.CreateProductResponse;
@@ -38,6 +40,13 @@ public class ProductController {
         PaginatedProductResponse response = productService.searchProduct(productSearchDto);
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
+
+    @PutMapping("/updateProduct/{productId}")
+//    @PreAuthorize("hasRole('Admin')")
+    ResponseEntity<UpdatedProductResponse> updateProduct(@PathVariable Long productId, @RequestBody UpdateProductDto productDto){
+        UpdatedProductResponse response = productService.updateProduct(productId,productDto);
+        return  new ResponseEntity<>(response,HttpStatus.CREATED);
+
 
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
