@@ -13,4 +13,13 @@ import com.example.food.restartifacts.BaseResponse;
 
 public interface ProductService {
     PaginatedProductResponse searchProduct(ProductSearchDto productSearchDto);
+    
+    UpdatedProductResponse updateProduct(Long productId, UpdateProductDto productDto);
+    
+    CreateProductResponse addNewProduct(ProductDto productDto);
+
+    ProductResponse fetchAllProducts();
+
+    ProductResponseDto fetchSingleProduct(Long productId);
+
 }
