@@ -9,6 +9,8 @@ import com.example.food.dto.EditUserDto;
 import com.example.food.dto.PasswordResetDto;
 import com.example.food.dto.PasswordResetRequestDto;
 import com.example.food.services.UserService;
+import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;

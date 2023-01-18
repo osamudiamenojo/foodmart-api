@@ -25,12 +25,9 @@ public class Cart {
 
     @OneToMany(mappedBy = "cart", orphanRemoval = true, cascade = CascadeType.REMOVE)
     private List<CartItem> cartItemList;
-
-
     @JsonIgnore
     @OneToOne(targetEntity = Users.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Users users;
-
     public Cart(Users users) {
         this.users = users;
     }

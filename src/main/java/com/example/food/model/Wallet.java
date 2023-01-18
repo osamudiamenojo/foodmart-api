@@ -20,9 +20,10 @@ public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long walletId;
-    private Double walletBalance;
+    private Integer walletBalance;
     @CreationTimestamp
     private Date createdAt;
+    @UpdateTimestamp
     private Date modifiedAt;
     @JsonIgnore
     @OneToOne

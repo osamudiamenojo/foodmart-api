@@ -1,6 +1,8 @@
 package com.example.food.util;
 
 import com.example.food.model.Users;
+import lombok.Data;
+import org.springframework.beans.BeanUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -8,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
+@Data
 public class UserUtil {
 
     public String getAuthenticatedUserEmail(){
@@ -16,11 +19,18 @@ public class UserUtil {
 
       return userDetails.getUsername();
     }
+
+    public Users getCurrentLoginUser(){
+        Users user =  new Users();
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        BeanUtils.copyProperties(userDetails,user);
+        return user ;
+    }
+    
     public Users currentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principle = authentication.getPrincipal();
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.convertValue(principle, Users.class);
     }
-
 }
