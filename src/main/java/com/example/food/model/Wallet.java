@@ -6,15 +6,15 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Date;
 
 @Getter
 @Setter
 @Entity
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class Wallet {
 
     @Id
@@ -25,7 +25,4 @@ public class Wallet {
     private Date createdAt;
     @UpdateTimestamp
     private Date modifiedAt;
-    @JsonIgnore
-    @OneToOne
-    private Users users;
 }
