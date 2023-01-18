@@ -11,7 +11,6 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@RequiredArgsConstructor
 @Builder
 @ToString
 public class Product {
