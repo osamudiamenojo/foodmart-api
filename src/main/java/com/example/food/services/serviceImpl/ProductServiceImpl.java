@@ -82,9 +82,13 @@ public class ProductServiceImpl implements ProductService {
             return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.PRODUCT_NOT_FOUND);
         }
         List<ProductDto> productDto = products.stream()
-                .map(product -> new ProductDto(product.getImageUrl(), product.getProductName(),
-                        product.getPrice(), product.getProductDescription(),
-                        product.getQuantity(), product.getCreatedAt(), product.getModifiedAt()))
+                .map(product -> new ProductDto(product.getCategory(),
+                        product.getProductName(),
+                        product.getProductPrice(),
+                        product.getImageUrl(),
+                        product.getQuantity()))
+                 //       product.getCreatedAt(),
+                 //       product.getModifiedAt()))
                 .collect(Collectors.toList());
 
         response.setProductDto(productDto);
