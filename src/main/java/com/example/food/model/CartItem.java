@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -12,20 +13,15 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Builder
 public class CartItem {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartItemId;
-
     @OneToOne
     private Product product;
-
     @Column(name = "quantity")
     private @NotNull int quantity;
-
-    @Column(name = "price")
-    private @NotNull double subTotal;
-
+    @Column(name = "subTotal")
+    private @NotNull BigDecimal subTotal;
     @ManyToOne
     @JoinColumn(name = "cart_Id", referencedColumnName = "cartId")
     private Cart cart;

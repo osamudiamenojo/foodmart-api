@@ -124,7 +124,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponseDto fetchSingleProduct(Long productId) {
 
         ProductResponseDto responseDto = new ProductResponseDto();
-        Optional<Product> fetchedProduct = productRepository.findByProductId(productId);
+        Optional<Product> fetchedProduct = productRepository.findById(productId);
 
         if (fetchedProduct.isEmpty()) {
             return responseCodeUtil.updateResponseData(responseDto,

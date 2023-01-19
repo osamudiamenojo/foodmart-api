@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -20,17 +21,11 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartId;
     private int quantity;
-
-    private double cartTotal;
-
+    private BigDecimal cartTotal;
     @OneToMany(mappedBy = "cart", orphanRemoval = true, cascade = CascadeType.REMOVE)
+    //Todo Look into
     private List<CartItem> cartItemList;
     @JsonIgnore
     @OneToOne(targetEntity = Users.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Users users;
-    public Cart(Users users) {
-        this.users = users;
-    }
-
-
 }
