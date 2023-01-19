@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
@@ -17,7 +18,7 @@ public class ProductDto {
     @NotBlank(message = "Name must not be null")
     private String productName;
     @NotNull (message = "Price must not be null")
-    private double productPrice;
+    private BigDecimal productPrice;
     @NotBlank (message = "Image must not be null")
     private String imageUrl;
     @NotNull (message = "Quantity must not be null")

@@ -6,7 +6,6 @@ import com.example.food.model.Wallet;
 import com.example.food.pojos.WalletResponse;
 import com.example.food.repositories.UserRepository;
 import com.example.food.repositories.WalletRepository;
-import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.WalletService;
 import com.example.food.util.ResponseCodeUtil;
 import lombok.RequiredArgsConstructor;

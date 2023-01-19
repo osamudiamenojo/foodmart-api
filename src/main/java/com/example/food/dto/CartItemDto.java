@@ -2,6 +2,8 @@ package com.example.food.dto;
 
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Setter
 @Getter
 @AllArgsConstructor
@@ -14,8 +16,8 @@ public class CartItemDto {
     private String productImage;
     private String productSize;
     private int quantity;
-    private double unitPrice;
-    private double subTotal;
+    private BigDecimal unitPrice;
+    private BigDecimal subTotal;
     private long cartId;
 
 }

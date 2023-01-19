@@ -39,11 +39,10 @@ public class ProductServiceImpl implements ProductService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     
+    private final ResponseCodeUtil responseCodeUtil;
 
     private final UserUtil userUtil;
 
-    public PaginatedProductResponse searchProduct(ProductSearchDto productSearchDto) {
-    private final ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
 
     public PaginatedProductResponse searchProduct(ProductSearchDto productSearchDto) {
 

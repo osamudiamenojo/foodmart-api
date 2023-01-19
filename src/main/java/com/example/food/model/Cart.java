@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -21,9 +22,9 @@ public class Cart {
     private Long cartId;
     private int quantity;
 
-    private double cartTotal;
+    private BigDecimal cartTotal;
 
-    @OneToMany(mappedBy = "cart", orphanRemoval = true, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "cart", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<CartItem> cartItemList;
     @JsonIgnore
     @OneToOne(targetEntity = Users.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)

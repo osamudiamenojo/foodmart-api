@@ -1,4 +1,5 @@
 package com.example.food.controllers;
+
 import com.example.food.Enum.Role;
 import com.example.food.dto.UpdateProductDto;
 import com.example.food.pojos.UpdatedProductResponse;
@@ -29,35 +30,35 @@ public class ProductController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add-new-product")
-    public ResponseEntity<CreateProductResponse> addNewProduct (@Valid @RequestBody ProductDto productDto)  {
+    public ResponseEntity<CreateProductResponse> addNewProduct(@Valid @RequestBody ProductDto productDto) {
         CreateProductResponse productResponse = productService.addNewProduct(productDto);
         return new ResponseEntity<>(productResponse, HttpStatus.CREATED);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<PaginatedProductResponse> searchProduct(ProductSearchDto productSearchDto)
-    {
+    public ResponseEntity<PaginatedProductResponse> searchProduct(ProductSearchDto productSearchDto) {
         PaginatedProductResponse response = productService.searchProduct(productSearchDto);
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
     @PutMapping("/updateProduct/{productId}")
 //    @PreAuthorize("hasRole('Admin')")
-    ResponseEntity<UpdatedProductResponse> updateProduct(@PathVariable Long productId, @RequestBody UpdateProductDto productDto){
-        UpdatedProductResponse response = productService.updateProduct(productId,productDto);
-        return  new ResponseEntity<>(response,HttpStatus.CREATED);
-
-
-    @GetMapping("/get-all")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<ProductResponse> fetchAllProducts() {
-        return new ResponseEntity<>(productService.fetchAllProducts(),HttpStatus.ACCEPTED);
+    ResponseEntity<UpdatedProductResponse> updateProduct(@PathVariable Long productId, @RequestBody UpdateProductDto productDto) {
+        UpdatedProductResponse response = productService.updateProduct(productId, productDto);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @GetMapping("/product/{productId}")
-    public ResponseEntity<ProductResponseDto>fetchSingleProduct(@PathVariable("productId") Long productId){
 
-        return ResponseEntity.ok(productService.fetchSingleProduct(productId));
+        @GetMapping("/get-all")
+        @PreAuthorize("hasRole('ROLE_ADMIN')")
+        public ResponseEntity<ProductResponse> fetchAllProducts () {
+            return new ResponseEntity<>(productService.fetchAllProducts(), HttpStatus.ACCEPTED);
+        }
+
+        @GetMapping("/product/{productId}")
+        public ResponseEntity<ProductResponseDto> fetchSingleProduct (@PathVariable("productId") Long productId){
+
+            return ResponseEntity.ok(productService.fetchSingleProduct(productId));
+        }
     }
-}
 

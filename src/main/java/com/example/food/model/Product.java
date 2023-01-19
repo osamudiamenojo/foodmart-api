@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
 @Entity
 @Getter
@@ -23,7 +24,7 @@ public class Product {
     private String productName;
 
 
-    private double productPrice;
+    private BigDecimal productPrice;
 
     private String imageUrl;
 
