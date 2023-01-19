@@ -23,10 +23,10 @@ import java.util.Optional;
 @AllArgsConstructor
 @Service
 public class CartServiceImpl implements CartService {
-    private CartRepository cartRepository;
-    private UserRepository userRepository;
-    private CartItemRepository cartItemRepository;
-    private ResponseCodeUtil responseCodeUtil;
+    private final CartRepository cartRepository;
+    private final UserRepository userRepository;
+    private final CartItemRepository cartItemRepository;
+    private final ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
 
     private Users getLoggedInUser() {
         var authentication = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -44,13 +44,11 @@ public class CartServiceImpl implements CartService {
             if (cartItemCheck.isPresent()) {
                 CartItem cartItem = cartItemCheck.get();
                 removeItem(cartItemId, cart, cartItem);
-                baseResponse.setCode(0);
-                baseResponse.setDescription("Item removed from user cart");
+                responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.SUCCESS, "Item removed from user cart");
             } else {
-                baseResponse.setCode(1);
-                baseResponse.setDescription("Item is not in user cart");
+                responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.SUCCESS, "Item is not in user cart");
             }
-            return responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.SUCCESS);
+            return baseResponse;
         } catch (Exception e) {
             log.error("Email not registered, Product cannot be removed: {}", e.getMessage());
         }
