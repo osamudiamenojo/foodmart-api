@@ -2,13 +2,13 @@ package com.example.food.services.serviceImpl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+
 import com.example.food.model.Product;
 import com.example.food.model.Users;
 import com.example.food.repositories.FavouritesRepository;
 import com.example.food.repositories.ProductRepository;
 import com.example.food.repositories.UserRepository;
 import com.example.food.restartifacts.BaseResponse;
-import com.example.food.util.ResponseCodeUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,8 +28,6 @@ public class FavouritesServiceImplTest {
     ProductRepository productRepository;
     @Mock
     FavouritesRepository favouritesRepository;
-    @Mock
-    ResponseCodeUtil responseCodeUtil;
     @InjectMocks
     FavouritesServiceImpl favouritesServiceImpl;
     Product mockedProduct;
@@ -50,22 +48,14 @@ public class FavouritesServiceImplTest {
     }
     @Test
     public void testAddToFavourites() {
-        BaseResponse expectedResponse = new BaseResponse();
-        expectedResponse.setCode(0);
-        expectedResponse.setDescription("added to favourite");
         when(favouritesRepository.existsByUsersIdAndProductId(any(), any())).thenReturn(false);
-        when(responseCodeUtil.updateResponseData(any(), any())).thenReturn(expectedResponse);
-        BaseResponse actualResponse = favouritesServiceImpl.addToFavourites(1L);
-        assertEquals(expectedResponse, actualResponse);
+        BaseResponse baseResponse = favouritesServiceImpl.addToFavourites(1L);
+        assertEquals(baseResponse.getDescription(), "added to favourite");
     }
     @Test
     public void testAddToFavouritesIfAlreadyExisting() {
-        BaseResponse expectedResponse = new BaseResponse();
-        expectedResponse.setCode(-1);
-        expectedResponse.setDescription(mockedProduct.getProductName() + " is already your favourite");
         when(favouritesRepository.existsByUsersIdAndProductId(any(), any())).thenReturn(true);
-        when(responseCodeUtil.updateResponseData(any(), any())).thenReturn(expectedResponse);
         BaseResponse actualResponse = favouritesServiceImpl.addToFavourites(1L);
-        assertEquals(expectedResponse, actualResponse);
+        assertEquals(actualResponse.getDescription(), mockedProduct.getProductName() + " is already your favourite");
     }
 }

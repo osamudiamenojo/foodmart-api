@@ -25,7 +25,7 @@ public class FavouritesServiceImpl implements FavouritesService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final FavouritesRepository favouritesRepository;
-    private final ResponseCodeUtil responseCodeUtil;
+    private final ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
 
     @Override
     public BaseResponse addToFavourites(Long productId) {
@@ -38,25 +38,21 @@ public class FavouritesServiceImpl implements FavouritesService {
         Product favouriteProduct = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product does not exist"));
 
-        Boolean alreadyInFavourite = favouritesRepository.existsByUsersIdAndProductId(user.getUsersId(), favouriteProduct.getProductId());
+        Boolean alreadyInFavourite = favouritesRepository.existsByUsersIdAndProductId(user.getId(), favouriteProduct.getId());
 
         BaseResponse response = new BaseResponse();
 
         if (!alreadyInFavourite) {
             try {
                 Favourites favourites = new Favourites();
-                favourites.setUsersId(user.getUsersId());
-                favourites.setProductId(favouriteProduct.getProductId());
+                favourites.setUsersId(user.getId());
+                favourites.setProductId(favouriteProduct.getId());
                 favouritesRepository.save(favourites);
-                response.setCode(0);
-                response.setDescription("added to favourite");
-                return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS);
+                return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS, "added to favourite");
             } catch (Exception e) {
                 log.error("Either User or Product not registered: {}", e.getMessage());
             }
         }
-        response.setCode(-1);
-        response.setDescription(favouriteProduct.getProductName() + " is already your favourite");
-        return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.ERROR);
+        return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.ERROR, favouriteProduct.getProductName() + " is already your favourite");
     }
 }

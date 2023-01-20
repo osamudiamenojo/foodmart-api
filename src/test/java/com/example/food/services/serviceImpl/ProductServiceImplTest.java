@@ -1,7 +1,6 @@
 package com.example.food.services.serviceImpl;
 import com.example.food.Enum.ResponseCodeEnum;
 import com.example.food.Enum.Role;
-import com.example.food.dto.ProductDto;
 import com.example.food.dto.ProductSearchDto;
 import com.example.food.dto.UpdateProductDto;
 import com.example.food.model.Product;
@@ -10,19 +9,12 @@ import com.example.food.pojos.PaginatedProductResponse;
 import com.example.food.pojos.UpdatedProductResponse;
 import com.example.food.repositories.UserRepository;
 import com.example.food.util.UserUtil;
-import org.aspectj.lang.annotation.Before;
-import com.example.food.pojos.ProductResponse;
 import com.example.food.pojos.ProductResponseDto;
 import com.example.food.repositories.ProductRepository;
-import com.example.food.restartifacts.BaseResponse;
-import com.example.food.services.ProductService;
-import com.example.food.util.ResponseCodeUtil;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -32,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,29 +37,6 @@ class ProductServiceImplTest {
     UserUtil userUtil;
     @Mock
     UserRepository userRepository;
-    @Mock
-    private ResponseCodeUtil responseCodeUtil;
-    @BeforeEach
-    public void setUp() {
-        UpdateProductDto productDto = new UpdateProductDto();
-        productDto.setProductName("Test Product");
-        productDto.setPrice(234.0);
-
-        Product product = new Product();
-        product.setProductId(1L);
-        product.setProductName("Old Product Name");
-        product.setPrice(300.0);
-
-        Users user = new Users();
-        user.setRole(Role.ROLE_ADMIN);
-    }
-
-    @Mock
-    private ResponseCodeUtil responseCodeUtil;
-
-    private Product product;
-    private ProductDto productDto;
-
 
     @Test
     void testSearchProduct() {
@@ -92,7 +60,7 @@ class ProductServiceImplTest {
 
         PaginatedProductResponse response = productServiceImpl.searchProduct(productSearchDto);
         assertSame(response.getNumberOfProducts().intValue(), expectedProducts.size());
-        verify(productRepository).findByProductNameContainingIgnoreCase((String) any(), (Pageable) any());
+        verify(productRepository).findByProductNameContainingIgnoreCase(any(String.class), any(Pageable.class));
     }
 
     private Product createNewProduct(final Long productId, final String productName, final Double productPrice) {
@@ -163,18 +131,17 @@ class ProductServiceImplTest {
         user.setFirstName("Test_First_Name");
         user.setLastName("Test_Last_Name");
         user.setRole(Role.ROLE_ADMIN);
+
         Product product = new Product();
-        UpdatedProductResponse expectedResponse = new UpdatedProductResponse();
 
         when(userUtil.getAuthenticatedUserEmail()).thenReturn("test@email.com");
         when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.of(user));
         when(productRepository.findById(productId)).thenReturn(Optional.of(product));
-        when(responseCodeUtil.updateResponseData(any(UpdatedProductResponse.class), eq(ResponseCodeEnum.SUCCESS), eq("Product updated successfully"))).thenReturn(expectedResponse);
 
-        UpdatedProductResponse actualResponse = productServiceImpl.updateProduct(productId, productDto);
+        UpdatedProductResponse updatedProductResponse = productServiceImpl.updateProduct(productId, productDto);
 
         verify(productRepository, times(1)).save(product);
-        assertEquals(expectedResponse, actualResponse);
+        assertEquals(updatedProductResponse.getDescription(), "Product updated successfully");
     }
 
         @Test
@@ -184,17 +151,13 @@ class ProductServiceImplTest {
         UpdateProductDto productDto = new UpdateProductDto();
         Users user = new Users();
         user.setRole(Role.ROLE_USER);
-        UpdatedProductResponse expectedResponse = new UpdatedProductResponse();
 
         when(userUtil.getAuthenticatedUserEmail()).thenReturn("test@email.com");
         when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.of(user));
-        when(responseCodeUtil.updateResponseData(any(UpdatedProductResponse.class), eq(ResponseCodeEnum.UNAUTHORISED_ACCESS),
-                eq("You are not authorised to perform this operation"))).thenReturn(expectedResponse);
 
-        UpdatedProductResponse actualResponse = productServiceImpl.updateProduct(productId, productDto);
+        UpdatedProductResponse updatedProductResponse = productServiceImpl.updateProduct(productId, productDto);
 
         verify(productRepository, times(0)).save(any());
-        assertEquals(expectedResponse, actualResponse);
+        assertEquals(updatedProductResponse.getDescription(), ResponseCodeEnum.UNAUTHORISED_ACCESS.getDescription());
     }
-
 }

@@ -1,6 +1,9 @@
 package com.example.food.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -19,18 +22,12 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long categoryId;
-
     private String categoryName;
-
     @CreationTimestamp
     private Date createdAt;
-
     @UpdateTimestamp
     private Date modifiedAt;
-
     @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
+    //Todo: Look into
     private List<Product> productList;
-
-    @OneToMany
-    private List<Product> favoriteCategory;
 }

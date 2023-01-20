@@ -1,10 +1,9 @@
 package com.example.food.controllers;
 
 import com.example.food.configurations.security.JwtUtil;
-import com.example.food.pojos.login.LoginRequestDto;
+import com.example.food.dto.LoginRequestDto;
 import com.example.food.services.serviceImpl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,8 +22,6 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@Valid @RequestBody LoginRequestDto request) {
       return userServiceImpl.login(request);
-
-//        return new ResponseEntity<>("Login Successful", HttpStatus.ACCEPTED);
     }
 }
 

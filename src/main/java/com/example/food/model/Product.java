@@ -19,20 +19,14 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long productId;
-
+    private Long id;
     private String productName;
-
-
+    private String description;
     private BigDecimal productPrice;
-
     private String imageUrl;
-
-    private Long quantity;
-
+    private Integer quantity;
     @CreationTimestamp
     private Date createdAt;
-
     @UpdateTimestamp
     private Date modifiedAt;
     @ManyToOne

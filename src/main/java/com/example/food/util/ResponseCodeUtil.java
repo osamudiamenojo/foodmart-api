@@ -6,16 +6,12 @@ import com.example.food.restartifacts.BaseResponse;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
-import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.context.annotation.RequestScope;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@RequestScope
-@Component
 @NoArgsConstructor
 public class ResponseCodeUtil {
 
