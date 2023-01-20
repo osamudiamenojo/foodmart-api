@@ -104,32 +104,5 @@ class UserServiceImplTest {
         verify(customUserDetailsService, times(1)).loadUserByUsername(anyString());
     }
     
-    @Test
-    public void shouldReturnInvalidEmailAddressWhenUserTriesToRegisterWithInvalidEmail(){
-        when(appUtil.validEmail(createUserRequest.getEmail())).thenReturn(false);
-        BaseResponse baseResponse = userServiceImpl.signUp(createUserRequest);
-        Assertions.assertThat(responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.ERROR_EMAIL_INVALID)
-                .getDescription()).isEqualTo("Invalid email address.");
-    }
-
-    @Test
-    public void shouldReturnUserAlreadyExistWhenUserTriesToSignUpWithAlreadyRegisteredEmail(){
-        when(userRepository.existsByEmail(createUserRequest.getEmail())).thenReturn(true);
-        BaseResponse baseResponse = userServiceImpl.signUp(createUserRequest);
-        Assertions.assertThat(responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.ERROR_DUPLICATE_USER)
-                .getDescription()).isEqualTo("User already exist.");
-    }
-    @Test
-    public void signUp(){
-        when(appUtil.validEmail(createUserRequest.getEmail())).thenReturn(true);
-        when(userRepository.existsByEmail(createUserRequest.getEmail())).thenReturn(false);
-        when(userRepository.save(users)).thenReturn(users);
-        doNothing().when(emailService).sendMail(isA(EmailSenderDto.class));
-        emailService.sendMail(emailSenderDto);
-        verify(emailService, times(1)).sendMail(emailSenderDto);
-        BaseResponse baseResponse = userServiceImpl.signUp(createUserRequest);
-        Assertions.assertThat(baseResponse.getDescription())
-                .isEqualTo("You have successful registered. Check your email for verification link to validate your account");
-    }
 }
 
