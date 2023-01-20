@@ -19,6 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+
+import java.math.BigDecimal;
 import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -66,8 +68,8 @@ class ProductServiceImplTest {
     private Product createNewProduct(final Long productId, final String productName, final Double productPrice) {
         Product product = new Product();
         product.setProductName(productName);
-        product.setProductId(productId);
-        product.setProductPrice(productPrice);
+        product.setId(productId);
+        product.setProductPrice(BigDecimal.valueOf(productPrice));
         product.setCreatedAt(new Date());
         product.setModifiedAt(new Date());
         return product;
@@ -108,14 +110,14 @@ class ProductServiceImplTest {
     @Test
     public void testFetchSingleProduct_success() {
         Product product = createNewProduct(1L,"apple1",290D);
-        when(productRepository.findByProductId(1L)).thenReturn(Optional.of(product));
+        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
         ProductResponseDto response = productServiceImpl.fetchSingleProduct(1L);
         assertTrue(response.getDescription().startsWith("Success"));
     }
 
     @Test
     public void testFetchSingleProduct_Error() {
-        when(productRepository.findByProductId(anyLong())).thenReturn(Optional.empty());
+        when(productRepository.findById(anyLong())).thenReturn(Optional.empty());
         ProductResponseDto response = productServiceImpl.fetchSingleProduct(2L);
         assertTrue(response.getDescription().startsWith("Product not found"));
     }

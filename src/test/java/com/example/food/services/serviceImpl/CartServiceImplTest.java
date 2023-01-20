@@ -18,6 +18,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Optional;
 import static org.mockito.Mockito.*;
@@ -38,18 +40,18 @@ public class CartServiceImplTest {
     BaseResponse baseResponse2;
     @BeforeEach
     void setUp() {
-        product1 = Product.builder().productId(1L)
+        product1 = Product.builder().id(1L)
                 .productName("Burger")
-                .productPrice(2000D).build();
-        product2 = Product.builder().productId(2L)
+                .productPrice(BigDecimal.valueOf(2000)).build();
+        product2 = Product.builder().id(2L)
                 .productName("Apple")
-                .productPrice(2000D).build();
-        user = Users.builder().usersId(1L).email("mensa@gmail.com").password("password").build();
-        cart = Cart.builder().cartId(1L).users(user).cartItemList(new ArrayList<>()).cartTotal(0).quantity(0).build();
+                .productPrice(BigDecimal.valueOf(2000)).build();
+        user = Users.builder().id(1L).email("mensa@gmail.com").password("password").build();
+        cart = Cart.builder().cartId(1L).users(user).cartItemList(new ArrayList<>()).cartTotal(BigDecimal.valueOf(0)).quantity(0).build();
         user.setCart(cart);
-        cartItem1 = CartItem.builder().cartItemId(1L).cart(cart).product(product1).quantity(0).subTotal(0).build();
-        cartItem2 = CartItem.builder().cartItemId(2L).cart(cart).product(product2).quantity(0).subTotal(0).build();
-        cartItem3 = CartItem.builder().cartItemId(3L).cart(cart).product(product2).quantity(0).subTotal(0).build();
+        cartItem1 = CartItem.builder().cartItemId(1L).cart(cart).product(product1).quantity(0).subTotal(BigDecimal.valueOf(0)).build();
+        cartItem2 = CartItem.builder().cartItemId(2L).cart(cart).product(product2).quantity(0).subTotal(BigDecimal.valueOf(0)).build();
+        cartItem3 = CartItem.builder().cartItemId(3L).cart(cart).product(product2).quantity(0).subTotal(BigDecimal.valueOf(0)).build();
         baseResponse2 = new BaseResponse();
         baseResponse2.setCode(0);
         baseResponse2.setDescription("Item is not in user cart");

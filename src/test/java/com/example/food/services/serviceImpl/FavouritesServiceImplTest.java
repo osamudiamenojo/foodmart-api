@@ -39,10 +39,10 @@ public class FavouritesServiceImplTest {
         SecurityContextHolder.getContext().setAuthentication(new org.springframework.security.authentication
                 .UsernamePasswordAuthenticationToken(mockedUserDetails, "password", new ArrayList<>()));
         Users mockedUser = new Users();
-        mockedUser.setUsersId(1L);
+        mockedUser.setId(1L);
         when(userRepository.findByEmail(any())).thenReturn(Optional.of(mockedUser));
         mockedProduct = new Product();
-        mockedProduct.setProductId(1L);
+        mockedProduct.setId(1L);
         mockedProduct.setProductName("Apple");
         when(productRepository.findById(any())).thenReturn(Optional.of(mockedProduct));
     }
