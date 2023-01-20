@@ -6,7 +6,7 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -20,7 +20,7 @@ public class EditUserDto {
     private String lastName;
 
     @NotNull(message = "DOB must not be blank!!")
-    private LocalDate dateOfBirth;
+    private Date dateOfBirth;
 
     @Email(message = "Email is required !!")
     private String email;

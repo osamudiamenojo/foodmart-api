@@ -6,7 +6,7 @@ import com.example.food.configurations.security.JwtUtil;
 import com.example.food.dto.EmailSenderDto;
 import com.example.food.model.Users;
 import com.example.food.pojos.CreateUserRequest;
-import com.example.food.pojos.login.LoginRequestDto;
+import com.example.food.dto.LoginRequestDto;
 import com.example.food.dto.EditUserDto;
 import com.example.food.dto.PasswordResetDto;
 import com.example.food.dto.PasswordResetRequestDto;

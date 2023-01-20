@@ -4,6 +4,7 @@ import com.example.food.model.Category;
 import lombok.Data;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Data
 public class ProductDto {
@@ -13,10 +14,10 @@ public class ProductDto {
     @NotBlank(message = "Name must not be null")
     private String productName;
     @NotNull (message = "Price must not be null")
-    private double productPrice;
+    private BigDecimal productPrice;
     @NotBlank (message = "Image must not be null")
     private String imageUrl;
     @NotNull (message = "Quantity must not be null")
-    private Long quantity;
+    private Integer quantity;
 
 }

@@ -38,15 +38,15 @@ public class FavouritesServiceImpl implements FavouritesService {
         Product favouriteProduct = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product does not exist"));
 
-        Boolean alreadyInFavourite = favouritesRepository.existsByUsersIdAndProductId(user.getUsersId(), favouriteProduct.getProductId());
+        Boolean alreadyInFavourite = favouritesRepository.existsByUsersIdAndProductId(user.getId(), favouriteProduct.getId());
 
         BaseResponse response = new BaseResponse();
 
         if (!alreadyInFavourite) {
             try {
                 Favourites favourites = new Favourites();
-                favourites.setUsersId(user.getUsersId());
-                favourites.setProductId(favouriteProduct.getProductId());
+                favourites.setUsersId(user.getId());
+                favourites.setProductId(favouriteProduct.getId());
                 favouritesRepository.save(favourites);
                 return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS, "added to favourite");
             } catch (Exception e) {

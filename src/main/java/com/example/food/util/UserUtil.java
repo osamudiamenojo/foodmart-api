@@ -20,13 +20,6 @@ public class UserUtil {
       return userDetails.getUsername();
     }
 
-    public Users getCurrentLoginUser(){
-        Users user =  new Users();
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        BeanUtils.copyProperties(userDetails,user);
-        return user ;
-    }
-    
     public Users currentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principle = authentication.getPrincipal();
