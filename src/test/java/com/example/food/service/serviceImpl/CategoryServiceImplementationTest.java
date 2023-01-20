@@ -1,10 +1,9 @@
-package com.example.food.service.impl;
+package com.example.food.service.serviceImpl;
 
 import com.example.food.model.Category;
 import com.example.food.dto.CategoryDto;
 import com.example.food.pojos.CreateCategoryResponse;
 import com.example.food.repositories.CategoryRepository;
-import com.example.food.services.serviceImpl.CategoryServiceImplementation;
 import com.example.food.util.ResponseCodeUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

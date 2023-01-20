@@ -1,4 +1,4 @@
-package com.example.food.services.serviceImpl;
+package com.example.food.service.serviceImpl;
 
 import com.example.food.Enum.ResponseCodeEnum;
 import com.example.food.model.Cart;

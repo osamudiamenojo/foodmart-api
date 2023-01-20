@@ -1,4 +1,4 @@
-package com.example.food.services.serviceImpl;
+package com.example.food.service.serviceImpl;
 import com.example.food.model.Cart;
 import com.example.food.model.CartItem;
 import com.example.food.model.Product;

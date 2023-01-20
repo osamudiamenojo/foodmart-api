@@ -1,6 +1,5 @@
-package com.example.food.services.serviceImpl;
+package com.example.food.service.serviceImpl;
 
-import com.example.food.Enum.ResponseCodeEnum;
 import com.example.food.configurations.security.CustomUserDetailsService;
 import com.example.food.configurations.security.JwtUtil;
 import com.example.food.dto.EmailSenderDto;
@@ -8,11 +7,9 @@ import com.example.food.model.Users;
 import com.example.food.pojos.CreateUserRequest;
 import com.example.food.dto.LoginRequestDto;
 import com.example.food.repositories.UserRepository;
-import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.EmailService;
 import com.example.food.util.AppUtil;
 import com.example.food.util.ResponseCodeUtil;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

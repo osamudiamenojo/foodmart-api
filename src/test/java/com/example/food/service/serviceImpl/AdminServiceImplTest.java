@@ -1,4 +1,4 @@
-package com.example.food.services.serviceImpl;
+package com.example.food.service.serviceImpl;
 
 import com.example.food.Enum.Role;
 import com.example.food.configurations.security.CustomUserDetailsService;
