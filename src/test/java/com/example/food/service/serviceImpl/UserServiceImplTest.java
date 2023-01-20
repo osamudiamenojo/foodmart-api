@@ -1,5 +1,6 @@
 package com.example.food.service.serviceImpl;
 
+import com.example.food.Enum.ResponseCodeEnum;
 import com.example.food.configurations.security.CustomUserDetailsService;
 import com.example.food.configurations.security.JwtUtil;
 import com.example.food.dto.EmailSenderDto;
@@ -7,9 +8,12 @@ import com.example.food.model.Users;
 import com.example.food.pojos.CreateUserRequest;
 import com.example.food.dto.LoginRequestDto;
 import com.example.food.repositories.UserRepository;
+import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.EmailService;
+import com.example.food.services.serviceImpl.UserServiceImpl;
 import com.example.food.util.AppUtil;
 import com.example.food.util.ResponseCodeUtil;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -100,6 +104,33 @@ class UserServiceImplTest {
 
         verify(customUserDetailsService, times(1)).loadUserByUsername(anyString());
     }
-    
+
+    @Test
+    public void shouldReturnInvalidEmailAddressWhenUserTriesToRegisterWithInvalidEmail(){
+        when(appUtil.validEmail(createUserRequest.getEmail())).thenReturn(false);
+        BaseResponse baseResponse = userServiceImpl.signUp(createUserRequest);
+        Assertions.assertThat(responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.ERROR_EMAIL_INVALID)
+                .getDescription()).isEqualTo("Invalid email address.");
+    }
+
+    @Test
+    public void shouldReturnUserAlreadyExistWhenUserTriesToSignUpWithAlreadyRegisteredEmail(){
+        when(userRepository.existsByEmail(createUserRequest.getEmail())).thenReturn(true);
+        BaseResponse baseResponse = userServiceImpl.signUp(createUserRequest);
+        Assertions.assertThat(responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.ERROR_DUPLICATE_USER)
+                .getDescription()).isEqualTo("User already exist.");
+    }
+    @Test
+    public void signUp(){
+        when(appUtil.validEmail(createUserRequest.getEmail())).thenReturn(true);
+        when(userRepository.existsByEmail(createUserRequest.getEmail())).thenReturn(false);
+        when(userRepository.save(users)).thenReturn(users);
+        doNothing().when(emailService).sendMail(isA(EmailSenderDto.class));
+        emailService.sendMail(emailSenderDto);
+        verify(emailService, times(1)).sendMail(emailSenderDto);
+        BaseResponse baseResponse = userServiceImpl.signUp(createUserRequest);
+        Assertions.assertThat(baseResponse.getDescription())
+                .isEqualTo("You have successful registered. Check your email for verification link to validate your account");
+    }
 }
 

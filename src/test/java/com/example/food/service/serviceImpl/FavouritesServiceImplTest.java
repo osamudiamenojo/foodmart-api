@@ -9,6 +9,7 @@ import com.example.food.repositories.FavouritesRepository;
 import com.example.food.repositories.ProductRepository;
 import com.example.food.repositories.UserRepository;
 import com.example.food.restartifacts.BaseResponse;
+import com.example.food.services.serviceImpl.FavouritesServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,4 +1,4 @@
-package com.example.food.service.serviceImpl;
+package com.example.food.services.serviceImpl;
 
 import com.example.food.Enum.ResponseCodeEnum;
 import com.example.food.exceptions.ResourceNotFoundException;

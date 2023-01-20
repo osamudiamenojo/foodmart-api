@@ -2,7 +2,7 @@ package com.example.food.controllers;
 
 import com.example.food.configurations.security.JwtUtil;
 import com.example.food.dto.LoginRequestDto;
-import com.example.food.service.serviceImpl.UserServiceImpl;
+import com.example.food.services.serviceImpl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

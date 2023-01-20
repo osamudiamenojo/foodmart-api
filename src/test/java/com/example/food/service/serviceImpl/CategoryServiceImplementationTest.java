@@ -4,7 +4,7 @@ import com.example.food.model.Category;
 import com.example.food.dto.CategoryDto;
 import com.example.food.pojos.CreateCategoryResponse;
 import com.example.food.repositories.CategoryRepository;
-import com.example.food.util.ResponseCodeUtil;
+import com.example.food.services.serviceImpl.CategoryServiceImplementation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -18,8 +18,6 @@ import static org.mockito.Mockito.when;
 class CategoryServiceImplementationTest {
     @Mock
     CategoryRepository categoryRepository;
-    @Mock
-    private ResponseCodeUtil responseCodeUtil;
     @InjectMocks
     CategoryServiceImplementation categoryService;
     Category category;

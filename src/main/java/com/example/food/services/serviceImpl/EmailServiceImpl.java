@@ -1,4 +1,4 @@
-package com.example.food.service.serviceImpl;
+package com.example.food.services.serviceImpl;
 
 import com.example.food.dto.EmailSenderDto;
 import com.example.food.services.EmailService;
