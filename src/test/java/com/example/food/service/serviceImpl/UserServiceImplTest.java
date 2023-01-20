@@ -1,4 +1,4 @@
-package com.example.food.services.serviceImpl;
+package com.example.food.service.serviceImpl;
 
 import com.example.food.Enum.ResponseCodeEnum;
 import com.example.food.configurations.security.CustomUserDetailsService;
@@ -10,6 +10,7 @@ import com.example.food.dto.LoginRequestDto;
 import com.example.food.repositories.UserRepository;
 import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.EmailService;
+import com.example.food.services.serviceImpl.UserServiceImpl;
 import com.example.food.util.AppUtil;
 import com.example.food.util.ResponseCodeUtil;
 import org.assertj.core.api.Assertions;
@@ -103,7 +104,7 @@ class UserServiceImplTest {
 
         verify(customUserDetailsService, times(1)).loadUserByUsername(anyString());
     }
-    
+
     @Test
     public void shouldReturnInvalidEmailAddressWhenUserTriesToRegisterWithInvalidEmail(){
         when(appUtil.validEmail(createUserRequest.getEmail())).thenReturn(false);
