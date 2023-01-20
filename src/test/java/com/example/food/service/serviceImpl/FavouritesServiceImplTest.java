@@ -1,4 +1,4 @@
-package com.example.food.services.serviceImpl;
+package com.example.food.service.serviceImpl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -9,6 +9,7 @@ import com.example.food.repositories.FavouritesRepository;
 import com.example.food.repositories.ProductRepository;
 import com.example.food.repositories.UserRepository;
 import com.example.food.restartifacts.BaseResponse;
+import com.example.food.services.serviceImpl.FavouritesServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,10 +40,10 @@ public class FavouritesServiceImplTest {
         SecurityContextHolder.getContext().setAuthentication(new org.springframework.security.authentication
                 .UsernamePasswordAuthenticationToken(mockedUserDetails, "password", new ArrayList<>()));
         Users mockedUser = new Users();
-        mockedUser.setUsersId(1L);
+        mockedUser.setId(1L);
         when(userRepository.findByEmail(any())).thenReturn(Optional.of(mockedUser));
         mockedProduct = new Product();
-        mockedProduct.setProductId(1L);
+        mockedProduct.setId(1L);
         mockedProduct.setProductName("Apple");
         when(productRepository.findById(any())).thenReturn(Optional.of(mockedProduct));
     }
