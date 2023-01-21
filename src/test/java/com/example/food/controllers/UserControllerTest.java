@@ -58,4 +58,5 @@ class UserControllerTest {
                         .andDo(print())
                     .andExpect(status().isAccepted());
     }
+
 }

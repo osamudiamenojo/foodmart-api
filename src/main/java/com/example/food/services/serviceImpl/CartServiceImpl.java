@@ -1,6 +1,8 @@
 package com.example.food.services.serviceImpl;
 
 import com.example.food.Enum.ResponseCodeEnum;
+import com.example.food.dto.CartDto;
+import com.example.food.dto.CartItemDto;
 import com.example.food.dto.CartItemDto;
 import com.example.food.model.Cart;
 import com.example.food.model.CartItem;
@@ -17,6 +19,7 @@ import com.example.food.util.ResponseCodeUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;

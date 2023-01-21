@@ -17,4 +17,7 @@ public class CartItemDto {
     private int quantity;
     private BigDecimal subTotal;
 
+    private double unitPrice;
+    private double subTotal;
+    private long cartId;
 }

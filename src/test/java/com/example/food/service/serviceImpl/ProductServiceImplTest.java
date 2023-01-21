@@ -1,4 +1,4 @@
-package com.example.food.services.serviceImpl;
+package com.example.food.service.serviceImpl;
 import com.example.food.Enum.ResponseCodeEnum;
 import com.example.food.Enum.Role;
 import com.example.food.dto.ProductSearchDto;
@@ -8,6 +8,7 @@ import com.example.food.model.Users;
 import com.example.food.pojos.PaginatedProductResponse;
 import com.example.food.pojos.UpdatedProductResponse;
 import com.example.food.repositories.UserRepository;
+import com.example.food.services.serviceImpl.ProductServiceImpl;
 import com.example.food.util.UserUtil;
 import com.example.food.pojos.ProductResponseDto;
 import com.example.food.repositories.ProductRepository;
