@@ -14,7 +14,10 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class CartResponse extends BaseResponse {
+
     private List<Cart> cartList;
+
     private long totalCartElements;
+
     private long totalPages;
 }
