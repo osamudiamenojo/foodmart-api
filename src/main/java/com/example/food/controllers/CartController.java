@@ -1,5 +1,6 @@
 package com.example.food.controllers;
 
+import com.example.food.pojos.CartResponse;
 import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.CartService;
 import lombok.AllArgsConstructor;
@@ -19,5 +20,12 @@ public class CartController {
         BaseResponse response = cartService.removeCartItem(cartItemId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @PostMapping("/add-to-cart/{productId}")
+    public ResponseEntity<CartResponse> addToCart(@PathVariable Long productId) {
+        CartResponse response = cartService.addCartItem(productId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 }
 
