@@ -17,5 +17,4 @@ public class CartItemDto {
     private double unitPrice;
     private double subTotal;
     private long cartId;
-
 }

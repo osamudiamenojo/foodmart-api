@@ -17,7 +17,7 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    @GetMapping("/viewDetailsOfAParticularOrder/{orderId}")
+    @GetMapping("/order/{orderId}")
     public ResponseEntity<OrderResponseDto> viewDetailsOfAParticularOrder(@PathVariable Long orderId){
         return new ResponseEntity<>(orderService.viewDetailsOfAParticularOrder(orderId), HttpStatus.ACCEPTED);
     }
