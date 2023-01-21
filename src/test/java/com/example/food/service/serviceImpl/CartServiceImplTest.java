@@ -3,6 +3,7 @@ import com.example.food.model.Cart;
 import com.example.food.model.CartItem;
 import com.example.food.model.Product;
 import com.example.food.model.Users;
+import com.example.food.pojos.CartResponse;
 import com.example.food.repositories.CartItemRepository;
 import com.example.food.repositories.CartRepository;
 import com.example.food.repositories.UserRepository;
@@ -16,14 +17,22 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class CartServiceImplTest {
@@ -40,6 +49,8 @@ public class CartServiceImplTest {
     CartItem cartItem1,cartItem2, cartItem3;
     Product product1, product2;
     BaseResponse baseResponse2;
+
+
     @BeforeEach
     void setUp() {
         product1 = Product.builder().id(1L)
@@ -62,6 +73,7 @@ public class CartServiceImplTest {
         Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
     }
+
     @Test
     public void testRemoveCartItemSuccess() {
         Mockito.when(cartItemRepository.findByCartItemId(anyLong())).thenReturn(Optional.of(cartItem1));
@@ -72,4 +84,29 @@ public class CartServiceImplTest {
         BaseResponse baseResponse = cartServiceImpl.removeCartItem(1);
         Assertions.assertThat(baseResponse.getDescription()).isEqualTo("Item removed from user cart");
     }
+
+    @Test
+    public void testViewCartItems() {
+        List<Cart> cartList = List.of(new Cart(1L, 20, new BigDecimal(2000), new ArrayList<>(), user));
+
+        Pageable pageable = PageRequest.of(0, 1);
+        int start = Math.min((int) pageable.getOffset(), cartList.size());
+        int end = Math.min((start +  pageable.getPageSize()), cartList.size());
+        Page<Cart> cartPage = new PageImpl<>(cartList.subList(start, end), pageable, cartList.size());
+
+        LoggerFactory.getLogger(CartServiceImplTest.class).info("CartList {} ", cartPage.getContent().size());
+
+
+        when(userRepository.findByEmail(any())).thenReturn(Optional.of(user));
+        when(cartRepository.findAllByUsersOrderByCartId(user, pageable)).thenReturn(cartPage);
+
+        CartResponse cartResponse = cartServiceImpl.viewCartItems(0, 1);
+
+        Mockito.verify(cartRepository, times(1))
+                .findAllByUsersOrderByCartId(any(Users.class), any(Pageable.class));
+
+        assertNotNull(cartResponse);
+        assertEquals(1, cartResponse.getCartList().size());
+    }
+
 }

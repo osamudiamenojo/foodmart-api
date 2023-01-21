@@ -3,6 +3,7 @@ package com.example.food.controllers;
 import com.example.food.dto.CartDto;
 import com.example.food.dto.EditUserDto;
 import com.example.food.model.Users;
+import com.example.food.pojos.CartResponse;
 import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.CartService;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,14 @@ public class CartController {
     public ResponseEntity<BaseResponse> removeCartItem(@PathVariable("cart-item-id") long cartItemId) {
         BaseResponse response = cartService.removeCartItem(cartItemId);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/view-cart")
+    public ResponseEntity<CartResponse> viewCartItems(@RequestParam(defaultValue = "1") int page,
+                                                              @RequestParam(defaultValue = "10") int size) {
+
+        CartResponse cartResponse = cartService.viewCartItems(page, size);
+        return new ResponseEntity<>(cartResponse, HttpStatus.OK);
     }
 }
 
