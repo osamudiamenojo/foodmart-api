@@ -14,4 +14,9 @@ public class CartDto {
     private int quantity;
     private double cartTotal;
     private List<CartItemDto> cartItemList;
+
+    public CartDto(List<CartItemDto> cartItems, double cartTotal) {
+        this.cartItemList = cartItems;
+        this.cartTotal = cartTotal;
+    }
 }

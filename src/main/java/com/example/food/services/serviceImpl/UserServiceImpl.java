@@ -4,6 +4,7 @@ import com.example.food.Enum.ResponseCodeEnum;
 import com.example.food.configurations.security.CustomUserDetailsService;
 import com.example.food.configurations.security.JwtUtil;
 import com.example.food.dto.EmailSenderDto;
+import com.example.food.dto.*;
 import com.example.food.model.Users;
 import com.example.food.pojos.CreateUserRequest;
 import com.example.food.dto.LoginRequestDto;
@@ -175,4 +176,5 @@ public class UserServiceImpl implements UserService {
         return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS,
                 "You have successful registered. Check your email for verification link to validate your account");
     }
+
 }

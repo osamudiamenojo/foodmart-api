@@ -1,6 +1,8 @@
 package com.example.food.services.serviceImpl;
 
 import com.example.food.Enum.ResponseCodeEnum;
+import com.example.food.dto.CartDto;
+import com.example.food.dto.CartItemDto;
 import com.example.food.model.Cart;
 import com.example.food.model.CartItem;
 import com.example.food.model.Users;
@@ -12,10 +14,14 @@ import com.example.food.services.CartService;
 import com.example.food.util.ResponseCodeUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
