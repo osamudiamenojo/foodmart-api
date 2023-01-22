@@ -1,6 +1,7 @@
 package com.example.food.model;
 
 import com.example.food.Enum.OrderStatus;
+import com.example.food.Enum.PaymentMethod;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -38,10 +39,13 @@ public class Order {
     @OneToMany
     @JoinColumn(name= "order_product_id")
     private List<Product> productList;
+    @OneToOne
+    private Cart cart;
     @JsonIgnore
     @OneToOne
     private Address address;
-    private String paymentMethod;
+    private BigDecimal flatRate;
+    private PaymentMethod paymentMethod;
     private BigDecimal deliveryFee;
     private BigDecimal discount;
     private String deliveryMethod;
