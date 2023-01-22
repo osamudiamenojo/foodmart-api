@@ -6,4 +6,6 @@ import org.springframework.http.ResponseEntity;
 
 public interface FavouritesService {
     public BaseResponse addToFavourites(Long productId);
+
+    public BaseResponse removeFromFavourites (Long productId);
 }
