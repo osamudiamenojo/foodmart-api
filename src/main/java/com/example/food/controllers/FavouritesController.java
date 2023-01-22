@@ -19,7 +19,6 @@ public class FavouritesController {
     @PostMapping("/{productId}/add")
     public ResponseEntity<BaseResponse> addProductToFavourite(@PathVariable(value = "productId") Long productId) {
         BaseResponse response = favouritesService.addToFavourites(productId);
-
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
