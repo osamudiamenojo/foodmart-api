@@ -6,5 +6,5 @@ import com.example.food.restartifacts.BaseResponse;
 public interface CartService {
     BaseResponse removeCartItem(long cartItemId);
 
-    CartResponse viewCartItems(int page, int size);
+    CartResponse viewCartItems();
 }

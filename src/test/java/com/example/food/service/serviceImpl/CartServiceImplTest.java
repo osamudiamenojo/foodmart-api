@@ -89,24 +89,15 @@ public class CartServiceImplTest {
     public void testViewCartItems() {
         List<Cart> cartList = List.of(new Cart(1L, 20, new BigDecimal(2000), new ArrayList<>(), user));
 
-        Pageable pageable = PageRequest.of(0, 1);
-        int start = Math.min((int) pageable.getOffset(), cartList.size());
-        int end = Math.min((start +  pageable.getPageSize()), cartList.size());
-        Page<Cart> cartPage = new PageImpl<>(cartList.subList(start, end), pageable, cartList.size());
-
-        LoggerFactory.getLogger(CartServiceImplTest.class).info("CartList {} ", cartPage.getContent().size());
-
-
         when(userRepository.findByEmail(any())).thenReturn(Optional.of(user));
-        when(cartRepository.findAllByUsersOrderByCartId(user, pageable)).thenReturn(cartPage);
+        when(cartRepository.findAllByUsersOrderByCartId(user)).thenReturn(cartList);
 
-        CartResponse cartResponse = cartServiceImpl.viewCartItems(0, 1);
+        CartResponse cartResponse = cartServiceImpl.viewCartItems();
 
         Mockito.verify(cartRepository, times(1))
-                .findAllByUsersOrderByCartId(any(Users.class), any(Pageable.class));
+                .findAllByUsersOrderByCartId(any(Users.class));
 
         assertNotNull(cartResponse);
         assertEquals(1, cartResponse.getCartList().size());
     }
-
 }

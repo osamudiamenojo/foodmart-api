@@ -20,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -60,17 +61,13 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartResponse viewCartItems(int page, int size) {
+    public CartResponse viewCartItems() {
         Users users = getLoggedInUser();
-        if (page > 0) page = page - 1;
-
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Cart> pagedResult = cartRepository.findAllByUsersOrderByCartId(users, pageable);
+        List<Cart> cartList = cartRepository.findAllByUsersOrderByCartId(users);
 
         return CartResponse.builder()
-                .cartList(pagedResult.getContent())
-                .totalPages(pagedResult.getTotalPages())
-                .totalCartElements(pagedResult.getTotalElements())
+                .cartList(cartList)
+                .totalCartElements(cartList.size())
                 .build();
     }
 
