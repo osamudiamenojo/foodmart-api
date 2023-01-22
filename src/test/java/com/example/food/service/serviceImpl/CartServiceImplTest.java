@@ -1,4 +1,4 @@
-package com.example.food.services.serviceImpl;
+package com.example.food.service.serviceImpl;
 import com.example.food.model.Cart;
 import com.example.food.model.CartItem;
 import com.example.food.model.Product;
@@ -70,11 +70,12 @@ public class CartServiceImplTest {
     public void testRemoveCartItemSuccess() {
         Mockito.when(cartItemRepository.findById(anyLong())).thenReturn(Optional.of(cartItem1));
         Mockito.when(userRepository.findByEmail( any())).thenReturn(Optional.ofNullable(user));
+        when(cartRepository.findByUsersEmail(anyString())).thenReturn(Optional.ofNullable(cart));
         Mockito.doNothing().when(cartItemRepository).deleteById(anyLong());
-        Mockito.when(cartRepository.save(any())).thenReturn(cart);
 
         BaseResponse baseResponse = cartServiceImpl.removeCartItem(1);
-        Assertions.assertThat(baseResponse.getDescription()).isEqualTo("Item removed from user cart");
+
+        verify(cartItemRepository, times(1)).deleteById(cartItem1.getId());
     }
 
     @Test

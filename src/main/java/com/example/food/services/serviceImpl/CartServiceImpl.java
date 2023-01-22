@@ -1,8 +1,6 @@
 package com.example.food.services.serviceImpl;
 
 import com.example.food.Enum.ResponseCodeEnum;
-import com.example.food.dto.CartDto;
-import com.example.food.dto.CartItemDto;
 import com.example.food.dto.CartItemDto;
 import com.example.food.model.Cart;
 import com.example.food.model.CartItem;
@@ -19,7 +17,6 @@ import com.example.food.util.ResponseCodeUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -52,14 +49,28 @@ public class CartServiceImpl implements CartService {
         CartResponse baseResponse = new CartResponse();
         try {
             Users user = getLoggedInUser();
-            Cart cart = user.getCart();
+            Cart cart = cartRepository.findByUsersEmail(user.getEmail()).orElseThrow(RuntimeException::new);
             Optional<CartItem> cartItemCheck = cartItemRepository.findById(cartItemId);
             if (cartItemCheck.isPresent()) {
                 CartItem cartItem = cartItemCheck.get();
                 removeItem(cartItemId, cart, cartItem);
-                responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.SUCCESS, "Item removed from user cart");
+                //
+                List<CartItemDto> cartItemDtoList = new ArrayList<>();
+                for (CartItem item : cart.getCartItemList()) {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    CartItemDto cartItemDto = objectMapper.convertValue(item, CartItemDto.class);
+                    cartItemDtoList.add(cartItemDto);
+                }
+                CartResponse cartResponse = CartResponse.builder()
+                        .cartItemList(cartItemDtoList)
+                        .cartTotal(cart.getCartTotal())
+                        .quantity(cart.getQuantity())
+                        .build();
+                return responseCodeUtil.updateResponseData(cartResponse, ResponseCodeEnum.SUCCESS, "Item removed from user cart");
+                //
+//                responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.SUCCESS, "Item removed from user cart");
             } else {
-                responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.SUCCESS, "Item is not in user cart");
+                responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.ERROR, "Item is not in user cart");
             }
             return baseResponse;
         } catch (Exception e) {
@@ -134,8 +145,10 @@ public class CartServiceImpl implements CartService {
 
     private void removeItem(long cartItemId, Cart cart, CartItem cartItem) {
         cartItemRepository.deleteById(cartItemId);
+        int index = cart.getCartItemList().indexOf(cartItem);
         cart.setCartTotal(cart.getCartTotal().subtract(cartItem.getSubTotal()));
         cart.setQuantity(cart.getQuantity() - 1);
+        cart.getCartItemList().remove(index);
         cartRepository.save(cart);
     }
 
