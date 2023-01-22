@@ -1,6 +1,9 @@
 package com.example.food.dto;
 
+import com.example.food.model.Product;
 import lombok.*;
+
+import java.math.BigDecimal;
 
 @Setter
 @Getter
@@ -8,13 +11,10 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class CartItemDto {
-    private long id;
-    private long productId;
-    private String productName;
-    private String productImage;
-    private String productSize;
+
+    private Long id;
+    private Product product;
     private int quantity;
-    private double unitPrice;
-    private double subTotal;
-    private long cartId;
+    private BigDecimal subTotal;
+
 }

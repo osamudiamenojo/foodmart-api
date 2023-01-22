@@ -1,23 +1,21 @@
 package com.example.food.pojos;
 
-import com.example.food.model.Cart;
+import com.example.food.dto.CartItemDto;
+import com.example.food.model.CartItem;
+import com.example.food.model.Users;
 import com.example.food.restartifacts.BaseResponse;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
-@Getter
-@Setter
 @AllArgsConstructor
+@NoArgsConstructor
+@Setter
+@Getter
 @Builder
 public class CartResponse extends BaseResponse {
-
-    private List<Cart> cartList;
-
-    private long totalCartElements;
-
-    private long totalPages;
+    private List<CartItemDto> cartItemList;
+    private int quantity;
+    private BigDecimal cartTotal ;
 }

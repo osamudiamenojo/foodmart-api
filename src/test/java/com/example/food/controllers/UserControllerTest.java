@@ -15,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import java.time.LocalDate;
 import java.util.Date;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -46,7 +47,7 @@ class UserControllerTest {
        editUserDto.setFirstName("Gisung");
        editUserDto.setLastName("Kefas");
        editUserDto.setEmail("kefas@gmail.com");
-       editUserDto.setDateOfBirth(new Date(7-2-2020));
+       editUserDto.setDateOfBirth(new Date(07-02-2020));
 
        String requestBody = mapper.writeValueAsString(editUserDto);
 
