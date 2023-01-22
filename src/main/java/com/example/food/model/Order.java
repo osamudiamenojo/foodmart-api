@@ -3,11 +3,16 @@ package com.example.food.model;
 import com.example.food.Enum.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -16,15 +21,15 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString
-@EntityListeners(AuditingEntityListener.class)
 public class Order {
     @Id
     private Long id;
     private String imageUrl;
-    @CreatedDate
-    private Timestamp orderDate;
-    private int quantity;
+    @CreationTimestamp
+    private Date createdAt;
+    @UpdateTimestamp
+    private Date modifiedAt;
+    private Integer quantity;
     @Enumerated
     private OrderStatus orderStatus;
     @JsonIgnore
@@ -37,10 +42,10 @@ public class Order {
     @OneToOne
     private Address address;
     private String paymentMethod;
-    private double deliveryFee;
-    private double discount;
+    private BigDecimal deliveryFee;
+    private BigDecimal discount;
     private String deliveryMethod;
-    private double totalOrderPrice;
+    private BigDecimal totalOrderPrice;
 
 
 

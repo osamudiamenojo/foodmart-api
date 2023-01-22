@@ -1,9 +1,11 @@
 package com.example.food.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -12,22 +14,20 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Builder
 public class CartItem {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cartItemId;
-
+    private Long id;
     @OneToOne
     private Product product;
-
     @Column(name = "quantity")
     private @NotNull int quantity;
-
-    @Column(name = "price")
-    private @NotNull double subTotal;
-
-    @ManyToOne
-    @JoinColumn(name = "cart_Id", referencedColumnName = "cartId")
+    @Column(name = "subTotal")
+    private @NotNull BigDecimal subTotal;
+    @JsonIgnore
+    @ManyToOne(targetEntity = Cart.class, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "cart_Id", referencedColumnName = "id",
+            foreignKey = @ForeignKey
+                    (name = "cart_carttem_fk"))
     private Cart cart;
 
 

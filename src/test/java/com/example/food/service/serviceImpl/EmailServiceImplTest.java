@@ -1,6 +1,7 @@
-package com.example.food.services.serviceImpl;
+package com.example.food.service.serviceImpl;
 
 import com.example.food.dto.EmailSenderDto;
+import com.example.food.services.serviceImpl.EmailServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

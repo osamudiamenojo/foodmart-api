@@ -13,7 +13,6 @@ import com.example.food.pojos.PaginatedProductResponse;
 import com.example.food.pojos.ProductResponse;
 import com.example.food.pojos.ProductResponseDto;
 import com.example.food.repositories.ProductRepository;
-import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.ProductService;
 import com.example.food.util.ResponseCodeUtil;
 import com.example.food.util.UserUtil;
@@ -24,10 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,10 +34,7 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
-
-
     private final UserUtil userUtil;
-
     private final ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
 
     public PaginatedProductResponse searchProduct(ProductSearchDto productSearchDto) {
@@ -73,12 +66,12 @@ public class ProductServiceImpl implements ProductService {
         UpdatedProductResponse response = new UpdatedProductResponse();
         String email = userUtil.getAuthenticatedUserEmail();
         Users user = userRepository.findByEmail(email).get();
-        System.out.println(user);
+
         if (!user.getRole().equals(Role.ROLE_ADMIN)) {
-            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.UNAUTHORISED_ACCESS, "You are not authorised to perform this operation");
+            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.UNAUTHORISED_ACCESS);
         }
         Product product = productRepository.findById(productId).orElse(null);
-        if (product.equals(null)){
+        if (product == null){
             return responseCodeUtil.updateResponseData(response,ResponseCodeEnum.ERROR,"Product does not exist");
         }
 
@@ -103,10 +96,9 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(product);
         return responseCodeUtil.updateResponseData(createProductResponse, ResponseCodeEnum.SUCCESS, "New Product Has Been Added");
     }
-
+    
 
     public ProductResponse fetchAllProducts() {
-
         ProductResponse response = new ProductResponse();
 
         List<Product> products = productRepository.findAll();
@@ -114,25 +106,25 @@ public class ProductServiceImpl implements ProductService {
         if (products.isEmpty()) {
             return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.PRODUCT_NOT_FOUND);
         }
-        List<ProductDto> productDto = products.stream()
-                .map(product -> new ProductDto(product.getCategory(),
-                        product.getProductName(),
-                        product.getProductPrice(),
-                        product.getImageUrl(),
-                        product.getQuantity()))
-                 //       product.getCreatedAt(),
-                 //       product.getModifiedAt()))
-                .collect(Collectors.toList());
+        List<ProductDto> productDtoList = products.stream()
+                .map(product -> {
+                    ProductDto productDto = new ProductDto();
+                    productDto.setProductName(product.getProductName());
+                    productDto.setProductPrice(product.getProductPrice());
+                    productDto.setImageUrl(product.getImageUrl());
+                    productDto.setCategory(product.getCategory());
+                    productDto.setQuantity(product.getQuantity());
+                    return productDto;
+                }).collect(Collectors.toList());
 
-        response.setProductDto(productDto);
-
+        response.setProductDto(productDtoList);
         return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS);
     }
 
     public ProductResponseDto fetchSingleProduct(Long productId) {
 
         ProductResponseDto responseDto = new ProductResponseDto();
-        Optional<Product> fetchedProduct = productRepository.findByProductId(productId);
+        Optional<Product> fetchedProduct = productRepository.findById(productId);
 
         if (fetchedProduct.isEmpty()) {
             return responseCodeUtil.updateResponseData(responseDto,
