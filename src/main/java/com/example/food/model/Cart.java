@@ -19,7 +19,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cartId;
+    private Long id;
     private int quantity;
     private BigDecimal cartTotal;
     @OneToMany(mappedBy = "cart", orphanRemoval = true, cascade = CascadeType.REMOVE)

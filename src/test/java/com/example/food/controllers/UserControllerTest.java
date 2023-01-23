@@ -47,7 +47,7 @@ class UserControllerTest {
        editUserDto.setFirstName("Gisung");
        editUserDto.setLastName("Kefas");
        editUserDto.setEmail("kefas@gmail.com");
-       editUserDto.setDateOfBirth(new Date(7-2-2020));
+       editUserDto.setDateOfBirth(new Date(07-02-2020));
 
        String requestBody = mapper.writeValueAsString(editUserDto);
 
@@ -58,4 +58,5 @@ class UserControllerTest {
                         .andDo(print())
                     .andExpect(status().isAccepted());
     }
+
 }
