@@ -1,6 +1,7 @@
 package com.example.food.services;
 
 import com.example.food.model.Product;
+import com.example.food.pojos.FavouriteProductResponse;
 import com.example.food.restartifacts.BaseResponse;
 import org.springframework.http.ResponseEntity;
 
