@@ -3,11 +3,14 @@ package com.example.food.service.serviceImpl;
 import com.example.food.Enum.ResponseCodeEnum;
 import com.example.food.configurations.security.CustomUserDetailsService;
 import com.example.food.configurations.security.JwtUtil;
+import com.example.food.dto.ConfirmRegistrationRequestDto;
 import com.example.food.dto.EmailSenderDto;
 import com.example.food.model.Users;
+import com.example.food.model.Wallet;
 import com.example.food.pojos.CreateUserRequest;
 import com.example.food.dto.LoginRequestDto;
 import com.example.food.repositories.UserRepository;
+import com.example.food.repositories.WalletRepository;
 import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.EmailService;
 import com.example.food.services.serviceImpl.UserServiceImpl;
@@ -25,6 +28,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.math.BigDecimal;
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -54,6 +61,8 @@ class UserServiceImplTest {
     @Mock
     UserRepository userRepository;
     @Mock
+    WalletRepository walletRepository;
+    @Mock
     private EmailService emailService;
     @Mock
     EmailSenderDto emailSenderDto;
@@ -64,6 +73,8 @@ class UserServiceImplTest {
     private CreateUserRequest createUserRequest;
     private Users users;
     LoginRequestDto loginRequestDto;
+    ConfirmRegistrationRequestDto confirmRegistrationRequestDto;
+    Wallet wallet;
 
 
 
@@ -86,8 +97,14 @@ class UserServiceImplTest {
         users.setLastName(createUserRequest.getLastName());
         users.setEmail(createUserRequest.getEmail());
         users.setPassword(passwordEncoder.encode(createUserRequest.getPassword()));
+        users.setConfirmationToken("adsfshdgfgkgkgjgkggk");
 
         responseCodeUtil = new ResponseCodeUtil();
+        confirmRegistrationRequestDto = new ConfirmRegistrationRequestDto();
+        confirmRegistrationRequestDto.setToken(users.getConfirmationToken());
+        wallet = Wallet.builder()
+                .user(users)
+                .walletBalance(BigDecimal.valueOf(0)).build();
     }
 
     @Test
@@ -131,6 +148,14 @@ class UserServiceImplTest {
         BaseResponse baseResponse = userServiceImpl.signUp(createUserRequest);
         Assertions.assertThat(baseResponse.getDescription())
                 .isEqualTo("You have successful registered. Check your email for verification link to validate your account");
+    }
+    @Test
+    public void confirmRegistration(){
+        when(userRepository.findByConfirmationToken(confirmRegistrationRequestDto.getToken())).thenReturn(Optional.of(users));
+        when(userRepository.save(users)).thenReturn(users);
+        when(walletRepository.save(wallet)).thenReturn(wallet);
+        BaseResponse baseResponse = userServiceImpl.confirmRegistration(confirmRegistrationRequestDto);
+        Assertions.assertThat(baseResponse.getDescription()).isEqualTo("Account verification successful");
     }
 }
 

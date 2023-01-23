@@ -10,9 +10,9 @@ import com.example.food.pojos.ProductResponseDto;
 
 public interface ProductService {
     PaginatedProductResponse searchProduct(ProductSearchDto productSearchDto);
-    
+
     UpdatedProductResponse updateProduct(Long productId, UpdateProductDto productDto);
-    
+
     CreateProductResponse addNewProduct(ProductDto productDto);
 
     ProductResponse fetchAllProducts();
