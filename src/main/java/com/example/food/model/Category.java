@@ -28,6 +28,5 @@ public class Category {
     @UpdateTimestamp
     private Date modifiedAt;
     @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
-    //Todo: Look into
     private List<Product> productList;
 }

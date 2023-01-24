@@ -1,4 +1,5 @@
 package com.example.food.Enum;
+
 import lombok.Getter;
 import java.math.BigDecimal;
 @Getter
