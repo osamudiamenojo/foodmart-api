@@ -16,7 +16,8 @@ public class UserUtil {
     public String getAuthenticatedUserEmail(){
 
       UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+        String loggedEmail = userDetails.getUsername();
+        System.out.println(loggedEmail);
       return userDetails.getUsername();
     }
 
