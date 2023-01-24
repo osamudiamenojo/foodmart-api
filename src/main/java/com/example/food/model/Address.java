@@ -1,9 +1,16 @@
 package com.example.food.model;
 
+import lombok.*;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
+@Getter
+@Builder
 public class Address {
 
     @Id

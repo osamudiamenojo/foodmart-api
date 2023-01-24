@@ -1,22 +1,20 @@
 package com.example.food.model;
 
+import com.example.food.Enum.DeliveryMethod;
 import com.example.food.Enum.OrderStatus;
 import com.example.food.Enum.PaymentMethod;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
 @Entity
+@Table(name = "orders")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -24,6 +22,7 @@ import java.util.List;
 @Builder
 public class Order {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String imageUrl;
     @CreationTimestamp
@@ -37,20 +36,17 @@ public class Order {
     @ManyToOne(cascade = CascadeType.ALL)
     private Users user;
     @OneToMany
-    @JoinColumn(name= "order_product_id")
+    @JoinColumn(name = "order_product_id")
     private List<Product> productList;
     @OneToOne
     private Cart cart;
     @JsonIgnore
     @OneToOne
     private Address address;
-    private BigDecimal flatRate;
     private PaymentMethod paymentMethod;
     private BigDecimal deliveryFee;
-    private BigDecimal discount;
-    private String deliveryMethod;
+    private Double discount;
+    private DeliveryMethod deliveryMethod;
+    private BigDecimal subTotal;
     private BigDecimal totalOrderPrice;
-
-
-
 }
