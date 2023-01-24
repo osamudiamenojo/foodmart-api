@@ -3,12 +3,10 @@ package com.example.food.service.serviceImpl;
 import com.example.food.Enum.ResponseCodeEnum;
 import com.example.food.configurations.security.CustomUserDetailsService;
 import com.example.food.configurations.security.JwtUtil;
-import com.example.food.dto.ConfirmRegistrationRequestDto;
-import com.example.food.dto.EmailSenderDto;
+import com.example.food.dto.*;
 import com.example.food.model.Users;
 import com.example.food.model.Wallet;
 import com.example.food.pojos.CreateUserRequest;
-import com.example.food.dto.LoginRequestDto;
 import com.example.food.repositories.UserRepository;
 import com.example.food.repositories.WalletRepository;
 import com.example.food.restartifacts.BaseResponse;
@@ -16,6 +14,7 @@ import com.example.food.services.EmailService;
 import com.example.food.services.serviceImpl.UserServiceImpl;
 import com.example.food.util.AppUtil;
 import com.example.food.util.ResponseCodeUtil;
+import com.example.food.util.UserUtil;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,7 +44,10 @@ class UserServiceImplTest {
     @Mock
     private JwtUtil jwtUtil;
     @Mock
-    private AppUtil appUtil;//me
+    private AppUtil appUtil;
+
+    @Mock
+    private UserUtil userUtil;
 
     @Mock
     private CustomUserDetailsService customUserDetailsService;
@@ -157,5 +159,52 @@ class UserServiceImplTest {
         BaseResponse baseResponse = userServiceImpl.confirmRegistration(confirmRegistrationRequestDto);
         Assertions.assertThat(baseResponse.getDescription()).isEqualTo("Account verification successful");
     }
+
+    @Test
+    public void updatePassword_Success() {
+        // Arrange
+        ChangePasswordDto passwordDto = new ChangePasswordDto();
+        passwordDto.setOldPassword("oldpassword");
+        passwordDto.setNewPassword("newpassword");
+        passwordDto.setConfirmPassword("newpassword");
+
+        Users mockUser = new Users();
+        mockUser.setEmail("user@example.com");
+        mockUser.setPassword(passwordEncoder.encode("oldpassword"));
+
+        when(userUtil.getAuthenticatedUserEmail()).thenReturn("user@example.com");
+        when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(mockUser));
+        when(userRepository.save(mockUser)).thenReturn(mockUser);
+
+        // Act
+        BaseResponse response = userServiceImpl.updatePassword(passwordDto);
+
+        // Assert
+        assertEquals(response.getCode(), ResponseCodeEnum.SUCCESS.getCode());
+        assertEquals(response.getDescription(), "Your password is successfully updated");
+        verify(userRepository, times(1)).save(mockUser);
+    }
+
+    @Test
+    public void updatePassword_OldPasswordNotMatch() {
+        ChangePasswordDto passwordDto = new ChangePasswordDto();
+        passwordDto.setOldPassword("oldpassword");
+        passwordDto.setNewPassword("newpassword");
+        passwordDto.setConfirmPassword("newpassword");
+
+        Users mockUser = new Users();
+        mockUser.setEmail("user@example.com");
+        mockUser.setPassword(passwordEncoder.encode("wrongpassword"));
+
+        when(userUtil.getAuthenticatedUserEmail()).thenReturn("user@example.com");
+        when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(mockUser));
+
+        BaseResponse response = userServiceImpl.updatePassword(passwordDto);
+
+        assertEquals(response.getCode(), ResponseCodeEnum.ERROR.getCode());
+        assertEquals(response.getDescription(), "Old password does not match");
+        verify(userRepository, times(0)).save(mockUser);
+    }
+
 }
 
