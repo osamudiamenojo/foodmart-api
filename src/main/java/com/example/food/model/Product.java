@@ -1,6 +1,6 @@
 package com.example.food.model;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
+
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -20,6 +20,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String categoryName;
     private String productName;
     private String description;
     private BigDecimal productPrice;
@@ -29,8 +30,8 @@ public class Product {
     private Date createdAt;
     @UpdateTimestamp
     private Date modifiedAt;
-    @ManyToOne
-    @JoinColumn(name = "categoryId",insertable = false,updatable = false)
-    private Category category;
+//    @OneToOne
+//    @JoinColumn(name = "categoryId", insertable = false,updatable = false, nullable = false)
+
 
 }
