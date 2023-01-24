@@ -106,7 +106,6 @@ class AdminServiceImplTest {
         when(userRepository.findAll()).thenReturn(List.of(user1));
         when(productRepository.findAll()).thenReturn(List.of(product));
         ApplicationStatisticsResponse baseResponse = adminService.showApplicationStatistics();
-        //assertEquals(baseResponse.getApplicationDetails().getNumberOfOrders(),1);
         assertEquals(baseResponse.getApplicationDetails().getNumberOfRegisteredCustomer(), 1);
         assertEquals(baseResponse.getApplicationDetails().getNumberOfAvailableProduct(), 1);
     }
