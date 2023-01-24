@@ -43,7 +43,6 @@ public class OrderServiceImpl implements OrderService {
         }
         OrderDto orderDto = new OrderDto();
         orderDto.setOrder(order.get());
-//        BeanUtils.copyProperties(order.get(),orderDto);
         response.setOrderDto(orderDto);
         return responseCodeUtil.updateResponseData(response,ResponseCodeEnum.SUCCESS,"These are the order details");
     }
@@ -62,7 +61,6 @@ public class OrderServiceImpl implements OrderService {
         if (myOrder.isEmpty()) {
             allOrderResponse.setCode(-1);
             allOrderResponse.setListOfOrders(new ArrayList<>());
-//            allOrderResponse.setDescription("You have not made an order");
             return responseCodeUtil.updateResponseData(allOrderResponse, ResponseCodeEnum.ORDERS_NOT_FOUND);
 
         }else {
