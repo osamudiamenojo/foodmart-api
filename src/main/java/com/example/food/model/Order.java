@@ -1,6 +1,7 @@
 package com.example.food.model;
 
 import com.example.food.Enum.OrderStatus;
+import com.example.food.Enum.PaymentMethod;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -16,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
+@Table(name = "orders")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -41,10 +43,10 @@ public class Order {
     @JsonIgnore
     @OneToOne
     private Address address;
-    private String paymentMethod;
+    private PaymentMethod paymentMethod;
     private BigDecimal deliveryFee;
     private BigDecimal discount;
-    private String deliveryMethod;
+    private PaymentMethod deliveryMethod;
     private BigDecimal totalOrderPrice;
 
 
