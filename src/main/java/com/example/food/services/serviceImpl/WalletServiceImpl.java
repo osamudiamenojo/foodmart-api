@@ -1,15 +1,20 @@
 package com.example.food.services.serviceImpl;
 
 import com.example.food.Enum.ResponseCodeEnum;
+import com.example.food.dto.WithDrawalDto;
 import com.example.food.model.Users;
 import com.example.food.model.Wallet;
 import com.example.food.pojos.WalletResponse;
 import com.example.food.repositories.UserRepository;
 import com.example.food.repositories.WalletRepository;
 import com.example.food.services.WalletService;
+import com.example.food.services.paystack.PayStackWithdrawalService;
+import com.example.food.services.paystack.PaystackDepositService;
+import com.example.food.services.paystack.payStackPojos.PaymentDto;
 import com.example.food.util.ResponseCodeUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +22,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class WalletServiceImpl implements WalletService {
+    private final PayStackWithdrawalService payStackWithdrawalService;
+    private final PaystackDepositService paystackDepositService;
     private final UserRepository userRepository;
     private final WalletRepository walletRepository;
     private final ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
@@ -43,5 +50,17 @@ public class WalletServiceImpl implements WalletService {
                     .build();
             return responseCodeUtil.updateResponseData(walletResponse, ResponseCodeEnum.ERROR);
         }
+    }
+
+    public ResponseEntity<String> walletWithdrawal(WithDrawalDto withDrawalDto){
+        return payStackWithdrawalService.withDrawFromWallet(withDrawalDto.getAccount_number(), withDrawalDto.getBank_code(), withDrawalDto.getAmount());
+    }
+
+    public ResponseEntity<String> fundWallet(PaymentDto paymentDto){
+        return paystackDepositService.fundWallet(paymentDto);
+    }
+
+    public ResponseEntity<String> verifyPayment(String reference){
+        return paystackDepositService.verifyPayment(reference);
     }
 }
