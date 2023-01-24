@@ -65,7 +65,7 @@ public class PayStackDeposit implements PaystackDepositService {
 
     public ResponseEntity<String> verifyPayment(String reference) {
 //        Users user = userUtil.currentUser();
-        Users user = userRepository.findByEmail("engrveju@gmail.com").get();
+        Users user = userRepository.findByEmail(userEmail).get();
         wallet =user.getWallet();
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer "+PayStackUtil.SECRET_KEY);
