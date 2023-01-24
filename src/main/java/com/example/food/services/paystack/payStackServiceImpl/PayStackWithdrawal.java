@@ -48,7 +48,7 @@ public class PayStackWithdrawal implements PayStackWithdrawalService {
     @Override
     public ResponseEntity<String> getAllBanks(String currency) {
         users = userUtil.currentUser();
-        email = users.getEmail();
+        email = userUtil.getAuthenticatedUserEmail();
         wallet = users.getWallet();
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + PayStackUtil.SECRET_KEY);
