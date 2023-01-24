@@ -35,7 +35,7 @@ public class PayStackDeposit implements PaystackDepositService {
 
     public ResponseEntity<String> fundWallet(PaymentDto paymentDto) {
         userEmail = userUtil.getAuthenticatedUserEmail();
-        Users user = userUtil.currentUser();
+        Users user = userRepository.findByEmail(userEmail).get();
         wallet =user.getWallet();
 
         paymentDto.setReference(PayStackUtil.generateTransactionReference());
