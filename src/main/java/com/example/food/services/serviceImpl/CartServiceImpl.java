@@ -142,6 +142,27 @@ public class CartServiceImpl implements CartService {
         }
     }
 
+    @Override
+    @Transactional
+    public CartResponse clearCart() {
+        try {
+            Users user = getLoggedInUser();
+            Cart userCart = cartRepository.findByUsersEmail(user.getEmail()).orElseThrow(RuntimeException::new);
+
+            cartRepository.deleteById(userCart.getId());
+
+            CartResponse response = CartResponse.builder()
+                    .cartTotal(BigDecimal.valueOf(0))
+                    .cartItemList(new ArrayList<>())
+                    .quantity(0)
+                    .build();
+            response.setCode(0);
+            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS, "Cart Cleared");
+        } catch (Exception e) {
+            log.error("An Error Occurred: {}", e.getMessage());
+            return responseCodeUtil.updateResponseData(new CartResponse(), ResponseCodeEnum.ERROR);
+        }
+    }
 
     private void removeItem(long cartItemId, Cart cart, CartItem cartItem) {
         cartItemRepository.deleteById(cartItemId);

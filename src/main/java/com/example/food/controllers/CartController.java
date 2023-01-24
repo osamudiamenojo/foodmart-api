@@ -33,5 +33,11 @@ public class CartController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @DeleteMapping("/clear-cart")
+    public ResponseEntity<CartResponse> clearCart() {
+        CartResponse response = cartService.clearCart();
+        return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
+    }
+
 }
 
