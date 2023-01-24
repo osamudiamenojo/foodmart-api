@@ -102,4 +102,19 @@ public class CartServiceImplTest {
         Assertions.assertThat(cart).isNotNull();
     }
 
+    @Test
+    void testClearCart() {
+        // Arrange
+        doNothing().when(cartRepository).deleteById(anyLong());
+
+        // Act
+        CartResponse actualClearCartResult = cartServiceImpl.clearCart();
+        cartRepository.deleteById(1L);
+
+
+        // Assert
+        assertEquals(-1, actualClearCartResult.getCode());
+        verify(cartRepository, times(1)).deleteById(1L);
+    }
+
 }
