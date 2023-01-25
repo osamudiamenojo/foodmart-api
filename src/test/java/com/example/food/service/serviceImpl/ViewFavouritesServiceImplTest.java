@@ -71,7 +71,7 @@ class ViewFavouritesServiceImplTest {
     @Test
     public void testViewAFavouriteProduct_withUserNotFound() {
         FavouriteProductResponse favouriteProductResponse = favouritesService.viewAFavouriteProduct(232L);
-        assertEquals("User not found", favouriteProductResponse.getDescription());
+        assertEquals("Email does not exist", favouriteProductResponse.getDescription());
     }
 
     @Test
