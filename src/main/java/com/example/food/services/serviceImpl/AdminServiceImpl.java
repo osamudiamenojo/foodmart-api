@@ -7,9 +7,17 @@ import com.example.food.configurations.security.JwtUtil;
 import com.example.food.dto.AdminPasswordResetDto;
 import com.example.food.dto.AdminPasswordResetRequestDto;
 import com.example.food.dto.EmailSenderDto;
+import com.example.food.model.Order;
 import com.example.food.model.PasswordResetTokenEntity;
+import com.example.food.model.Product;
 import com.example.food.model.Users;
+import com.example.food.pojos.ApplicationDetails;
+import com.example.food.pojos.ApplicationStatisticsResponse;
+import com.example.food.pojos.CreateUserResponse;
+import com.example.food.pojos.UsersBasicInformationDetails;
 import com.example.food.repositories.AdminPasswordResetTokenRepository;
+import com.example.food.repositories.OrderRepository;
+import com.example.food.repositories.ProductRepository;
 import com.example.food.repositories.UserRepository;
 import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.AdminService;
@@ -20,8 +28,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
-
+import java.util.stream.Collectors;
 
 
 @Service
@@ -32,6 +41,8 @@ public class AdminServiceImpl implements AdminService {
     private final UserRepository userRepository;
     private final CustomUserDetailsService customUserDetailsService;
     private final EmailService emailService;
+    private final ProductRepository productRepository;
+    private final OrderRepository orderRepository;
 
     private final ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
 
@@ -88,5 +99,39 @@ public class AdminServiceImpl implements AdminService {
             }
         }
         return responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.ERROR_RESETTING_PASSWORD);
+    }
+
+    @Override
+    public CreateUserResponse displayAdminBasicInformation() {
+        CreateUserResponse baseResponse = new CreateUserResponse();
+        List<Users> usersThatAreAdmin = userRepository.findAllByRole(Role.ROLE_ADMIN);
+        if (usersThatAreAdmin.isEmpty())
+            responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.ERROR, "No record found");
+
+        List<UsersBasicInformationDetails> adminsBasicDetailsList = usersThatAreAdmin.stream()
+                .map(eachAdminDetails -> UsersBasicInformationDetails.builder()
+                        .firstName(eachAdminDetails.getFirstName())
+                        .lastName(eachAdminDetails.getLastName())
+                        .email(eachAdminDetails.getEmail())
+                        .build()).collect(Collectors.toList());
+        baseResponse.setUsersBasicInformationDetails(adminsBasicDetailsList);
+
+        return responseCodeUtil.updateResponseData(baseResponse,ResponseCodeEnum.SUCCESS);
+    }
+
+    @Override
+    public ApplicationStatisticsResponse showApplicationStatistics() {
+        ApplicationStatisticsResponse applicationStatisticsResponse = new ApplicationStatisticsResponse();
+        List<Users> numberOfRegisteredUser = userRepository.findAll();
+        //List<Order> numberOfOder = orderRepository.findAll();
+        List<Product>numberOfAvailableProduct = productRepository.findAll();
+        ApplicationDetails applicationDetails = ApplicationDetails.builder()
+                .numberOfRegisteredCustomer(numberOfRegisteredUser.size())
+                .numberOfAvailableProduct(numberOfAvailableProduct.size())
+                //.numberOfOrders(numberOfOder.size())
+                .build();
+        applicationStatisticsResponse.setApplicationDetails(applicationDetails);
+        return responseCodeUtil.updateResponseData(applicationStatisticsResponse, ResponseCodeEnum.SUCCESS);
+
     }
 }

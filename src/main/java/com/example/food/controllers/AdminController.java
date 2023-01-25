@@ -5,10 +5,7 @@ import com.example.food.dto.AdminPasswordResetRequestDto;
 import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.AdminService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -29,5 +26,15 @@ public class AdminController {
     @PostMapping("/password-reset")
     public BaseResponse adminResetPassword(@Valid @RequestBody AdminPasswordResetDto adminPasswordResetDto) {
         return adminService.adminResetPassword(adminPasswordResetDto);
+    }
+    @GetMapping("/view-admin-details")
+    public BaseResponse viewAdminDetails(){
+
+        return  adminService.displayAdminBasicInformation();
+    }
+    @GetMapping("/app-statistics")
+    public BaseResponse viewAppStatistics(){
+
+        return adminService.showApplicationStatistics();
     }
 }

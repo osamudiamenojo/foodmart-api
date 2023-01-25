@@ -4,5 +4,7 @@ import lombok.Data;
 
 @Data
 public class ConfirmRegistrationRequestDto {
+
     private String token;
+
 }
