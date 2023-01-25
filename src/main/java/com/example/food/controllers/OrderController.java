@@ -2,6 +2,7 @@ package com.example.food.controllers;
 
 import com.example.food.pojos.OrderResponseDto;
 import com.example.food.restartifacts.BaseResponse;
+import com.example.food.pojos.ViewAllOrderResponse;
 import com.example.food.services.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,5 +28,10 @@ public class OrderController {
     public BaseResponse viewOrderHistory(){
         return orderService.viewOrderHistory();
 
+    }
+
+    @GetMapping("/viewOrder/{userId}")
+    public ResponseEntity<ViewAllOrderResponse> viewAllOrders(@PathVariable Long userId) {
+        return new ResponseEntity<>(orderService.viewAllOrders(userId), HttpStatus.OK);
     }
 }

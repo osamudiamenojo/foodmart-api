@@ -6,6 +6,7 @@ import com.example.food.model.Order;
 import com.example.food.model.Users;
 import com.example.food.pojos.OrderResponseDto;
 import com.example.food.pojos.ViewOrderHistoryResponse;
+import com.example.food.pojos.ViewAllOrderResponse;
 import com.example.food.repositories.OrderRepository;
 import com.example.food.repositories.UserRepository;
 import com.example.food.restartifacts.BaseResponse;
@@ -46,9 +47,32 @@ public class OrderServiceImpl implements OrderService {
         }
         OrderDto orderDto = new OrderDto();
         orderDto.setOrder(order.get());
-//        BeanUtils.copyProperties(order.get(),orderDto);
         response.setOrderDto(orderDto);
         return responseCodeUtil.updateResponseData(response,ResponseCodeEnum.SUCCESS,"These are the order details");
+    }
+
+    @Override
+    public ViewAllOrderResponse viewAllOrders(Long userId) {
+        ViewAllOrderResponse allOrderResponse = new ViewAllOrderResponse();
+        String email = userUtil.getAuthenticatedUserEmail();
+        Optional<Users> users = userRepository.findByEmail(email);
+
+        if (users.isEmpty()) {
+            return responseCodeUtil.updateResponseData(allOrderResponse, ResponseCodeEnum.USER_NOT_FOUND);
+        }
+        List<Order> myOrder = orderRepository.findAllByUser_Email(email);
+
+        if (myOrder.isEmpty()) {
+            allOrderResponse.setCode(-1);
+            allOrderResponse.setListOfOrders(new ArrayList<>());
+            return responseCodeUtil.updateResponseData(allOrderResponse, ResponseCodeEnum.ORDERS_NOT_FOUND);
+
+        }else {
+            allOrderResponse.setCode(0);
+            allOrderResponse.setListOfOrders(myOrder);
+            allOrderResponse.setDescription("You have  made an order");
+            return responseCodeUtil.updateResponseData(allOrderResponse, ResponseCodeEnum.SUCCESS);
+        }
     }
 
     @Override
