@@ -20,7 +20,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String categoryName;
+    //private String categoryName;
     private String productName;
     private String description;
     private BigDecimal productPrice;
@@ -30,8 +30,9 @@ public class Product {
     private Date createdAt;
     @UpdateTimestamp
     private Date modifiedAt;
-//    @OneToOne
-//    @JoinColumn(name = "categoryId", insertable = false,updatable = false, nullable = false)
+    @ManyToOne(targetEntity = Category.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "categoryId")
+    private Category category;
 
 
 }

@@ -103,9 +103,10 @@ public class ProductServiceImpl implements ProductService {
             return responseCodeUtil.updateResponseData(createProductResponse, ResponseCodeEnum.ERROR,  "There is no Category by the name " + productDto.getCategoryName());
         }
         Product product = Product.builder()
-                .categoryName(category.getCategoryName())
+                .category(category)
                 .productPrice(productDto.getProductPrice())
                 .productName(productDto.getProductName())
+                .description(productDto.getDescription())
                 .imageUrl(productDto.getImageUrl())
                 .quantity(productDto.getQuantity())
                 .build();
@@ -128,7 +129,7 @@ public class ProductServiceImpl implements ProductService {
                     productDto.setProductName(product.getProductName());
                     productDto.setProductPrice(product.getProductPrice());
                     productDto.setImageUrl(product.getImageUrl());
-                    productDto.setCategoryName(product.getCategoryName());
+                    productDto.setCategoryName(productDto.getCategoryName());
                     productDto.setQuantity(product.getQuantity());
                     return productDto;
                 }).collect(Collectors.toList());
