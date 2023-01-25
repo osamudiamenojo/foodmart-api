@@ -31,7 +31,7 @@ public class OrderResponse extends BaseResponse {
     private String address;
     private PaymentMethod paymentMethod;
     private BigDecimal deliveryFee;
-    private BigDecimal discount;
+    private Double discount;
     private DeliveryMethod deliveryMethod;
     private BigDecimal totalOrderPrice;
 }

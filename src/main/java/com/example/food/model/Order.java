@@ -38,8 +38,8 @@ public class Order {
     @OneToMany
     @JoinColumn(name = "order_product_id")
     private List<Product> productList;
-    @OneToOne
-    private Cart cart;
+    @OneToMany
+    private List<OrderedItem> orderedItem;
     @JsonIgnore
     @OneToOne
     private Address address;
