@@ -17,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/wallet")
 public class WalletController {
-    private final PayStackWithdrawalService payStackWithdrawalService;
     private final WalletService walletService;
 
     @GetMapping("/balance")
@@ -28,7 +27,7 @@ public class WalletController {
 
     @PostMapping("/getBankDetails")
     public ResponseEntity<List<Bank>> fetchBankDetails(){
-        return payStackWithdrawalService.getAllBanks();
+        return walletService.getAllBanks();
     }
     @PostMapping("/withdrawal")
     public ResponseEntity<String> walletWithdrawal(@RequestBody WithDrawalDto withDrawalDto){

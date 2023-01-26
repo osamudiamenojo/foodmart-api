@@ -10,6 +10,7 @@ import com.example.food.repositories.WalletRepository;
 import com.example.food.services.WalletService;
 import com.example.food.services.paystack.PayStackWithdrawalService;
 import com.example.food.services.paystack.PaystackPaymentService;
+import com.example.food.services.paystack.payStackPojos.Bank;
 import com.example.food.util.ResponseCodeUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -63,5 +65,9 @@ public class WalletServiceImpl implements WalletService {
 
     public ResponseEntity<String> verifyPayment(String reference,String transactionType){
         return paystackPaymentService.verifyPayment(reference, transactionType);
+    }
+
+    public ResponseEntity<List<Bank>> getAllBanks() {
+        return payStackWithdrawalService.getAllBanks();
     }
 }

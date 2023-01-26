@@ -16,6 +16,7 @@ public class ProductSearchDto {
     public ProductSearchDto() {
         this.sortDirection = "asc";
         this.sortBy = "productName";
+        this.filter = "";
         this.pageNumber = 0;
         this.pageSize = 10;
     }
