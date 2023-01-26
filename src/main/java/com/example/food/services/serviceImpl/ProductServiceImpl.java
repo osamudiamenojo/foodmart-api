@@ -1,5 +1,4 @@
 package com.example.food.services.serviceImpl;
-
 import com.example.food.Enum.ResponseCodeEnum;
 import com.example.food.Enum.Role;
 import com.example.food.dto.ProductDto;
@@ -28,7 +27,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -90,17 +88,17 @@ public class ProductServiceImpl implements ProductService {
 
 
     public CreateProductResponse addNewProduct(ProductDto productDto) {
-        Optional<Product> newProduct = productRepository.findByProductName(productDto.getProductName());
 
         CreateProductResponse createProductResponse = CreateProductResponse.builder()
                 .productName(productDto.getProductName())
                 .build();
-        if (newProduct.isPresent()) {
-            return responseCodeUtil.updateResponseData(createProductResponse, ResponseCodeEnum.ERROR, "Product Already Exists!");
-        }
         Category category = categoryRepository.findByCategoryName(productDto.getCategoryName());
         if(category == null) {
             return responseCodeUtil.updateResponseData(createProductResponse, ResponseCodeEnum.ERROR,  "There is no Category by the name " + productDto.getCategoryName());
+        }
+        Optional<Product> newProduct = productRepository.findByProductName(productDto.getProductName());
+        if (newProduct.isPresent()) {
+            return responseCodeUtil.updateResponseData(createProductResponse, ResponseCodeEnum.ERROR, "Product Already Exists!");
         }
         Product product = Product.builder()
                 .category(category)
@@ -113,7 +111,7 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(product);
         return responseCodeUtil.updateResponseData(createProductResponse, ResponseCodeEnum.SUCCESS, "New Product Has Been Added");
     }
-
+    
 
     public ProductResponse fetchAllProducts() {
         ProductResponse response = new ProductResponse();
@@ -130,6 +128,7 @@ public class ProductServiceImpl implements ProductService {
                     productDto.setProductPrice(product.getProductPrice());
                     productDto.setImageUrl(product.getImageUrl());
                     productDto.setCategoryName(productDto.getCategoryName());
+                    productDto.setCategoryName(product.getCategory().getCategoryName());
                     productDto.setQuantity(product.getQuantity());
                     return productDto;
                 }).collect(Collectors.toList());
