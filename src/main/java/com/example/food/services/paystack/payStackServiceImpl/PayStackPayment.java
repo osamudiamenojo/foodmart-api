@@ -13,6 +13,7 @@ import com.example.food.services.paystack.payStackPojos.PaymentResponse;
 import com.example.food.util.PayStackUtil;
 import com.example.food.util.UserUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -22,6 +23,7 @@ import java.math.BigDecimal;
 
 //@AllArgsConstructor
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class PayStackPayment implements PaystackPaymentService {
     private Wallet wallet;
@@ -63,6 +65,7 @@ public class PayStackPayment implements PaystackPaymentService {
 
             return new ResponseEntity<>(response.getBody().getData().getAuthorization_url(),HttpStatus.ACCEPTED);
         } catch (HttpClientErrorException e) {
+            log.error(e.getMessage());
             return new ResponseEntity<>("Failed to initiate transaction", e.getStatusCode());
         }
     }

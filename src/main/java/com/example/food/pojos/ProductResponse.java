@@ -16,5 +16,6 @@ public class ProductResponse extends BaseResponse {
         private List<ProductDto> products;
 
         public void setProductDto(List<ProductDto> productDto) {
+                this.products=productDto;
         }
 }

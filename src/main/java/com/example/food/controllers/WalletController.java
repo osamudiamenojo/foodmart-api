@@ -3,19 +3,21 @@ package com.example.food.controllers;
 import com.example.food.dto.WithDrawalDto;
 import com.example.food.pojos.WalletResponse;
 import com.example.food.services.WalletService;
-import com.example.food.services.paystack.payStackPojos.PaymentDto;
+import com.example.food.services.paystack.PayStackWithdrawalService;
+import com.example.food.services.paystack.payStackPojos.Bank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/wallet")
 public class WalletController {
-
+    private final PayStackWithdrawalService payStackWithdrawalService;
     private final WalletService walletService;
 
     @GetMapping("/balance")
@@ -24,6 +26,10 @@ public class WalletController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PostMapping("/getBankDetails")
+    public ResponseEntity<List<Bank>> fetchBankDetails(){
+        return payStackWithdrawalService.getAllBanks();
+    }
     @PostMapping("/withdrawal")
     public ResponseEntity<String> walletWithdrawal(@RequestBody WithDrawalDto withDrawalDto){
         return walletService.walletWithdrawal(withDrawalDto);

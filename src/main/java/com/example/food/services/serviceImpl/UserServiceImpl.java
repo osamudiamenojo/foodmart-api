@@ -208,6 +208,8 @@ public class UserServiceImpl implements UserService {
             wallet.setWalletBalance(BigDecimal.valueOf(0));
             wallet.setUser(existingUser.get());
             walletRepository.save(wallet);
+            existingUser.get().setWallet(wallet);
+            userRepository.save(existingUser.get());
 
             return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS,
                     "Account verification successful");

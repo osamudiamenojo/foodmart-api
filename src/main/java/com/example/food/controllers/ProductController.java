@@ -37,7 +37,7 @@ public class ProductController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<PaginatedProductResponse> searchProduct(@RequestBody  ProductSearchDto productSearchDto) {
+    public ResponseEntity<PaginatedProductResponse> searchProduct(ProductSearchDto productSearchDto) {
         PaginatedProductResponse response = productService.searchProduct(productSearchDto);
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }

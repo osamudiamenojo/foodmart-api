@@ -12,9 +12,7 @@ import com.example.food.repositories.WalletRepository;
 import com.example.food.repositories.WalletTransactionRepository;
 import com.example.food.services.EmailService;
 import com.example.food.services.paystack.PayStackWithdrawalService;
-import com.example.food.services.paystack.payStackPojos.TransferRecipient;
-import com.example.food.services.paystack.payStackPojos.TransferRequest;
-import com.example.food.services.paystack.payStackPojos.WithdrawalResponse;
+import com.example.food.services.paystack.payStackPojos.*;
 import com.example.food.util.PayStackUtil;
 import com.example.food.util.UserUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +23,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -46,16 +46,16 @@ public class PayStackWithdrawal implements PayStackWithdrawalService {
     private TransferRequest transferRequest;
 
     @Override
-    public ResponseEntity<String> getAllBanks(String currency) {
-        email = userUtil.getAuthenticatedUserEmail();
-        users = userRepository.findByEmail(email).get();
-        wallet = users.getWallet();
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + PayStackUtil.SECRET_KEY);
-        HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange(PayStackUtil.GET_ALL_BANKS + currency, HttpMethod.GET, entity, String.class);
-            return response;
+    public ResponseEntity<List<Bank>> getAllBanks() {
+            RestTemplate restTemplate = new RestTemplate();
+            BankDetailsResponse response = restTemplate.getForObject(PayStackUtil.GET_ALL_BANKS, BankDetailsResponse.class);
+
+            List<BankResponseDto> banks = response.getData();
+            List<Bank> bankList = new ArrayList<>();
+            for (BankResponseDto bank : banks) {
+                bankList.add(new Bank(bank.getName(), bank.getCode()));
+            }
+            return ResponseEntity.ok(bankList);
     }
     @Override
     public ResponseEntity<String> withDrawFromWallet(String account_number, String bank_code, BigDecimal amount) {
@@ -155,7 +155,7 @@ public class PayStackWithdrawal implements PayStackWithdrawalService {
 
         if(response.getStatusCodeValue()==200){
             updateWallet(requestAmount);
-        return response;
+        return new ResponseEntity<>("Your account "+bankDetails.getAccountName()+": "+bankDetails.getAccountNumber()+" has been successfully credited with "+transferRequest.getAmount(),HttpStatus.OK);
         }
         return new ResponseEntity<>("Transfer Failed. Try again",HttpStatus.BAD_REQUEST);
     }
