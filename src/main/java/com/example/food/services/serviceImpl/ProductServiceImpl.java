@@ -74,6 +74,7 @@ public class ProductServiceImpl implements ProductService {
 
         if (!user.getRole().equals(Role.ROLE_ADMIN)) {
             return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.UNAUTHORISED_ACCESS);
+
         }
         Product product = productRepository.findById(productId).orElse(null);
         if (product == null) {
