@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/wallet")
@@ -27,11 +29,11 @@ public class WalletController {
         return walletService.walletWithdrawal(withDrawalDto);
     }
     @PostMapping("/fundWallet")
-    public ResponseEntity<String> fundWallet(@RequestBody PaymentDto paymentDto){
-        return walletService.fundWallet(paymentDto);
+    public ResponseEntity<String> fundWallet(@RequestParam BigDecimal amount, @RequestParam String transactionType){
+        return walletService.fundWallet(amount,transactionType);
     }
-    @GetMapping("/verifyPayment/{reference}")
-    public ResponseEntity<String> verifyPayment(@PathVariable  String reference){
-        return walletService.verifyPayment(reference);
+    @GetMapping("/verifyPayment/{reference}/{makePayment}")
+    public ResponseEntity<String> verifyPayment(@PathVariable  String reference, @PathVariable  String makePayment){
+        return walletService.verifyPayment(reference,makePayment);
     }
 }

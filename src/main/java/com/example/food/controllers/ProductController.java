@@ -19,6 +19,7 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
+@CrossOrigin("http://localhost:3001/")
 public class ProductController {
     private final ProductService productService;
 
@@ -36,7 +37,7 @@ public class ProductController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<PaginatedProductResponse> searchProduct(ProductSearchDto productSearchDto) {
+    public ResponseEntity<PaginatedProductResponse> searchProduct(@RequestBody  ProductSearchDto productSearchDto) {
         PaginatedProductResponse response = productService.searchProduct(productSearchDto);
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
