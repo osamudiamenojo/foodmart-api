@@ -9,4 +9,6 @@ public interface CartService {
     BaseResponse removeCartItem(long cartItemId);
 
     CartResponse addCartItem(Long productId);
+
+    CartResponse clearCart();
 }

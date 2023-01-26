@@ -26,6 +26,6 @@ public class Cart {
     //Todo Look into
     private List<CartItem> cartItemList;
     @JsonIgnore
-    @OneToOne(targetEntity = Users.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(targetEntity = Users.class, fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private Users users;
 }
