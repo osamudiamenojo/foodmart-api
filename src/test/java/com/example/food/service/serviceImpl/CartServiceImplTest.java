@@ -25,10 +25,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+
 @ExtendWith(MockitoExtension.class)
 public class CartServiceImplTest {
     @Mock
@@ -42,8 +44,8 @@ public class CartServiceImplTest {
     @InjectMocks
     private CartServiceImpl cartServiceImpl;
     Users user;
-    Cart cart;
-    CartItem cartItem1,cartItem2, cartItem3;
+    Cart cart, cart2;
+    CartItem cartItem1, cartItem2, cartItem3;
     Product product1, product2;
     BaseResponse baseResponse2;
 
@@ -52,16 +54,23 @@ public class CartServiceImplTest {
     void setUp() {
         product1 = Product.builder().id(1L)
                 .productName("Burger")
-                .productPrice(BigDecimal.valueOf(2000D)).build();
+                .productPrice(BigDecimal.valueOf(2000)).build();
         product2 = Product.builder().id(2L)
                 .productName("Apple")
-                .productPrice(BigDecimal.valueOf(2000D)).build();
+                .productPrice(BigDecimal.valueOf(2000)).build();
         user = Users.builder().id(1L).email("mensa@gmail.com").password("password").build();
         cart = Cart.builder().id(1L).users(user).cartItemList(new ArrayList<>()).cartTotal(BigDecimal.valueOf(0)).quantity(0).build();
         user.setCart(cart);
         cartItem1 = CartItem.builder().id(1L).cart(cart).product(product1).quantity(0).subTotal(BigDecimal.valueOf(0)).build();
         cartItem2 = CartItem.builder().id(2L).cart(cart).product(product2).quantity(0).subTotal(BigDecimal.valueOf(0)).build();
         cartItem3 = CartItem.builder().id(3L).cart(cart).product(product2).quantity(0).subTotal(BigDecimal.valueOf(0)).build();
+        cart2 = Cart.builder()
+                .id(1L)
+                .users(user)
+                .cartItemList(new ArrayList<>(List.of(cartItem1)))
+                .cartTotal(BigDecimal.valueOf(2000))
+                .quantity(1)
+                .build();
         baseResponse2 = new BaseResponse();
         baseResponse2.setCode(0);
         baseResponse2.setDescription("Item is not in user cart");
@@ -74,7 +83,7 @@ public class CartServiceImplTest {
     @Test
     public void testRemoveCartItemSuccess() {
         Mockito.when(cartItemRepository.findById(anyLong())).thenReturn(Optional.of(cartItem1));
-        Mockito.when(userRepository.findByEmail( any())).thenReturn(Optional.ofNullable(user));
+        Mockito.when(userRepository.findByEmail(any())).thenReturn(Optional.ofNullable(user));
         when(cartRepository.findByUsersEmail(anyString())).thenReturn(Optional.ofNullable(cart));
         Mockito.doNothing().when(cartItemRepository).deleteById(anyLong());
 
@@ -88,7 +97,7 @@ public class CartServiceImplTest {
         when(productRepository.findById(anyLong())).thenReturn(Optional.ofNullable(product1));
         Mockito.when(cartRepository.findByUsersEmail(anyString())).thenReturn(Optional.of(cart));
         Mockito.when(cartItemRepository.findCartItemByCartIdAndProductId(anyLong(), anyLong())).thenReturn(Optional.ofNullable(cartItem2));
-        Mockito.when(userRepository.findByEmail( any())).thenReturn(Optional.ofNullable(user));
+        Mockito.when(userRepository.findByEmail(any())).thenReturn(Optional.ofNullable(user));
         Mockito.when(cartRepository.save(any())).thenReturn(cart);
         Mockito.when(cartItemRepository.save(any())).thenReturn(cartItem1);
 
@@ -109,6 +118,20 @@ public class CartServiceImplTest {
         // Assert
         assertEquals(-1, actualClearCartResult.getCode());
         verify(cartRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void testReduceProductQuantity() {
+        when(productRepository.findById(anyLong())).thenReturn(Optional.ofNullable(product1));
+        when(cartRepository.findByUsersEmail(anyString())).thenReturn(Optional.of(cart2));
+        when(cartItemRepository.findCartItemByCartIdAndProductId(anyLong(), anyLong())).thenReturn(Optional.ofNullable(cartItem2));
+        when(userRepository.findByEmail(any())).thenReturn(Optional.ofNullable(user));
+        when(cartItemRepository.save(any())).thenReturn(cartItem1);
+
+        CartResponse response = cartServiceImpl.reduceProductQuantity(1L);
+
+        Assertions.assertThat(cart.getQuantity()).isNotEqualTo(cart2.getQuantity());
+        Assertions.assertThat(cart2.getCartItemList()).isNotNull();
     }
 
 }

@@ -4,16 +4,13 @@ import com.example.food.Enum.ResponseCodeEnum;
 import com.example.food.Enum.Role;
 import com.example.food.configurations.security.CustomUserDetailsService;
 import com.example.food.configurations.security.JwtUtil;
-import com.example.food.dto.EmailSenderDto;
 import com.example.food.dto.*;
+import com.example.food.model.Cart;
+import com.example.food.model.PasswordResetTokenEntity;
 import com.example.food.model.Users;
 import com.example.food.model.Wallet;
 import com.example.food.pojos.CreateUserRequest;
-import com.example.food.dto.LoginRequestDto;
-import com.example.food.dto.EditUserDto;
-import com.example.food.dto.PasswordResetDto;
-import com.example.food.dto.PasswordResetRequestDto;
-import com.example.food.model.PasswordResetTokenEntity;
+import com.example.food.repositories.CartRepository;
 import com.example.food.repositories.PasswordResetTokenRepository;
 import com.example.food.repositories.UserRepository;
 import com.example.food.repositories.WalletRepository;
@@ -22,9 +19,8 @@ import com.example.food.services.EmailService;
 import com.example.food.services.UserService;
 import com.example.food.util.AppUtil;
 import com.example.food.util.ResponseCodeUtil;
-import lombok.RequiredArgsConstructor;
-import net.bytebuddy.utility.RandomString;
 import com.example.food.util.UserUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -49,6 +45,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
     private final WalletRepository walletRepository;
+    private final CartRepository cartRepository;
 
     @Override
     public ResponseEntity<String> login(LoginRequestDto request) {
@@ -171,6 +168,11 @@ public class UserServiceImpl implements UserService {
         if (isUserExist)
             return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.ERROR_DUPLICATE_USER);
 
+        Wallet wallet = Wallet.builder()
+                .walletBalance(BigDecimal.valueOf(0))
+                .build();
+        walletRepository.save(wallet);
+
         Users newUser = new Users();
         newUser.setFirstName(createUserRequest.getFirstName());
         newUser.setLastName(createUserRequest.getLastName());
@@ -179,7 +181,16 @@ public class UserServiceImpl implements UserService {
         String token = jwtUtil.generateSignUpConfirmationToken(createUserRequest.getEmail());
         newUser.setIsActive(false);
         newUser.setConfirmationToken(token);
-        userRepository.save(newUser);
+        newUser.setRole(Role.ROLE_USER);
+        newUser.setWallet(wallet);
+
+        Cart cart = Cart.builder()
+                .users(newUser)
+                .build();
+        cartRepository.save(cart);
+
+        wallet.setUser(newUser);
+        walletRepository.save(wallet);
 
         String link = "<h3>Hello "  + createUserRequest.getFirstName()  +
                 "<br> Copy the link below to activate your account <br>Token :</h3>" + token;
@@ -203,11 +214,6 @@ public class UserServiceImpl implements UserService {
             existingUser.get().setConfirmationToken(null);
             existingUser.get().setIsActive(true);
             userRepository.save(existingUser.get());
-
-            Wallet wallet = new Wallet();
-            wallet.setWalletBalance(BigDecimal.valueOf(0));
-            wallet.setUser(existingUser.get());
-            walletRepository.save(wallet);
 
             return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS,
                     "Account verification successful");

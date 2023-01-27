@@ -5,10 +5,12 @@ import com.example.food.configurations.security.CustomUserDetailsService;
 import com.example.food.configurations.security.JwtUtil;
 import com.example.food.dto.ConfirmRegistrationRequestDto;
 import com.example.food.dto.EmailSenderDto;
+import com.example.food.model.Cart;
 import com.example.food.model.Users;
 import com.example.food.model.Wallet;
 import com.example.food.pojos.CreateUserRequest;
 import com.example.food.dto.LoginRequestDto;
+import com.example.food.repositories.CartRepository;
 import com.example.food.repositories.UserRepository;
 import com.example.food.repositories.WalletRepository;
 import com.example.food.restartifacts.BaseResponse;
@@ -63,6 +65,8 @@ class UserServiceImplTest {
     @Mock
     WalletRepository walletRepository;
     @Mock
+    CartRepository cartRepository;
+    @Mock
     private EmailService emailService;
     @Mock
     EmailSenderDto emailSenderDto;
@@ -72,6 +76,7 @@ class UserServiceImplTest {
     private ResponseCodeUtil responseCodeUtil;
     private CreateUserRequest createUserRequest;
     private Users users;
+    private Cart cart;
     LoginRequestDto loginRequestDto;
     ConfirmRegistrationRequestDto confirmRegistrationRequestDto;
     Wallet wallet;
@@ -98,6 +103,9 @@ class UserServiceImplTest {
         users.setEmail(createUserRequest.getEmail());
         users.setPassword(passwordEncoder.encode(createUserRequest.getPassword()));
         users.setConfirmationToken("adsfshdgfgkgkgjgkggk");
+
+        cart = new Cart();
+        cart.setUsers(users);
 
         responseCodeUtil = new ResponseCodeUtil();
         confirmRegistrationRequestDto = new ConfirmRegistrationRequestDto();
@@ -141,7 +149,8 @@ class UserServiceImplTest {
     public void signUp(){
         when(appUtil.validEmail(createUserRequest.getEmail())).thenReturn(true);
         when(userRepository.existsByEmail(createUserRequest.getEmail())).thenReturn(false);
-        when(userRepository.save(users)).thenReturn(users);
+        when(cartRepository.save(cart)).thenReturn(cart);
+        when(walletRepository.save(wallet)).thenReturn(wallet);
         doNothing().when(emailService).sendMail(isA(EmailSenderDto.class));
         emailService.sendMail(emailSenderDto);
         verify(emailService, times(1)).sendMail(emailSenderDto);
