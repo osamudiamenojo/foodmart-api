@@ -30,7 +30,7 @@ public class Product {
     @UpdateTimestamp
     private Date modifiedAt;
     @ManyToOne
-    @JoinColumn(name = "categoryId",insertable = false,updatable = false)
+    @JoinColumn(name = "categoryId")
     private Category category;
 
 }
