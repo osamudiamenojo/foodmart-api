@@ -19,6 +19,7 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
+@CrossOrigin("http://localhost:3001/")
 public class ProductController {
     private final ProductService productService;
 
