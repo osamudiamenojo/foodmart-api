@@ -191,4 +191,13 @@ public class CartServiceImpl implements CartService {
                 .build();
     }
 
+    @Override
+    public CartResponse viewCartItems() {
+        Users users = getLoggedInUser();
+        List<Cart> cartList = cartRepository.findAllByUsersOrderById(users);
+        return CartResponse.builder()
+                .cartList(cartList)
+                .totalCartElements(cartList.size())
+                .build();
+    }
 }

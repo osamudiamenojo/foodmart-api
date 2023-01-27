@@ -223,4 +223,36 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public BaseResponse updatePassword (ChangePasswordDto passwordDto) {
+        String email = userUtil.getAuthenticatedUserEmail();
+
+        BaseResponse baseResponse = new BaseResponse();
+
+        String oldPassword = passwordDto.getOldPassword();
+        String newPassword = passwordDto.getNewPassword();
+        String confirmPassword = passwordDto.getConfirmPassword();
+
+        Optional<Users> optionalUsers = userRepository.findByEmail(email);
+
+        if(optionalUsers.isPresent()){
+            Users users = optionalUsers.get();
+            String encodedPassword = users.getPassword();
+            boolean isPasswordAMatch = passwordEncoder.matches(oldPassword, encodedPassword);
+
+            if(!isPasswordAMatch) return responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.ERROR, "Old password does not match");
+
+            boolean isPasswordEquals = newPassword.equals(confirmPassword);
+
+            if(!isPasswordEquals) return responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.ERROR, "New password and confirm password do not match");
+
+            users.setPassword(passwordEncoder.encode(newPassword));
+
+            userRepository.save(users);
+        }
+
+        return responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.SUCCESS, "Your password is successfully updated");
+    }
+
+
 }

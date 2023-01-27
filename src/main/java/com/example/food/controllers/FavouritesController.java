@@ -2,6 +2,7 @@ package com.example.food.controllers;
 
 import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.FavouritesService;
+import com.example.food.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +25,8 @@ public class FavouritesController {
         return favouritesService.viewAFavouriteProduct(favouriteId);
     }
 
-    @DeleteMapping("/{productId}/remove")
-    public ResponseEntity<BaseResponse> removeFromFavourites(@PathVariable(value = "productId") Long productId) {
+    @DeleteMapping("/remove/{productId}")
+    public ResponseEntity<BaseResponse> removeFromFavourites(@PathVariable Long productId) {
         BaseResponse response = favouritesService.removeFromFavourites(productId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

@@ -1,5 +1,6 @@
 package com.example.food.service.serviceImpl;
 
+import com.example.food.dto.CartItemDto;
 import com.example.food.model.Cart;
 import com.example.food.model.CartItem;
 import com.example.food.model.Product;
@@ -10,6 +11,7 @@ import com.example.food.repositories.CartRepository;
 import com.example.food.repositories.ProductRepository;
 import com.example.food.repositories.UserRepository;
 import com.example.food.restartifacts.BaseResponse;
+import com.example.food.services.CartService;
 import com.example.food.services.serviceImpl.CartServiceImpl;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,16 +21,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,6 +45,8 @@ public class CartServiceImplTest {
     private UserRepository userRepository;
     @Mock
     private CartItemRepository cartItemRepository;
+    @Autowired
+    private CartService cartService;
     @Mock
     private ProductRepository productRepository;
     @InjectMocks
@@ -134,4 +142,15 @@ public class CartServiceImplTest {
         Assertions.assertThat(cart2.getCartItemList()).isNotNull();
     }
 
+    @Test
+    public void testViewCartItems() {
+        List<Cart> cartList = List.of(new Cart(1L, 20, new BigDecimal(2000), new ArrayList<>(), user));
+        when(userRepository.findByEmail(any())).thenReturn(Optional.of(user));
+        when(cartRepository.findAllByUsersOrderById(user)).thenReturn(cartList);
+        CartResponse cartResponse = cartServiceImpl.viewCartItems();
+        Mockito.verify(cartRepository, times(1))
+                .findAllByUsersOrderById(any(Users.class));
+        assertNotNull(cartResponse);
+        assertEquals(1, cartResponse.getCartList().size());
+    }
 }

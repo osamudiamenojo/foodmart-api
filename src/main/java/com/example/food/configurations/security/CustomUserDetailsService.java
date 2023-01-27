@@ -27,7 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         Users user = userRepository.findByEmail(email)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found with email: " + email));
-        return new User(user.getEmail(), user.getPassword(), getGrantedAuthorities(user.getRole()));
+        return new User(user.getEmail(), user.getPassword(), getGrantedAuthorities(user.getRole() == null ? Role.ROLE_USER : user.getRole()));
     }
 
     private Collection<? extends GrantedAuthority> getGrantedAuthorities(Role roles) {

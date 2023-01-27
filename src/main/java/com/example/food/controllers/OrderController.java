@@ -1,6 +1,7 @@
 package com.example.food.controllers;
 
 import com.example.food.pojos.OrderResponseDto;
+import com.example.food.restartifacts.BaseResponse;
 import com.example.food.pojos.ViewAllOrderResponse;
 import com.example.food.services.OrderService;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,11 @@ public class OrderController {
     @GetMapping("/order/{orderId}")
     public ResponseEntity<OrderResponseDto> viewDetailsOfAParticularOrder(@PathVariable Long orderId){
         return new ResponseEntity<>(orderService.viewDetailsOfAParticularOrder(orderId), HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/order")
+    public BaseResponse viewOrderHistory(){
+        return orderService.viewOrderHistory();
     }
 
     @GetMapping("/viewOrder/{userId}")

@@ -24,7 +24,7 @@ public class Wallet {
     private Date createdAt;
     @UpdateTimestamp
     private Date modifiedAt;
-    @OneToOne
+    @OneToOne(mappedBy = "wallet")
     private Users user;
     @OneToMany(mappedBy = "wallet")
     private List<BankDetails> bankDetails;

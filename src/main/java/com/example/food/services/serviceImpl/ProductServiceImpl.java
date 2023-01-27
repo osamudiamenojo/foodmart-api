@@ -4,9 +4,12 @@ import com.example.food.Enum.Role;
 import com.example.food.dto.ProductDto;
 import com.example.food.dto.ProductSearchDto;
 import com.example.food.dto.UpdateProductDto;
+import com.example.food.model.Category;
 import com.example.food.model.Product;
 import com.example.food.model.Users;
 import com.example.food.pojos.UpdatedProductResponse;
+import com.example.food.repositories.CartRepository;
+import com.example.food.repositories.CategoryRepository;
 import com.example.food.repositories.UserRepository;
 import com.example.food.pojos.CreateProductResponse;
 import com.example.food.pojos.PaginatedProductResponse;
@@ -32,6 +35,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
+    private final CartRepository cartRepository;
+    private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final UserUtil userUtil;
@@ -41,7 +46,7 @@ public class ProductServiceImpl implements ProductService {
 
         Sort sort = productSearchDto.getSortDirection()
                 .equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(productSearchDto.getSortBy()).ascending() : Sort.by(productSearchDto.getSortBy()).descending();
-        Pageable pageRequest = PageRequest.of(productSearchDto.getPageNumber(), productSearchDto.getPageSize(), sort);
+        Pageable pageRequest = PageRequest.of(productSearchDto.getPageNumber(), productSearchDto.getPageSize()+1, sort);
 
         log.info("Sort: " + sort + " pageRequest: " + pageRequest);
 
@@ -69,10 +74,11 @@ public class ProductServiceImpl implements ProductService {
 
         if (!user.getRole().equals(Role.ROLE_ADMIN)) {
             return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.UNAUTHORISED_ACCESS);
+
         }
         Product product = productRepository.findById(productId).orElse(null);
-        if (product == null){
-            return responseCodeUtil.updateResponseData(response,ResponseCodeEnum.ERROR,"Product does not exist");
+        if (product == null) {
+            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.ERROR, "Product does not exist");
         }
 
         BeanUtils.copyProperties(productDto, product);
@@ -83,16 +89,26 @@ public class ProductServiceImpl implements ProductService {
 
 
     public CreateProductResponse addNewProduct(ProductDto productDto) {
-        Optional<Product> newProduct = productRepository.findByProductName(productDto.getProductName());
 
         CreateProductResponse createProductResponse = CreateProductResponse.builder()
                 .productName(productDto.getProductName())
                 .build();
+        Category category = categoryRepository.findByCategoryName(productDto.getCategoryName());
+        if(category == null) {
+            return responseCodeUtil.updateResponseData(createProductResponse, ResponseCodeEnum.ERROR,  "There is no Category by the name " + productDto.getCategoryName());
+        }
+        Optional<Product> newProduct = productRepository.findByProductName(productDto.getProductName());
         if (newProduct.isPresent()) {
             return responseCodeUtil.updateResponseData(createProductResponse, ResponseCodeEnum.ERROR, "Product Already Exists!");
         }
-        Product product = new Product();
-        BeanUtils.copyProperties(productDto, product);
+        Product product = Product.builder()
+                .category(category)
+                .productPrice(productDto.getProductPrice())
+                .productName(productDto.getProductName())
+                .description(productDto.getDescription())
+                .imageUrl(productDto.getImageUrl())
+                .quantity(productDto.getQuantity())
+                .build();
         productRepository.save(product);
         return responseCodeUtil.updateResponseData(createProductResponse, ResponseCodeEnum.SUCCESS, "New Product Has Been Added");
     }
@@ -112,7 +128,8 @@ public class ProductServiceImpl implements ProductService {
                     productDto.setProductName(product.getProductName());
                     productDto.setProductPrice(product.getProductPrice());
                     productDto.setImageUrl(product.getImageUrl());
-                    productDto.setCategory(product.getCategory());
+                    productDto.setCategoryName(productDto.getCategoryName());
+                    productDto.setCategoryName(product.getCategory().getCategoryName());
                     productDto.setQuantity(product.getQuantity());
                     return productDto;
                 }).collect(Collectors.toList());
@@ -131,7 +148,7 @@ public class ProductServiceImpl implements ProductService {
                     ResponseCodeEnum.PRODUCT_NOT_FOUND, "Product not found for ID:" + productId);
         }
         Product product = fetchedProduct.get();
-        log.info("response object {}",product);
+        log.info("response object {}", product);
         ProductDto productDto = new ProductDto();
         BeanUtils.copyProperties(product, productDto);
         responseDto.setProductDto(productDto);
