@@ -21,12 +21,12 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long categoryId;
+    private Long id;
     private String categoryName;
     @CreationTimestamp
     private Date createdAt;
     @UpdateTimestamp
     private Date modifiedAt;
     @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
-    private List<Product> productList;
+    private List<Product> product;
 }
