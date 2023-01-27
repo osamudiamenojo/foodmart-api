@@ -5,19 +5,23 @@ import com.example.food.dto.OrderDto;
 import com.example.food.model.Order;
 import com.example.food.model.Users;
 import com.example.food.pojos.OrderResponseDto;
+import com.example.food.pojos.ViewOrderHistoryResponse;
 import com.example.food.pojos.ViewAllOrderResponse;
 import com.example.food.repositories.OrderRepository;
 import com.example.food.repositories.UserRepository;
+import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.OrderService;
 import com.example.food.util.ResponseCodeUtil;
 import com.example.food.util.UserUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
@@ -69,5 +73,20 @@ public class OrderServiceImpl implements OrderService {
             allOrderResponse.setDescription("You have  made an order");
             return responseCodeUtil.updateResponseData(allOrderResponse, ResponseCodeEnum.SUCCESS);
         }
+    }
+
+    @Override
+    public BaseResponse viewOrderHistory() {
+
+        String email = userUtil.getAuthenticatedUserEmail();
+        Optional<Users> users = userRepository.findByEmail(email);
+        List<Order> orders = orderRepository.findAllByUserOrderByIdDesc(users.get());
+        log.info("Orders are {} ", orders);
+
+        ViewOrderHistoryResponse viewOrderHistoryResponse = ViewOrderHistoryResponse.builder()
+                .orderList(orders)
+                .build();
+
+        return responseCodeUtil.updateResponseData(viewOrderHistoryResponse, ResponseCodeEnum.SUCCESS);
     }
 }
