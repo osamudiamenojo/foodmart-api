@@ -3,24 +3,19 @@ package com.example.food.service.serviceImpl;
 import com.example.food.Enum.ResponseCodeEnum;
 import com.example.food.configurations.security.CustomUserDetailsService;
 import com.example.food.configurations.security.JwtUtil;
+import com.example.food.dto.ChangePasswordDto;
 import com.example.food.dto.ConfirmRegistrationRequestDto;
 import com.example.food.dto.EmailSenderDto;
-import com.example.food.model.Cart;
-import com.example.food.dto.*;
+import com.example.food.dto.LoginRequestDto;
 import com.example.food.model.Cart;
 import com.example.food.model.Users;
 import com.example.food.model.Wallet;
-import com.example.food.pojos.CartResponse;
 import com.example.food.pojos.CreateUserRequest;
-import com.example.food.dto.LoginRequestDto;
-import com.example.food.repositories.CartRepository;
 import com.example.food.repositories.CartRepository;
 import com.example.food.repositories.UserRepository;
 import com.example.food.repositories.WalletRepository;
 import com.example.food.restartifacts.BaseResponse;
-import com.example.food.services.CartService;
 import com.example.food.services.EmailService;
-import com.example.food.services.serviceImpl.CartServiceImpl;
 import com.example.food.services.serviceImpl.UserServiceImpl;
 import com.example.food.util.AppUtil;
 import com.example.food.util.ResponseCodeUtil;
@@ -30,7 +25,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -40,12 +34,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -84,13 +76,6 @@ class UserServiceImplTest {
     private EmailService emailService;
     @Mock
     EmailSenderDto emailSenderDto;
-
-    @Mock
-    CartRepository cartRepository;
-
-    @Mock
-    CartServiceImpl cartServiceImpl;
-
     @InjectMocks
     private UserServiceImpl userServiceImpl;
     private ResponseCodeUtil responseCodeUtil;
@@ -100,7 +85,6 @@ class UserServiceImplTest {
     LoginRequestDto loginRequestDto;
     ConfirmRegistrationRequestDto confirmRegistrationRequestDto;
     Wallet wallet;
-
 
 
     @BeforeEach
@@ -151,7 +135,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    public void shouldReturnInvalidEmailAddressWhenUserTriesToRegisterWithInvalidEmail(){
+    public void shouldReturnInvalidEmailAddressWhenUserTriesToRegisterWithInvalidEmail() {
         when(appUtil.validEmail(createUserRequest.getEmail())).thenReturn(false);
         BaseResponse baseResponse = userServiceImpl.signUp(createUserRequest);
         Assertions.assertThat(responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.ERROR_EMAIL_INVALID)
@@ -159,14 +143,15 @@ class UserServiceImplTest {
     }
 
     @Test
-    public void shouldReturnUserAlreadyExistWhenUserTriesToSignUpWithAlreadyRegisteredEmail(){
+    public void shouldReturnUserAlreadyExistWhenUserTriesToSignUpWithAlreadyRegisteredEmail() {
         when(userRepository.existsByEmail(createUserRequest.getEmail())).thenReturn(true);
         BaseResponse baseResponse = userServiceImpl.signUp(createUserRequest);
         Assertions.assertThat(responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.ERROR_DUPLICATE_USER)
                 .getDescription()).isEqualTo("User already exist.");
     }
+
     @Test
-    public void signUp(){
+    public void signUp() {
         when(appUtil.validEmail(createUserRequest.getEmail())).thenReturn(true);
         when(userRepository.existsByEmail(createUserRequest.getEmail())).thenReturn(false);
         when(cartRepository.save(cart)).thenReturn(cart);
@@ -178,8 +163,9 @@ class UserServiceImplTest {
         Assertions.assertThat(baseResponse.getDescription())
                 .isEqualTo("You have successful registered. Check your email for verification link to validate your account");
     }
+
     @Test
-    public void confirmRegistration(){
+    public void confirmRegistration() {
         when(userRepository.findByConfirmationToken(confirmRegistrationRequestDto.getToken())).thenReturn(Optional.of(users));
         when(userRepository.save(users)).thenReturn(users);
         when(walletRepository.save(wallet)).thenReturn(wallet);
