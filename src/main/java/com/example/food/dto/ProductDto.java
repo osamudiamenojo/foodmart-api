@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 public class ProductDto {
 
     @NotNull (message = "Name must not be null")
-    private Category category;
+    private String categoryName;
     @NotBlank(message = "Name must not be null")
     private String productName;
     @NotNull (message = "Price must not be null")

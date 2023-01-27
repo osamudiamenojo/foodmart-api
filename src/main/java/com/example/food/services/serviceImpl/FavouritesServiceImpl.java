@@ -94,7 +94,7 @@ public class FavouritesServiceImpl implements FavouritesService {
         productDto.setProductName(favouriteProduct.getProductName());
         productDto.setProductPrice(favouriteProduct.getProductPrice());
         productDto.setImageUrl(favouriteProduct.getImageUrl());
-        productDto.setQuantity(favouriteProduct.getQuantity());
+        //productDto.setQuantity(favouriteProduct.getQuantity());
 
         response.setFavouriteProduct(productDto);
 
