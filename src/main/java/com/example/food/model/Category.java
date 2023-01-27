@@ -1,5 +1,7 @@
 package com.example.food.model;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +13,7 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,12 +24,13 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long categoryId;
+    private Long id;
     private String categoryName;
     @CreationTimestamp
     private Date createdAt;
     @UpdateTimestamp
     private Date modifiedAt;
-    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
-    private List<Product> productList;
+    @JsonIgnore
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    private List<Product> products;
 }

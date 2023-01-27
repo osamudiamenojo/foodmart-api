@@ -109,22 +109,15 @@ public class FavouritesServiceImpl implements FavouritesService {
         Users user = userRepository.findByEmail(loggedInUser.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("User does not exist. Please check and try again."));
 
-        Product favouriteProduct = productRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Product does not exist"));
-
-        Boolean alreadyFavourite = favouritesRepository.existsByUsersIdAndProductId(user.getId(), favouriteProduct.getId());
-
         BaseResponse response = new BaseResponse();
 
-        if (alreadyFavourite) {
+        Optional<Favourites> favouriteProduct = favouritesRepository.findByUsersIdAndProductId(user.getId(), productId);
 
-            Favourites favourites = new Favourites();
-            favourites.setUsersId(user.getId());
-            favourites.setProductId(favouriteProduct.getId());
-            favouritesRepository.delete(favourites);
-            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS, favouriteProduct.getProductName() + " is no longer your favourite!");
+        if (favouriteProduct.isPresent()) {
+            favouritesRepository.delete(favouriteProduct.get());
+            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS, "Product has been removed from favourites!");
         }
         return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.ERROR, "User does not exist or Product not favourite");
     }
 
-}
+        }

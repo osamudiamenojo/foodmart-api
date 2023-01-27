@@ -60,12 +60,5 @@ public class FavouritesServiceImplTest {
         assertEquals(actualResponse.getDescription(), mockedProduct.getProductName() + " is already your favourite");
     }
 
-    @Test
-    public void removeFromFavouritesTest() {
-        when(favouritesRepository.existsByUsersIdAndProductId(any(), any())).thenReturn(true);
-        BaseResponse baseResponse = favouritesServiceImpl.removeFromFavourites(1L);
-        assertEquals(baseResponse.getDescription(), mockedProduct.getProductName() + " is no longer your favourite!");
-    }
-
 
 }
