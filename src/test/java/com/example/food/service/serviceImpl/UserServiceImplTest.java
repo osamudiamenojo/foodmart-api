@@ -197,14 +197,14 @@ class UserServiceImplTest {
 
     @Test
     public void testGetUserDetails() {
-        // Arrange
+
         Long userId = 1L;
         when(userRepository.findById(userId)).thenReturn(Optional.of(users));
 
-        // Act
+
         UserDetailsDto result = userServiceImpl.getUserDetails(userId);
 
-        // Assert
+
         assertEquals("Akeem", result.getFirstName());
         assertEquals("Jaiyeade", result.getLastName());
         assertEquals("haykay364@gmail.com", result.getEmail());
@@ -215,11 +215,11 @@ class UserServiceImplTest {
     }
     @Test
     public void shouldThrowExceptionIfUserIsNotFound() {
-        // Arrange
+
         Long userId = 2L;
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        // Act
+
         assertThrows(UserNotFoundException.class, () -> userServiceImpl.getUserDetails(userId));
     }
 
