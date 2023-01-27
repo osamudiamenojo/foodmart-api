@@ -173,4 +173,13 @@ public class CartServiceImpl implements CartService {
         cartRepository.save(cart);
     }
 
+    @Override
+    public CartResponse viewCartItems() {
+        Users users = getLoggedInUser();
+        List<Cart> cartList = cartRepository.findAllByUsersOrderById(users);
+        return CartResponse.builder()
+                .cartList(cartList)
+                .totalCartElements(cartList.size())
+                .build();
+    }
 }
