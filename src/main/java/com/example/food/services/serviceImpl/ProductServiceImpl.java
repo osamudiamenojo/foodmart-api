@@ -46,7 +46,7 @@ public class ProductServiceImpl implements ProductService {
 
         Sort sort = productSearchDto.getSortDirection()
                 .equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(productSearchDto.getSortBy()).ascending() : Sort.by(productSearchDto.getSortBy()).descending();
-        Pageable pageRequest = PageRequest.of(productSearchDto.getPageNumber(), productSearchDto.getPageSize(), sort);
+        Pageable pageRequest = PageRequest.of(productSearchDto.getPageNumber(), productSearchDto.getPageSize()+1, sort);
 
         log.info("Sort: " + sort + " pageRequest: " + pageRequest);
 
