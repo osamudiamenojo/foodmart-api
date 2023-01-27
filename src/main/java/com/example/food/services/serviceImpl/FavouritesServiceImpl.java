@@ -70,7 +70,7 @@ public class FavouritesServiceImpl implements FavouritesService {
     public FavouriteProductResponse viewAFavouriteProduct(Long favouriteId) {
         FavouriteProductResponse response = new FavouriteProductResponse();
 
-        if(favouriteId == null) {
+        if (favouriteId == null) {
             Map<String, String> params = new HashMap<>(1);
             params.put("errorMessage", "favourite ID is null");
             return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.ERROR, params.get("errorMessage"));
@@ -101,7 +101,6 @@ public class FavouritesServiceImpl implements FavouritesService {
         return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS);
     }
 
-    @Override
     public BaseResponse removeFromFavourites(Long productId) {
         UserDetails loggedInUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         log.info(loggedInUser.toString());
@@ -109,22 +108,18 @@ public class FavouritesServiceImpl implements FavouritesService {
         Users user = userRepository.findByEmail(loggedInUser.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("User does not exist. Please check and try again."));
 
-        Product favouriteProduct = productRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Product does not exist"));
-
-        Boolean alreadyFavourite = favouritesRepository.existsByUsersIdAndProductId(user.getId(), favouriteProduct.getId());
-
         BaseResponse response = new BaseResponse();
 
-        if (alreadyFavourite) {
+        Optional<Favourites> favouriteProduct = favouritesRepository.findByUsersIdAndProductId(user.getId(), productId);
 
-            Favourites favourites = new Favourites();
-            favourites.setUsersId(user.getId());
-            favourites.setProductId(favouriteProduct.getId());
-            favouritesRepository.delete(favourites);
-            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS, favouriteProduct.getProductName() + " is no longer your favourite!");
+        if (favouriteProduct.isPresent()) {
+            favouritesRepository.delete(favouriteProduct.get());
+            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS, "Product has been removed from favourites!");
         }
         return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.ERROR, "User does not exist or Product not favourite");
     }
 
 }
+
+
+

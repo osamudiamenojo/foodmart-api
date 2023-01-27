@@ -24,9 +24,10 @@ public class FavouritesController {
         return favouritesService.viewAFavouriteProduct(favouriteId);
     }
 
-    @DeleteMapping("/{productId}/remove")
-    public ResponseEntity<BaseResponse> removeFromFavourites(@PathVariable(value = "productId") Long productId) {
+    @DeleteMapping("/remove/{productId}")
+    public ResponseEntity<BaseResponse> removeFromFavourites(@PathVariable Long productId) {
         BaseResponse response = favouritesService.removeFromFavourites(productId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
 }
