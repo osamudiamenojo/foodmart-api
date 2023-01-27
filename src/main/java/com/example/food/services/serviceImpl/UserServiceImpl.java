@@ -5,6 +5,7 @@ import com.example.food.Enum.Role;
 import com.example.food.configurations.security.CustomUserDetailsService;
 import com.example.food.configurations.security.JwtUtil;
 import com.example.food.dto.*;
+import com.example.food.exceptions.UserNotFoundException;
 import com.example.food.model.Cart;
 import com.example.food.model.PasswordResetTokenEntity;
 import com.example.food.model.Users;
@@ -252,6 +253,21 @@ public class UserServiceImpl implements UserService {
         }
 
         return responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.SUCCESS, "Your password is successfully updated");
+    }
+
+    @Override
+    public UserDetailsDto getUserDetails(Long userId) {
+
+        Users user = userRepository.findById(userId).orElseThrow(()-> new UserNotFoundException("User not found"));
+            UserDetailsDto userDetails = new UserDetailsDto();
+            userDetails.setFirstName(user.getFirstName());
+            userDetails.setLastName(user.getLastName());
+            userDetails.setEmail(user.getEmail());
+            userDetails.setBaseCurrency(user.getBaseCurrency());
+            userDetails.setDateOfBirth(user.getDateOfBirth());
+            userDetails.setCreatedAt(user.getCreatedAt());
+            return responseCodeUtil.updateResponseDataReturnObject(new BaseResponse(), ResponseCodeEnum.SUCCESS, userDetails);
+
     }
 
 
