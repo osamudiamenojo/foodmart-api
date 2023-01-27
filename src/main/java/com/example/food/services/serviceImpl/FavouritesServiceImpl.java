@@ -118,10 +118,6 @@ public class FavouritesServiceImpl implements FavouritesService {
         }
         return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.ERROR, "User does not exist or Product not favourite");
     }
-
 }
 
-
-
-
-
+        }

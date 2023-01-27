@@ -2,6 +2,7 @@ package com.example.food.controllers;
 
 import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.FavouritesService;
+import com.example.food.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

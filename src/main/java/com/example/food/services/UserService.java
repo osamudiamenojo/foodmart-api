@@ -17,4 +17,6 @@ public interface UserService {
 
     BaseResponse resetPassword(PasswordResetDto passwordReset);
     BaseResponse confirmRegistration(ConfirmRegistrationRequestDto confirmRegistrationRequestDto);
+
+    BaseResponse updatePassword (ChangePasswordDto passwordDto);
 }

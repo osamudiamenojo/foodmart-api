@@ -35,6 +35,7 @@ public class Users {
     @Enumerated(EnumType.STRING)
     private Role role;
     @OneToOne
+    @JoinColumn(name = "wallet_id")
     private Wallet wallet;
     @OneToMany
     private List<Favourites> favourites;

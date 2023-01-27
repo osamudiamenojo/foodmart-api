@@ -33,5 +33,17 @@ public class CartController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @DeleteMapping("/reduce-product/{productId}")
+    public ResponseEntity<CartResponse> reduceProduct(@PathVariable Long productId) {
+        CartResponse response = cartService.reduceProductQuantity(productId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/view-cart")
+    public ResponseEntity<CartResponse> viewCartItems(){
+        CartResponse cartResponse = cartService.viewCartItems();
+        return new ResponseEntity<>(cartResponse, HttpStatus.OK);
+    }
+
 }
 

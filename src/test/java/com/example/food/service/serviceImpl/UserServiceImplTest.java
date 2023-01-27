@@ -3,12 +3,15 @@ package com.example.food.service.serviceImpl;
 import com.example.food.Enum.ResponseCodeEnum;
 import com.example.food.configurations.security.CustomUserDetailsService;
 import com.example.food.configurations.security.JwtUtil;
+import com.example.food.dto.ChangePasswordDto;
 import com.example.food.dto.ConfirmRegistrationRequestDto;
 import com.example.food.dto.EmailSenderDto;
+import com.example.food.dto.LoginRequestDto;
+import com.example.food.model.Cart;
 import com.example.food.model.Users;
 import com.example.food.model.Wallet;
 import com.example.food.pojos.CreateUserRequest;
-import com.example.food.dto.LoginRequestDto;
+import com.example.food.repositories.CartRepository;
 import com.example.food.repositories.UserRepository;
 import com.example.food.repositories.WalletRepository;
 import com.example.food.restartifacts.BaseResponse;
@@ -16,6 +19,7 @@ import com.example.food.services.EmailService;
 import com.example.food.services.serviceImpl.UserServiceImpl;
 import com.example.food.util.AppUtil;
 import com.example.food.util.ResponseCodeUtil;
+import com.example.food.util.UserUtil;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +36,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -45,7 +50,10 @@ class UserServiceImplTest {
     @Mock
     private JwtUtil jwtUtil;
     @Mock
-    private AppUtil appUtil;//me
+    private AppUtil appUtil;
+
+    @Mock
+    private UserUtil userUtil;
 
     @Mock
     private CustomUserDetailsService customUserDetailsService;
@@ -63,19 +71,20 @@ class UserServiceImplTest {
     @Mock
     WalletRepository walletRepository;
     @Mock
+    CartRepository cartRepository;
+    @Mock
     private EmailService emailService;
     @Mock
     EmailSenderDto emailSenderDto;
-
     @InjectMocks
     private UserServiceImpl userServiceImpl;
     private ResponseCodeUtil responseCodeUtil;
     private CreateUserRequest createUserRequest;
     private Users users;
+    private Cart cart;
     LoginRequestDto loginRequestDto;
     ConfirmRegistrationRequestDto confirmRegistrationRequestDto;
     Wallet wallet;
-
 
 
     @BeforeEach
@@ -98,6 +107,9 @@ class UserServiceImplTest {
         users.setEmail(createUserRequest.getEmail());
         users.setPassword(passwordEncoder.encode(createUserRequest.getPassword()));
         users.setConfirmationToken("adsfshdgfgkgkgjgkggk");
+
+        cart = new Cart();
+        cart.setUsers(users);
 
         responseCodeUtil = new ResponseCodeUtil();
         confirmRegistrationRequestDto = new ConfirmRegistrationRequestDto();
@@ -123,7 +135,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    public void shouldReturnInvalidEmailAddressWhenUserTriesToRegisterWithInvalidEmail(){
+    public void shouldReturnInvalidEmailAddressWhenUserTriesToRegisterWithInvalidEmail() {
         when(appUtil.validEmail(createUserRequest.getEmail())).thenReturn(false);
         BaseResponse baseResponse = userServiceImpl.signUp(createUserRequest);
         Assertions.assertThat(responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.ERROR_EMAIL_INVALID)
@@ -131,17 +143,19 @@ class UserServiceImplTest {
     }
 
     @Test
-    public void shouldReturnUserAlreadyExistWhenUserTriesToSignUpWithAlreadyRegisteredEmail(){
+    public void shouldReturnUserAlreadyExistWhenUserTriesToSignUpWithAlreadyRegisteredEmail() {
         when(userRepository.existsByEmail(createUserRequest.getEmail())).thenReturn(true);
         BaseResponse baseResponse = userServiceImpl.signUp(createUserRequest);
         Assertions.assertThat(responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.ERROR_DUPLICATE_USER)
                 .getDescription()).isEqualTo("User already exist.");
     }
+
     @Test
-    public void signUp(){
+    public void signUp() {
         when(appUtil.validEmail(createUserRequest.getEmail())).thenReturn(true);
         when(userRepository.existsByEmail(createUserRequest.getEmail())).thenReturn(false);
-        when(userRepository.save(users)).thenReturn(users);
+        when(cartRepository.save(cart)).thenReturn(cart);
+        when(walletRepository.save(wallet)).thenReturn(wallet);
         doNothing().when(emailService).sendMail(isA(EmailSenderDto.class));
         emailService.sendMail(emailSenderDto);
         verify(emailService, times(1)).sendMail(emailSenderDto);
@@ -149,13 +163,36 @@ class UserServiceImplTest {
         Assertions.assertThat(baseResponse.getDescription())
                 .isEqualTo("You have successful registered. Check your email for verification link to validate your account");
     }
+
     @Test
-    public void confirmRegistration(){
+    public void confirmRegistration() {
         when(userRepository.findByConfirmationToken(confirmRegistrationRequestDto.getToken())).thenReturn(Optional.of(users));
         when(userRepository.save(users)).thenReturn(users);
         when(walletRepository.save(wallet)).thenReturn(wallet);
         BaseResponse baseResponse = userServiceImpl.confirmRegistration(confirmRegistrationRequestDto);
         Assertions.assertThat(baseResponse.getDescription()).isEqualTo("Account verification successful");
     }
+
+    @Test
+    public void updatePassword_OldPasswordNotMatch() {
+        ChangePasswordDto passwordDto = new ChangePasswordDto();
+        passwordDto.setOldPassword("oldpassword");
+        passwordDto.setNewPassword("newpassword");
+        passwordDto.setConfirmPassword("newpassword");
+
+        Users mockUser = new Users();
+        mockUser.setEmail("user@example.com");
+        mockUser.setPassword(passwordEncoder.encode("wrongpassword"));
+
+        when(userUtil.getAuthenticatedUserEmail()).thenReturn("user@example.com");
+        when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(mockUser));
+
+        BaseResponse response = userServiceImpl.updatePassword(passwordDto);
+
+        assertEquals(response.getCode(), ResponseCodeEnum.ERROR.getCode());
+        assertEquals(response.getDescription(), "Old password does not match");
+        verify(userRepository, times(0)).save(mockUser);
+    }
+
 }
 

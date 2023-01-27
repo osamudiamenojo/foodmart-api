@@ -1,11 +1,12 @@
 package com.example.food.controllers;
 
-import com.example.food.dto.ConfirmRegistrationRequestDto;
+import com.example.food.dto.*;
 import com.example.food.pojos.CreateUserRequest;
 import com.example.food.restartifacts.BaseResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import com.example.food.dto.EditUserDto;
 import com.example.food.dto.PasswordResetDto;
 import com.example.food.dto.PasswordResetRequestDto;
@@ -47,5 +48,9 @@ public class UserController {
     public BaseResponse confirmRegistration(@RequestBody ConfirmRegistrationRequestDto confirmRegistrationRequestDto) {
         return userService.confirmRegistration(confirmRegistrationRequestDto);
 
+    }
+    @PostMapping("/change-password")
+    public ResponseEntity<BaseResponse> changePassword(@Valid @RequestBody ChangePasswordDto passwordDto){
+        return new ResponseEntity<>((userService.updatePassword(passwordDto)), HttpStatus.ACCEPTED);
     }
 }
