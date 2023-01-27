@@ -17,7 +17,6 @@ import com.example.food.util.ResponseCodeUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -54,21 +53,10 @@ public class CartServiceImpl implements CartService {
             if (cartItemCheck.isPresent()) {
                 CartItem cartItem = cartItemCheck.get();
                 removeItem(cartItemId, cart, cartItem);
-                //
-                List<CartItemDto> cartItemDtoList = new ArrayList<>();
-                for (CartItem item : cart.getCartItemList()) {
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    CartItemDto cartItemDto = objectMapper.convertValue(item, CartItemDto.class);
-                    cartItemDtoList.add(cartItemDto);
-                }
-                CartResponse cartResponse = CartResponse.builder()
-                        .cartItemList(cartItemDtoList)
-                        .cartTotal(cart.getCartTotal())
-                        .quantity(cart.getQuantity())
-                        .build();
+
+                CartResponse cartResponse = mapCartItemToDto(cart);
                 return responseCodeUtil.updateResponseData(cartResponse, ResponseCodeEnum.SUCCESS, "Item removed from user cart");
-                //
-//                responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.SUCCESS, "Item removed from user cart");
+
             } else {
                 responseCodeUtil.updateResponseData(baseResponse, ResponseCodeEnum.ERROR, "Item is not in user cart");
             }
@@ -124,18 +112,8 @@ public class CartServiceImpl implements CartService {
                 userCart.getCartItemList().add(savedCartItem);
                 userCart = cartRepository.save(userCart);
             }
-            List<CartItemDto> cartItemDtoList = new ArrayList<>();
-            for (CartItem item : userCart.getCartItemList()) {
-                ObjectMapper objectMapper = new ObjectMapper();
-                CartItemDto cartItemDto = objectMapper.convertValue(item, CartItemDto.class);
-                cartItemDtoList.add(cartItemDto);
-            }
-            CartResponse cartResponse = CartResponse.builder()
-                    .cartItemList(cartItemDtoList)
-                    .cartTotal(userCart.getCartTotal())
-                    .quantity(userCart.getQuantity())
-                    .build();
-            return responseCodeUtil.updateResponseData(cartResponse, ResponseCodeEnum.SUCCESS, product.getProductName());
+            CartResponse cartResponse = mapCartItemToDto(userCart);
+            return responseCodeUtil.updateResponseData(cartResponse, ResponseCodeEnum.SUCCESS, product.getProductName() + " added");
         } catch (Exception e) {
             log.error("An error occurred, Product cannot be added: {}", e.getMessage());
             return responseCodeUtil.updateResponseData(new CartResponse(), ResponseCodeEnum.ERROR);
@@ -164,6 +142,32 @@ public class CartServiceImpl implements CartService {
         }
     }
 
+    @Override
+    public CartResponse reduceProductQuantity(Long productId) {
+        try {
+            Users user = getLoggedInUser();
+            Cart userCart = cartRepository.findByUsersEmail(user.getEmail()).orElseThrow(RuntimeException::new);
+            Product product = productRepository.findById(productId).orElseThrow(RuntimeException::new);
+            CartItem cartItem = cartItemRepository.findCartItemByCartIdAndProductId(userCart.getId(), productId).orElseThrow(RuntimeException::new);
+
+            CartResponse cartResponse;
+            if (cartItem.getQuantity() == 1) {
+                removeItem(cartItem.getId(), userCart, cartItem);
+            } else {
+                cartItem.setQuantity(cartItem.getQuantity() - 1);
+                cartItem.setSubTotal(cartItem.getSubTotal().subtract(product.getProductPrice()));
+                cartItemRepository.save(cartItem);
+                userCart.setCartTotal(userCart.getCartTotal().subtract(product.getProductPrice()));
+            }
+            cartResponse = mapCartItemToDto(userCart);
+            String description = userCart.getQuantity() > 0 ? product.getProductName() + " reduced" : "Cart is now empty";
+            return responseCodeUtil.updateResponseData(cartResponse, ResponseCodeEnum.SUCCESS, description);
+        } catch (Exception e) {
+            log.error("An error occurred, Product cannot be added: {}", e.getMessage());
+            return responseCodeUtil.updateResponseData(new CartResponse(), ResponseCodeEnum.ERROR);
+        }
+    }
+
     private void removeItem(long cartItemId, Cart cart, CartItem cartItem) {
         cartItemRepository.deleteById(cartItemId);
         int index = cart.getCartItemList().indexOf(cartItem);
@@ -171,6 +175,20 @@ public class CartServiceImpl implements CartService {
         cart.setQuantity(cart.getQuantity() - 1);
         cart.getCartItemList().remove(index);
         cartRepository.save(cart);
+    }
+
+    private CartResponse mapCartItemToDto(Cart userCart) {
+        List<CartItemDto> cartItemDtoList = new ArrayList<>();
+        for (CartItem item : userCart.getCartItemList()) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            CartItemDto cartItemDto = objectMapper.convertValue(item, CartItemDto.class);
+            cartItemDtoList.add(cartItemDto);
+        }
+        return CartResponse.builder()
+                .cartItemList(cartItemDtoList)
+                .cartTotal(userCart.getCartTotal())
+                .quantity(userCart.getQuantity())
+                .build();
     }
 
     @Override

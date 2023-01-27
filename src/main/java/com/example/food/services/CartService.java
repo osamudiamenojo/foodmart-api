@@ -10,5 +10,7 @@ public interface CartService {
 
     CartResponse clearCart();
 
+    CartResponse reduceProductQuantity(Long productId);
+
     CartResponse viewCartItems();
 }
