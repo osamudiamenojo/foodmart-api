@@ -19,4 +19,6 @@ public interface UserService {
     BaseResponse confirmRegistration(ConfirmRegistrationRequestDto confirmRegistrationRequestDto);
 
     BaseResponse updatePassword (ChangePasswordDto passwordDto);
+    UserDetailsDto getUserDetails(Long userId);
+
 }

@@ -53,4 +53,9 @@ public class UserController {
     public ResponseEntity<BaseResponse> changePassword(@Valid @RequestBody ChangePasswordDto passwordDto){
         return new ResponseEntity<>((userService.updatePassword(passwordDto)), HttpStatus.ACCEPTED);
     }
+    @GetMapping("/get-user-details/{id}")
+    public ResponseEntity<UserDetailsDto> getUserDetails(@PathVariable Long id){
+        UserDetailsDto userDetailsResponse = userService.getUserDetails(id);
+        return new ResponseEntity<>(userDetailsResponse, HttpStatus.OK);
+    }
 }

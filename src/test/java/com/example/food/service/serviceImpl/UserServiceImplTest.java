@@ -3,10 +3,8 @@ package com.example.food.service.serviceImpl;
 import com.example.food.Enum.ResponseCodeEnum;
 import com.example.food.configurations.security.CustomUserDetailsService;
 import com.example.food.configurations.security.JwtUtil;
-import com.example.food.dto.ChangePasswordDto;
-import com.example.food.dto.ConfirmRegistrationRequestDto;
-import com.example.food.dto.EmailSenderDto;
-import com.example.food.dto.LoginRequestDto;
+import com.example.food.dto.*;
+import com.example.food.exceptions.UserNotFoundException;
 import com.example.food.model.Cart;
 import com.example.food.model.Users;
 import com.example.food.model.Wallet;
@@ -34,10 +32,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -105,6 +103,9 @@ class UserServiceImplTest {
         users.setFirstName(createUserRequest.getFirstName());
         users.setLastName(createUserRequest.getLastName());
         users.setEmail(createUserRequest.getEmail());
+        users.setBaseCurrency("USD");
+        users.setDateOfBirth(new Date(2000, 1, 1));
+        users.setCreatedAt(new Date());
         users.setPassword(passwordEncoder.encode(createUserRequest.getPassword()));
         users.setConfirmationToken("adsfshdgfgkgkgjgkggk");
 
@@ -192,6 +193,34 @@ class UserServiceImplTest {
         assertEquals(response.getCode(), ResponseCodeEnum.ERROR.getCode());
         assertEquals(response.getDescription(), "Old password does not match");
         verify(userRepository, times(0)).save(mockUser);
+    }
+
+    @Test
+    public void testGetUserDetails() {
+
+        Long userId = 1L;
+        when(userRepository.findById(userId)).thenReturn(Optional.of(users));
+
+
+        UserDetailsDto result = userServiceImpl.getUserDetails(userId);
+
+
+        assertEquals("Akeem", result.getFirstName());
+        assertEquals("Jaiyeade", result.getLastName());
+        assertEquals("haykay364@gmail.com", result.getEmail());
+        assertEquals("USD", result.getBaseCurrency());
+        assertEquals(new Date(2000, 1, 1), result.getDateOfBirth());
+        assertNotNull(result.getCreatedAt());
+//
+    }
+    @Test
+    public void shouldThrowExceptionIfUserIsNotFound() {
+
+        Long userId = 2L;
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+
+        assertThrows(UserNotFoundException.class, () -> userServiceImpl.getUserDetails(userId));
     }
 
 }
