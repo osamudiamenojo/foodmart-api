@@ -30,6 +30,8 @@ public class Category {
     private Date createdAt;
     @UpdateTimestamp
     private Date modifiedAt;
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
+    private List<Product> product;
     @JsonIgnore
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private List<Product> products;

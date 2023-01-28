@@ -70,7 +70,7 @@ public class FavouritesServiceImpl implements FavouritesService {
     public FavouriteProductResponse viewAFavouriteProduct(Long favouriteId) {
         FavouriteProductResponse response = new FavouriteProductResponse();
 
-        if(favouriteId == null) {
+        if (favouriteId == null) {
             Map<String, String> params = new HashMap<>(1);
             params.put("errorMessage", "favourite ID is null");
             return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.ERROR, params.get("errorMessage"));
@@ -94,14 +94,13 @@ public class FavouritesServiceImpl implements FavouritesService {
         productDto.setProductName(favouriteProduct.getProductName());
         productDto.setProductPrice(favouriteProduct.getProductPrice());
         productDto.setImageUrl(favouriteProduct.getImageUrl());
-        productDto.setQuantity(favouriteProduct.getQuantity());
+        //productDto.setQuantity(favouriteProduct.getQuantity());
 
         response.setFavouriteProduct(productDto);
 
         return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS);
     }
 
-    @Override
     public BaseResponse removeFromFavourites(Long productId) {
         UserDetails loggedInUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         log.info(loggedInUser.toString());
@@ -119,5 +118,6 @@ public class FavouritesServiceImpl implements FavouritesService {
         }
         return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.ERROR, "User does not exist or Product not favourite");
     }
+}
 
         }

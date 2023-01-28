@@ -30,4 +30,5 @@ public class FavouritesController {
         BaseResponse response = favouritesService.removeFromFavourites(productId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
 }

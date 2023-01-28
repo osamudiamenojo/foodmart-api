@@ -1,8 +1,10 @@
 package com.example.food.service.serviceImpl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
+import com.example.food.Enum.ResponseCodeEnum;
+import com.example.food.model.Favourites;
 import com.example.food.model.Product;
 import com.example.food.model.Users;
 import com.example.food.repositories.FavouritesRepository;
@@ -10,6 +12,7 @@ import com.example.food.repositories.ProductRepository;
 import com.example.food.repositories.UserRepository;
 import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.serviceImpl.FavouritesServiceImpl;
+import com.example.food.util.ResponseCodeUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,13 +32,15 @@ public class FavouritesServiceImplTest {
     ProductRepository productRepository;
     @Mock
     FavouritesRepository favouritesRepository;
+    @Mock
+    ResponseCodeUtil responseCodeUtil;
     @InjectMocks
     FavouritesServiceImpl favouritesServiceImpl;
     Product mockedProduct;
     @BeforeEach
     public void setup() {
         // set up the SecurityContext to return a mocked userDetails object
-        UserDetails mockedUserDetails = Mockito.mock(UserDetails.class);
+        UserDetails mockedUserDetails = mock(UserDetails.class);
         when(mockedUserDetails.getUsername()).thenReturn("faith@abiola.com");
         SecurityContextHolder.getContext().setAuthentication(new org.springframework.security.authentication
                 .UsernamePasswordAuthenticationToken(mockedUserDetails, "password", new ArrayList<>()));
@@ -60,5 +65,5 @@ public class FavouritesServiceImplTest {
         assertEquals(actualResponse.getDescription(), mockedProduct.getProductName() + " is already your favourite");
     }
 
-
 }
+

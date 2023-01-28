@@ -29,6 +29,7 @@ public class Product {
     private Date createdAt;
     @UpdateTimestamp
     private Date modifiedAt;
+    @ManyToOne
     @ManyToOne(targetEntity = Category.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "categoryId")
     private Category category;

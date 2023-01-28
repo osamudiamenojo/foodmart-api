@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
         EmailSenderDto emailSenderDto = new EmailSenderDto();
         emailSenderDto.setTo(passwordResetRequest.getEmail());
         emailSenderDto.setSubject("Password reset link");
-        emailSenderDto.setContent("http://localhost:8080/users/reset-password/" + token);
+        emailSenderDto.setContent("http://localhost:3000/resetPassword/" + token);
         emailService.sendMail(emailSenderDto);
 
         return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS, "Password reset successful kindly check your email");
