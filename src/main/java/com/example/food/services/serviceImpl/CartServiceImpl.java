@@ -168,6 +168,18 @@ public class CartServiceImpl implements CartService {
         }
     }
 
+    @Override
+    public CartResponse viewCartItems() {
+        try {
+            Users user = getLoggedInUser();
+            Cart userCart = cartRepository.findByUsersEmail(user.getEmail()).orElseThrow(RuntimeException::new);
+            return responseCodeUtil.updateResponseData(mapCartItemToDto(userCart), ResponseCodeEnum.SUCCESS);
+        } catch (Exception e) {
+            log.error("An error occurred: {}", e.getMessage());
+            return responseCodeUtil.updateResponseData(new CartResponse(), ResponseCodeEnum.ERROR);
+        }
+    }
+
     private void removeItem(long cartItemId, Cart cart, CartItem cartItem) {
         cartItemRepository.deleteById(cartItemId);
         int index = cart.getCartItemList().indexOf(cartItem);
@@ -188,16 +200,6 @@ public class CartServiceImpl implements CartService {
                 .cartItemList(cartItemDtoList)
                 .cartTotal(userCart.getCartTotal())
                 .quantity(userCart.getQuantity())
-                .build();
-    }
-
-    @Override
-    public CartResponse viewCartItems() {
-        Users users = getLoggedInUser();
-        List<Cart> cartList = cartRepository.findAllByUsersOrderById(users);
-        return CartResponse.builder()
-                .cartList(cartList)
-                .totalCartElements(cartList.size())
                 .build();
     }
 }

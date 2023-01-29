@@ -88,17 +88,23 @@ public class FavouritesServiceImpl implements FavouritesService {
             return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.ERROR, "No favourite products found");
         }
 
-        Product favouriteProduct = productRepository.findById(optionalFavourites.get().getProductId()).get();
+        Product product = productRepository.findById(optionalFavourites.get().getProductId()).get();
 
-        ProductDto productDto = new ProductDto();
-        productDto.setProductName(favouriteProduct.getProductName());
-        productDto.setProductPrice(favouriteProduct.getProductPrice());
-        productDto.setImageUrl(favouriteProduct.getImageUrl());
-        //productDto.setQuantity(favouriteProduct.getQuantity());
-
-        response.setFavouriteProduct(productDto);
+        response.setFavouriteProduct(productToProductDto(product));
 
         return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS);
+    }
+
+    static ProductDto productToProductDto(Product product) {
+        ProductDto productDto = new ProductDto();
+        productDto.setId(product.getId());
+        productDto.setDescription(product.getDescription());
+        productDto.setProductName(product.getProductName());
+        productDto.setQuantity(product.getQuantity());
+        productDto.setImageUrl(product.getImageUrl());
+        productDto.setProductPrice(product.getProductPrice());
+        productDto.setCategoryName(product.getCategory().getCategoryName());
+        return productDto;
     }
 
     public BaseResponse removeFromFavourites(Long productId) {
@@ -120,4 +126,3 @@ public class FavouritesServiceImpl implements FavouritesService {
     }
 }
 
-        }

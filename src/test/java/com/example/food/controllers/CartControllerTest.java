@@ -27,49 +27,6 @@ class CartControllerTest {
     @MockBean
     private CartService cartService;
 
-    /**
-     * Method under test: {@link CartController#addToCart(Long)}
-     */
-    @Test
-    void testAddToCart() throws Exception {
-        // Arrange
-        when(cartService.addCartItem((Long) any())).thenReturn(new CartResponse());
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/cart/add-to-cart/{productId}", 123L);
-
-        // Act and Assert
-        MockMvcBuilders.standaloneSetup(cartController)
-                .build()
-                .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
-                .andExpect(MockMvcResultMatchers.content()
-                        .string(
-                                "{\"code\":-1,\"description\":\"An error occurred. Error message : ${errorMessage}\",\"cartItemList\":null,"
-                                        + "\"quantity\":0,\"cartTotal\":null,\"cartList\":null,\"totalCartElements\":0}"));
-    }
-
-    /**
-     * Method under test: {@link CartController#reduceProduct(Long)}
-     */
-    @Test
-    void testReduceProduct() throws Exception {
-        // Arrange
-        when(cartService.reduceProductQuantity((Long) any())).thenReturn(new CartResponse());
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/cart/reduce-product/{productId}",
-                123L);
-
-        // Act and Assert
-        MockMvcBuilders.standaloneSetup(cartController)
-                .build()
-                .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
-                .andExpect(MockMvcResultMatchers.content()
-                        .string(
-                                "{\"code\":-1,\"description\":\"An error occurred. Error message : ${errorMessage}\",\"cartItemList\":null,"
-                                        + "\"quantity\":0,\"cartTotal\":null,\"cartList\":null,\"totalCartElements\":0}"));
-    }
-
     @Test
     void testRemoveCartItem() throws Exception {
         // Arrange
@@ -87,9 +44,24 @@ class CartControllerTest {
                         .string("{\"code\":-1,\"description\":\"An error occurred. Error message : ${errorMessage}\"}"));
     }
 
-    /**
-     * Method under test: {@link CartController#clearCart()}
-     */
+    @Test
+    void testAddToCart() throws Exception {
+        // Arrange
+        when(cartService.addCartItem((Long) any())).thenReturn(new CartResponse());
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/cart/add-to-cart/{productId}", 123L);
+
+        // Act and Assert
+        MockMvcBuilders.standaloneSetup(cartController)
+                .build()
+                .perform(requestBuilder)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
+                .andExpect(MockMvcResultMatchers.content()
+                        .string(
+                                "{\"code\":-1,\"description\":\"An error occurred. Error message : ${errorMessage}\",\"cartItemList\":null,"
+                                        + "\"quantity\":0,\"cartTotal\":null}"));
+    }
+
     @Test
     void testClearCart() throws Exception {
         // Arrange
@@ -105,12 +77,9 @@ class CartControllerTest {
                 .andExpect(MockMvcResultMatchers.content()
                         .string(
                                 "{\"code\":-1,\"description\":\"An error occurred. Error message : ${errorMessage}\",\"cartItemList\":null,"
-                                        + "\"quantity\":0,\"cartTotal\":null,\"cartList\":null,\"totalCartElements\":0}"));
+                                        + "\"quantity\":0,\"cartTotal\":null}"));
     }
 
-    /**
-     * Method under test: {@link CartController#viewCartItems()}
-     */
     @Test
     void testViewCartItems() throws Exception {
         // Arrange
@@ -126,7 +95,26 @@ class CartControllerTest {
                 .andExpect(MockMvcResultMatchers.content()
                         .string(
                                 "{\"code\":-1,\"description\":\"An error occurred. Error message : ${errorMessage}\",\"cartItemList\":null,"
-                                        + "\"quantity\":0,\"cartTotal\":null,\"cartList\":null,\"totalCartElements\":0}"));
+                                        + "\"quantity\":0,\"cartTotal\":null}"));
+    }
+
+    @Test
+    void testReduceProduct() throws Exception {
+        // Arrange
+        when(cartService.reduceProductQuantity((Long) any())).thenReturn(new CartResponse());
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/cart/reduce-product/{productId}",
+                123L);
+
+        // Act and Assert
+        MockMvcBuilders.standaloneSetup(cartController)
+                .build()
+                .perform(requestBuilder)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
+                .andExpect(MockMvcResultMatchers.content()
+                        .string(
+                                "{\"code\":-1,\"description\":\"An error occurred. Error message : ${errorMessage}\",\"cartItemList\":null,"
+                                        + "\"quantity\":0,\"cartTotal\":null}"));
     }
 }
 
