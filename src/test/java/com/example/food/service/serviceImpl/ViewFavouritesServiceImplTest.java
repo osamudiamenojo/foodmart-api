@@ -1,6 +1,7 @@
 package com.example.food.service.serviceImpl;
 
 
+import com.example.food.model.Category;
 import com.example.food.model.Favourites;
 import com.example.food.model.Product;
 import com.example.food.model.Users;
@@ -44,16 +45,22 @@ class ViewFavouritesServiceImplTest {
     private FavouritesServiceImpl favouritesService;
     FavouriteProductResponse response;
     Product product = null;
+    Category category = new Category();
     Users users = null;
 
     @BeforeEach
     public void setUp() {
+        category.setId(1L);
+        category.setCategoryName("Sweet");
+
         product = Product.builder()
                 .id(254L)
                 .productName("Beverage")
                 .productPrice(new BigDecimal(2500))
                 .imageUrl("www.cloudinary.image.html")
+                .description("mensa")
                 .quantity(20)
+                .category(category)
                 .build();
 
         users = Users.builder()
