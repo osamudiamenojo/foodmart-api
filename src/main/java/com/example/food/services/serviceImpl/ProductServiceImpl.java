@@ -40,26 +40,24 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final UserUtil userUtil;
     private final ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
+    @Override
+    public PaginatedProductResponse searchProduct(String filter,String sortBy, String sortDirection, int pageNumber, int pageSize) {
 
-    public PaginatedProductResponse searchProduct(ProductSearchDto productSearchDto) {
-
-        Sort sort = productSearchDto.getSortDirection()
-                .equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(productSearchDto.getSortBy()).ascending() : Sort.by(productSearchDto.getSortBy()).descending();
-        Pageable pageRequest = PageRequest.of(productSearchDto.getPageNumber(), productSearchDto.getPageSize()+1, sort);
+        Sort sort = sortDirection
+                .equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageRequest = PageRequest.of(pageNumber, pageSize, sort);
 
         log.info("Sort: " + sort + " pageRequest: " + pageRequest);
 
         Page<Product> products;
-        if (productSearchDto.getFilter().isBlank()) {
+        if (filter.isBlank()) {
             products = productRepository.findAll(pageRequest);
             log.info("Filter is null or Empty. All Products: {}", products);
         } else {
-            products = productRepository.findByProductNameContainingIgnoreCase(productSearchDto.getFilter(), pageRequest);
+            products = productRepository.findByProductNameContainingIgnoreCase(filter, pageRequest);
         }
         PaginatedProductResponse paginatedResponse = PaginatedProductResponse.builder()
-                .numberOfProducts(products.getTotalElements())
-                .numberOfPages(products.getTotalPages())
-                .productList(products.getContent())
+                .productList(products)
                 .build();
         log.info("Paginated Response generated. PaginatedResponse:{}", paginatedResponse);
         return responseCodeUtil.updateResponseData(paginatedResponse, ResponseCodeEnum.SUCCESS);

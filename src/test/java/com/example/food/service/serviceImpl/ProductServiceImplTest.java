@@ -60,15 +60,8 @@ class ProductServiceImplTest {
         //MOCKING THE BEHAVIOUR
         when(productRepository.findByProductNameContainingIgnoreCase( anyString(), any(Pageable.class)))
                 .thenReturn(expectedPage);
-
-        ProductSearchDto productSearchDto = new ProductSearchDto();
-        productSearchDto.setFilter("filter");
-        productSearchDto.setPageSize(1);
-        productSearchDto.setPageNumber(0);
-        productSearchDto.setSortDirection("asc");
-
-        PaginatedProductResponse response = productServiceImpl.searchProduct(productSearchDto);
-        assertSame(response.getNumberOfProducts().intValue(), expectedProducts.size());
+        PaginatedProductResponse response = productServiceImpl.searchProduct("apple","productName","asc",0,1);
+        assertSame(response.getProductList(), expectedPage);
         verify(productRepository).findByProductNameContainingIgnoreCase(any(String.class), any(Pageable.class));
     }
 
@@ -97,8 +90,8 @@ class ProductServiceImplTest {
         when(productRepository.findAll(any(Pageable.class))).thenReturn(expectedPage);
         //VERIFICATION OF THR MOCK BEHAVIOUR
 
-        PaginatedProductResponse response = productServiceImpl.searchProduct(new ProductSearchDto());
-        assertSame(response.getNumberOfProducts().intValue(), expectedProducts.size());
+        PaginatedProductResponse response = productServiceImpl.searchProduct("","productName","asc",0,1);
+        assertSame(response.getProductList(), expectedPage);
         verify(productRepository).findAll((Pageable) any());
     }
 
@@ -111,8 +104,8 @@ class ProductServiceImplTest {
         when(productRepository.findAll(any(Pageable.class))).thenReturn(expectedPage);
 
         //VERIFICATION OF THR MOCK BEHAVIOUR
-        PaginatedProductResponse response = productServiceImpl.searchProduct(new ProductSearchDto());
-        assertTrue(response.getProductList().isEmpty());
+        PaginatedProductResponse response = productServiceImpl.searchProduct("","productName","asc",0,1);
+        assertTrue(response.getProductList().getTotalElements()==0);
         verify(productRepository).findAll((Pageable) any());
     }
 
