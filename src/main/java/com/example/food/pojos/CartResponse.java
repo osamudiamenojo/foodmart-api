@@ -19,8 +19,4 @@ public class CartResponse extends BaseResponse {
     private List<CartItemDto> cartItemList;
     private int quantity;
     private BigDecimal cartTotal ;
-
-    private List<Cart> cartList;
-
-    private long totalCartElements;
 }

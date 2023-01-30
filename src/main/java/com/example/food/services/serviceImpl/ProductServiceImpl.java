@@ -21,7 +21,6 @@ import com.example.food.util.ResponseCodeUtil;
 import com.example.food.util.UserUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -81,7 +80,8 @@ public class ProductServiceImpl implements ProductService {
             return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.ERROR, "Product does not exist");
         }
 
-        BeanUtils.copyProperties(productDto, product);
+        product.setProductName(productDto.getProductName());
+        product.setProductPrice(productDto.getPrice());
         productRepository.save(product);
 
         return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS, "Product updated successfully");
@@ -122,20 +122,16 @@ public class ProductServiceImpl implements ProductService {
         if (products.isEmpty()) {
             return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.PRODUCT_NOT_FOUND);
         }
+
         List<ProductDto> productDtoList = products.stream()
-                .map(product -> {
-                    ProductDto productDto = new ProductDto();
-                    productDto.setProductName(product.getProductName());
-                    productDto.setProductPrice(product.getProductPrice());
-                    productDto.setImageUrl(product.getImageUrl());
-                    productDto.setCategoryName(productDto.getCategoryName());
-                    productDto.setCategoryName(product.getCategory().getCategoryName());
-                    productDto.setQuantity(product.getQuantity());
-                    return productDto;
-                }).collect(Collectors.toList());
+                .map(this::productToProductDto).collect(Collectors.toList());
 
         response.setProductDto(productDtoList);
         return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS);
+    }
+
+    private ProductDto productToProductDto(Product product) {
+        return FavouritesServiceImpl.productToProductDto(product);
     }
 
     public ProductResponseDto fetchSingleProduct(Long productId) {
@@ -149,9 +145,8 @@ public class ProductServiceImpl implements ProductService {
         }
         Product product = fetchedProduct.get();
         log.info("response object {}", product);
-        ProductDto productDto = new ProductDto();
-        BeanUtils.copyProperties(product, productDto);
-        responseDto.setProductDto(productDto);
+
+        responseDto.setProductDto(productToProductDto(product));
 
         return responseCodeUtil.updateResponseData(responseDto, ResponseCodeEnum.SUCCESS);
     }

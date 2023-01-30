@@ -34,8 +34,12 @@ public class WalletController {
         return walletService.walletWithdrawal(withDrawalDto);
     }
     @PostMapping("/fundWallet")
-    public ResponseEntity<String> fundWallet(@RequestParam BigDecimal amount, @RequestParam String transactionType){
-        return walletService.fundWallet(amount,transactionType);
+    public ResponseEntity<String> fundWallet(@RequestParam BigDecimal amount){
+        return walletService.fundWallet(amount,"fundwallet");
+    }
+    @PostMapping("/makepayment")
+    public ResponseEntity<String> makepayment(@RequestParam BigDecimal amount){
+        return walletService.fundWallet(amount,"makepayment");
     }
     @GetMapping("/verifyPayment/{reference}/{makePayment}")
     public ResponseEntity<String> verifyPayment(@PathVariable  String reference, @PathVariable  String makePayment){

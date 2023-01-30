@@ -2,6 +2,7 @@ package com.example.food.services.serviceImpl;
 import com.example.food.Enum.OrderStatus;
 import com.example.food.Enum.PaymentMethod;
 import com.example.food.Enum.ResponseCodeEnum;
+import com.example.food.controllers.WalletController;
 import com.example.food.dto.CartItemDto;
 import com.example.food.dto.CheckoutDto;
 import com.example.food.model.*;
@@ -30,6 +31,8 @@ public class CheckoutServiceImpl implements CheckoutService {
     private final OrderRepository orderRepository;
     private final CartRepository cartRepository;
     private final CartServiceImpl cartService;
+    private final WalletServiceImpl walletService;
+    private final WalletController walletController;
     private final ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
     private Users getLoggedInUser() {
         String authentication = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -44,6 +47,10 @@ public class CheckoutServiceImpl implements CheckoutService {
 
             if (userCart.getCartItemList().isEmpty())
                 throw new RuntimeException("Cart is empty, Please add product to cart");
+
+//            walletService.fundWallet(BigDecimal.valueOf(200), "makepayment");
+
+            walletController.makepayment(userCart.getCartTotal());
 
             double discount = checkoutDto.getPaymentMethod() == PaymentMethod.CARD ? 0.05 : 1;
             BigDecimal deliveryFee = checkoutDto.getDeliveryMethod().getFee();

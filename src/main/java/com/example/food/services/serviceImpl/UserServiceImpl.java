@@ -204,7 +204,7 @@ public class UserServiceImpl implements UserService {
         emailService.sendMail(emailSenderDto);
 
         return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS,
-                "You have successful registered. Check your email for verification link to validate your account");
+                "Check your email for verification link to validate your account");
     }
     @Override
     public BaseResponse confirmRegistration(ConfirmRegistrationRequestDto confirmRegistrationRequestDto) {

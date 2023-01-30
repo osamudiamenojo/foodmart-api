@@ -77,6 +77,8 @@ class ProductServiceImplTest {
         product.setProductName(productName);
         product.setId(productId);
         product.setProductPrice(BigDecimal.valueOf(productPrice));
+        product.setCategory(new Category());
+        product.setDescription("sweet");
         product.setCreatedAt(new Date());
         product.setModifiedAt(new Date());
         return product;

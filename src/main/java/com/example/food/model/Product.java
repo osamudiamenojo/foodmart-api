@@ -1,5 +1,6 @@
 package com.example.food.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -29,7 +30,7 @@ public class Product {
     private Date createdAt;
     @UpdateTimestamp
     private Date modifiedAt;
-    @ManyToOne
+    @JsonIgnore
     @ManyToOne(targetEntity = Category.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "categoryId")
     private Category category;

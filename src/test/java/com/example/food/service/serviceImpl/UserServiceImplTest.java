@@ -162,7 +162,7 @@ class UserServiceImplTest {
         verify(emailService, times(1)).sendMail(emailSenderDto);
         BaseResponse baseResponse = userServiceImpl.signUp(createUserRequest);
         Assertions.assertThat(baseResponse.getDescription())
-                .isEqualTo("You have successful registered. Check your email for verification link to validate your account");
+                .isEqualTo("Check your email for verification link to validate your account");
     }
 
     @Test
