@@ -18,9 +18,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class OrderController {
 
-//    private final OrderUpdateRequestDto request;
-//
-//    private final Order order;
 
     private final OrderService orderService;
 
@@ -37,13 +34,6 @@ public class OrderController {
     public ResponseEntity<ViewAllOrderResponse> viewAllOrders(@PathVariable Long userId) {
         return new ResponseEntity<>(orderService.viewAllOrders(userId), HttpStatus.OK);
     }
-
-//    @PutMapping("/orders/{id}/status")
-//    public ResponseEntity<Order> updateOrderStatus(@PathVariable Long id, @RequestBody OrderUpdateRequest request) {
-//        Order updatedOrder = orderService.updateOrderStatus(id, request.getStatus());
-//        return ResponseEntity.ok(updatedOrder);
-//    }
-
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/updateOrder/{orderId}/status")
