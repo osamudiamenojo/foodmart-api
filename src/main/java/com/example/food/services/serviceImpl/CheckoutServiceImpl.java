@@ -55,8 +55,8 @@ public class CheckoutServiceImpl implements CheckoutService {
 
             BigDecimal deliveryFee = checkoutDto.getDeliveryMethod().getFee();
             BigDecimal cartTotal = userCart.getCartTotal();
-            double discount = userCart.getQuantity() >= 2 ? 0.05 : 1;
-            BigDecimal orderTotal = deliveryFee.add(cartTotal.add(cartTotal.multiply(BigDecimal.valueOf(discount))));
+            BigDecimal discount = userCart.getCartTotal().compareTo(BigDecimal.valueOf(10_000)) < 0 ? (cartTotal.multiply(BigDecimal.valueOf(0.05))) : BigDecimal.valueOf(0);
+            BigDecimal orderTotal = deliveryFee.add(cartTotal.subtract(discount));
 
             if (user.getWallet().getWalletBalance().compareTo(orderTotal) < 0)
                 return responseCodeUtil.updateResponseData(new OrderResponse(), ResponseCodeEnum.ERROR, "Insufficient balance Please fund your wallet");
@@ -98,7 +98,7 @@ public class CheckoutServiceImpl implements CheckoutService {
                     .paymentMethod(PaymentMethod.WALLET)
                     .deliveryMethod(checkoutDto.getDeliveryMethod())
                     .deliveryFee(deliveryFee)
-                    .discount(cartTotal.multiply(BigDecimal.valueOf(discount)))
+                    .discount(discount)
                     .subTotal(cartTotal)
                     .totalOrderPrice(orderTotal)
                     .build();

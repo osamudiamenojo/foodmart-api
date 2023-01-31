@@ -1,9 +1,12 @@
 package com.example.food.services.serviceImpl;
 
 import com.example.food.Enum.ResponseCodeEnum;
+import com.example.food.dto.CartItemDto;
 import com.example.food.dto.OrderDto;
 import com.example.food.model.Order;
+import com.example.food.model.OrderedItem;
 import com.example.food.model.Users;
+import com.example.food.pojos.OrderResponse;
 import com.example.food.pojos.OrderResponseDto;
 import com.example.food.pojos.ViewOrderHistoryResponse;
 import com.example.food.pojos.ViewAllOrderResponse;
@@ -13,8 +16,10 @@ import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.OrderService;
 import com.example.food.util.ResponseCodeUtil;
 import com.example.food.util.UserUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,24 +36,50 @@ public class OrderServiceImpl implements OrderService {
     private final UserUtil userUtil;
     private final ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
 
+    private Users getLoggedInUser() {
+        String authentication = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByEmail(authentication)
+                .orElseThrow(() -> new RuntimeException("User not authorized"));
+    }
+
     @Override
-    public OrderResponseDto viewDetailsOfAParticularOrder(Long orderId) {
-        OrderResponseDto response = new OrderResponseDto();
-        String email = userUtil.getAuthenticatedUserEmail();
-        Optional<Users> user = userRepository.findByEmail(email);
+    public OrderResponse viewParticularOrder(Long orderId) {
+        OrderResponse response = new OrderResponse();
+        try {
+            Users user = getLoggedInUser();
+            Order order = orderRepository.findOrderByUserAndId(user, orderId);
+            List<CartItemDto> orderedItems = new ArrayList<>();
 
-        if (user.isEmpty()){
-            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.ERROR,"Unauthorised access");
+            for (OrderedItem item : order.getOrderedItem()) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                CartItemDto cartItemDto = objectMapper.convertValue(item, CartItemDto.class);
+                orderedItems.add(cartItemDto);
+            }
+
+            response = OrderResponse.builder()
+                    .id(order.getId())
+                    .imageUrl(order.getImageUrl())
+                    .createdAt(order.getCreatedAt())
+                    .modifiedAt(null)
+                    .quantity(order.getQuantity())
+                    .orderStatus(order.getOrderStatus())
+                    .cartItemDtoList(orderedItems)
+                    .address(order.getAddress())
+                    .paymentMethod(order.getPaymentMethod())
+                    .deliveryFee(order.getDeliveryFee())
+                    .discount(order.getDiscount())
+                    .deliveryMethod(order.getDeliveryMethod())
+                    .totalOrderPrice(order.getTotalOrderPrice())
+                    .build();
+            response.setCode(0);
+
+            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS, "These are the order details");
+        } catch (Exception e) {
+            log.error("An error occurred: {}", e.getMessage());
+            return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.ERROR, "Sorry! An Error Occurred");
         }
 
-        Optional<Order> order = orderRepository.findById(orderId);
-        if (order.isEmpty()){
-            return responseCodeUtil.updateResponseData(response,ResponseCodeEnum.ERROR,"Order not found");
-        }
-        OrderDto orderDto = new OrderDto();
-        orderDto.setOrder(order.get());
-        response.setOrderDto(orderDto);
-        return responseCodeUtil.updateResponseData(response,ResponseCodeEnum.SUCCESS,"These are the order details");
+
     }
 
     @Override
@@ -67,7 +98,7 @@ public class OrderServiceImpl implements OrderService {
             allOrderResponse.setListOfOrders(new ArrayList<>());
             return responseCodeUtil.updateResponseData(allOrderResponse, ResponseCodeEnum.ORDERS_NOT_FOUND);
 
-        }else {
+        } else {
             allOrderResponse.setCode(0);
             allOrderResponse.setListOfOrders(myOrder);
             allOrderResponse.setDescription("You have  made an order");
