@@ -20,6 +20,8 @@ public enum ResponseCodeEnum {
     USER_NOT_FOUND(-8, "Email does not exist"),
     ORDERS_NOT_FOUND(-9, "No Order found"),
 
+    ERROR_UPDATING_ORDER_STATUS(-10, "Could not update order status"),
+
 //    you can add your custom error codes as shown below just ensure that error codes have a minus sign
 //    ERROR_SETTING_THRESHOLD(-2, "An error occurred"),
     ;

@@ -1,5 +1,6 @@
 package com.example.food.services.serviceImpl;
 
+import com.example.food.Enum.OrderStatus;
 import com.example.food.Enum.ResponseCodeEnum;
 import com.example.food.dto.CartItemDto;
 import com.example.food.dto.OrderDto;
@@ -8,6 +9,7 @@ import com.example.food.model.OrderedItem;
 import com.example.food.model.Users;
 import com.example.food.pojos.OrderResponse;
 import com.example.food.pojos.OrderResponseDto;
+import com.example.food.pojos.UpdateOrderStatusResponse;
 import com.example.food.pojos.ViewOrderHistoryResponse;
 import com.example.food.pojos.ViewAllOrderResponse;
 import com.example.food.repositories.OrderRepository;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -35,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final UserUtil userUtil;
     private final ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
-
+    private BaseResponse baseResponse;
     private Users getLoggedInUser() {
         String authentication = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByEmail(authentication)
@@ -101,10 +104,11 @@ public class OrderServiceImpl implements OrderService {
         } else {
             allOrderResponse.setCode(0);
             allOrderResponse.setListOfOrders(myOrder);
-            allOrderResponse.setDescription("You have  made an order");
+            allOrderResponse.setDescription("You have made an order");
             return responseCodeUtil.updateResponseData(allOrderResponse, ResponseCodeEnum.SUCCESS);
         }
     }
+
 
     @Override
     public BaseResponse viewOrderHistory() {
@@ -119,5 +123,25 @@ public class OrderServiceImpl implements OrderService {
                 .build();
 
         return responseCodeUtil.updateResponseData(viewOrderHistoryResponse, ResponseCodeEnum.SUCCESS);
+    }
+
+
+    @Override
+    public BaseResponse updateStatusOfAnOrder(Long orderId, OrderStatus newStatus) {
+        String email = userUtil.getAuthenticatedUserEmail();
+        Users user = userRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        UpdateOrderStatusResponse orderStatusResponse = new UpdateOrderStatusResponse();
+
+        if (orderRepository.findById(orderId).isPresent()) {
+            Order order = orderRepository.findById(orderId).get();
+            order.setOrderStatus(newStatus);
+            orderRepository.save(order);
+            orderStatusResponse.setCode(0);
+            orderStatusResponse.setMessage("Order status change was successful!");
+            return responseCodeUtil.updateResponseData(orderStatusResponse, ResponseCodeEnum.SUCCESS);
+        }
+        orderStatusResponse.setCode(-1);
+        orderStatusResponse.setMessage("Sorry, Order status change was unsuccessful!");
+        return responseCodeUtil.updateResponseData(orderStatusResponse, ResponseCodeEnum.ERROR);
     }
 }

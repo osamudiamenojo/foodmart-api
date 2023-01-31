@@ -1,11 +1,13 @@
 package com.example.food.services.serviceImpl;
 
+
+import com.example.food.Enum.OrderStatus;
+import com.example.food.model.Order;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 import com.example.food.Enum.Role;
 import com.example.food.model.Address;
 import com.example.food.model.Cart;
@@ -17,17 +19,28 @@ import com.example.food.repositories.OrderRepository;
 import com.example.food.repositories.UserRepository;
 import com.example.food.restartifacts.BaseResponse;
 import com.example.food.util.UserUtil;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.test.context.ContextConfiguration;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -35,6 +48,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {OrderServiceImpl.class})
+@ExtendWith(MockitoExtension.class)
 class OrderServiceImplTest {
     @MockBean
     private OrderRepository orderRepository;
@@ -48,23 +63,35 @@ class OrderServiceImplTest {
     @MockBean
     private UserUtil userUtil;
 
-    /**
-     * Method under test: {@link OrderServiceImpl#viewParticularOrder(Long)}
-     */
+    
     @Test
     void testViewParticularOrder() {
         // Arrange and Act
         OrderResponse actualViewParticularOrderResult = orderServiceImpl.viewParticularOrder(123L);
 
+        listOfOrder = new ArrayList<>();
+        UserDetails mockedUserDetails = Mockito.mock(UserDetails.class);
+        when(userUtil.getAuthenticatedUserEmail()).thenReturn("faith@abiola.com");
+        SecurityContextHolder.getContext().setAuthentication(new org.springframework.security.authentication
+                .UsernamePasswordAuthenticationToken(mockedUserDetails, "password", new ArrayList<>()));
+        Users loggedUser = new Users();
+        lenient().when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(loggedUser));
+
         // Assert
         assertEquals("Sorry! An Error Occurred", actualViewParticularOrderResult.getDescription());
         assertEquals(-1, actualViewParticularOrderResult.getCode());
+
     }
 
-    /**
-     * Method under test: {@link OrderServiceImpl#viewAllOrders(Long)}
-     */
+    
     @Test
+
+    void viewAllOrdersWhenOrderIsEmpty() {
+        when(orderRepository.findAllByUser_Email(anyString())).thenReturn(listOfOrder);
+        ViewAllOrderResponse viewAllOrderResponse = orderServiceImpl.viewAllOrders(1L);
+        assertEquals("No Order found", viewAllOrderResponse.getDescription());
+        assertTrue(viewAllOrderResponse.getCode() == -9);
+
     void testViewAllOrders() {
         // Arrange
         Cart cart = new Cart();
@@ -202,12 +229,23 @@ class OrderServiceImplTest {
         verify(userRepository).findByEmail((String) any());
         verify(orderRepository).findAllByUser_Email((String) any());
         verify(userUtil).getAuthenticatedUserEmail();
+
     }
 
-    /**
-     * Method under test: {@link OrderServiceImpl#viewAllOrders(Long)}
-     */
+    
     @Test
+
+    void viewAllOrdersWhenOrderIsNotEmpty() {
+        listOfOrder.add(new Order());
+        when(orderRepository.findAllByUser_Email(anyString())).thenReturn(listOfOrder);
+        ViewAllOrderResponse viewAllOrderResponse = orderServiceImpl.viewAllOrders(1L);
+        assertEquals(0, viewAllOrderResponse.getCode());
+    }
+
+   
+    @Test
+    void testUpdateStatusOfAnOrder() {
+
     void testViewAllOrders2() {
         // Arrange
         Cart cart = new Cart();
@@ -339,9 +377,7 @@ class OrderServiceImplTest {
         verify(userUtil).getAuthenticatedUserEmail();
     }
 
-    /**
-     * Method under test: {@link OrderServiceImpl#viewOrderHistory()}
-     */
+   
     @Test
     void testViewOrderHistory() {
         // Arrange
@@ -480,12 +516,11 @@ class OrderServiceImplTest {
         verify(userUtil).getAuthenticatedUserEmail();
     }
 
-    /**
-     * Method under test: {@link OrderServiceImpl#viewOrderHistory()}
-     */
+    
     @Test
     void testViewOrderHistory2() {
         // Arrange
+
         Cart cart = new Cart();
         cart.setCartItemList(new ArrayList<>());
         cart.setCartTotal(null);
@@ -607,6 +642,13 @@ class OrderServiceImplTest {
         users2.setWallet(wallet2);
         Optional<Users> ofResult = Optional.of(users2);
         when(userRepository.findByEmail((String) any())).thenReturn(ofResult);
+        when(orderRepository.findById((Long) any())).thenThrow(new RuntimeException());
+        when(userUtil.getAuthenticatedUserEmail()).thenReturn("jane.doe@example.org");
+        assertThrows(RuntimeException.class, () -> orderServiceImpl.updateStatusOfAnOrder(123L, OrderStatus.DELIVERED));
+        verify(userRepository).findByEmail((String) any());
+        verify(orderRepository).findById((Long) any());
+        verify(userUtil).getAuthenticatedUserEmail();
+    }
         when(orderRepository.findAllByUserOrderByIdDesc((Users) any())).thenReturn(new ArrayList<>());
         when(userUtil.getAuthenticatedUserEmail()).thenThrow(new RuntimeException());
 
@@ -615,4 +657,3 @@ class OrderServiceImplTest {
         verify(userUtil).getAuthenticatedUserEmail();
     }
 }
-
