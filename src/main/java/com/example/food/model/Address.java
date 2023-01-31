@@ -16,15 +16,14 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
-    private String addressName;
-    private String phoneNumber;
-    private String fullName;
-    private String deliveryEmail;
+    private String streetAddress;
+    private String city;
+    private String state;
     private Boolean isDefaultAddress;
     private Date createdAt;
     private Date modifiedAt;
-    @ManyToOne
+    @OneToOne
     //Todo @JoinColumn
-    private Users user;
+    private Order order;
 
 }

@@ -182,7 +182,6 @@ public class UserServiceImpl implements UserService {
         String token = jwtUtil.generateSignUpConfirmationToken(createUserRequest.getEmail());
         newUser.setIsActive(false);
         newUser.setConfirmationToken(token);
-        newUser.setRole(Role.ROLE_USER);
         newUser.setWallet(wallet);
 
         Cart cart = Cart.builder()

@@ -127,7 +127,12 @@ public class CartServiceImpl implements CartService {
             Users user = getLoggedInUser();
             Cart userCart = cartRepository.findByUsersEmail(user.getEmail()).orElseThrow(RuntimeException::new);
 
-            cartRepository.deleteById(userCart.getId());
+            for (CartItem item : userCart.getCartItemList()) {
+                cartItemRepository.deleteById(item.getId());
+            }
+            userCart.setCartTotal(BigDecimal.valueOf(0));
+            userCart.setQuantity(0);
+            cartRepository.save(userCart);
 
             CartResponse response = CartResponse.builder()
                     .cartTotal(BigDecimal.valueOf(0))

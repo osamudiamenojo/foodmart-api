@@ -1,4 +1,5 @@
 package com.example.food.services.serviceImpl;
+
 import com.example.food.Enum.OrderStatus;
 import com.example.food.Enum.PaymentMethod;
 import com.example.food.Enum.ResponseCodeEnum;
@@ -7,10 +8,7 @@ import com.example.food.dto.CartItemDto;
 import com.example.food.dto.CheckoutDto;
 import com.example.food.model.*;
 import com.example.food.pojos.OrderResponse;
-import com.example.food.repositories.CartRepository;
-import com.example.food.repositories.OrderRepository;
-import com.example.food.repositories.OrderedItemRepository;
-import com.example.food.repositories.UserRepository;
+import com.example.food.repositories.*;
 import com.example.food.services.CheckoutService;
 import com.example.food.util.ResponseCodeUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,14 +16,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class CheckoutServiceImpl implements CheckoutService {
+    private final WalletTransactionRepository walletTransactionRepository;
+    private final WalletRepository walletRepository;
+    private final AddressRepository addressRepository;
     private final OrderedItemRepository orderedItemRepository;
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
@@ -34,11 +37,13 @@ public class CheckoutServiceImpl implements CheckoutService {
     private final WalletServiceImpl walletService;
     private final WalletController walletController;
     private final ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
+
     private Users getLoggedInUser() {
         String authentication = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByEmail(authentication)
                 .orElseThrow(() -> new RuntimeException("User not authorized"));
     }
+
     @Override
     public OrderResponse checkout(CheckoutDto checkoutDto) {
         try {
@@ -48,13 +53,28 @@ public class CheckoutServiceImpl implements CheckoutService {
             if (userCart.getCartItemList().isEmpty())
                 throw new RuntimeException("Cart is empty, Please add product to cart");
 
-//            walletService.fundWallet(BigDecimal.valueOf(200), "makepayment");
-
-            walletController.makepayment(userCart.getCartTotal());
-
-            double discount = checkoutDto.getPaymentMethod() == PaymentMethod.CARD ? 0.05 : 1;
             BigDecimal deliveryFee = checkoutDto.getDeliveryMethod().getFee();
             BigDecimal cartTotal = userCart.getCartTotal();
+            double discount = userCart.getQuantity() >= 2 ? 0.05 : 1;
+            BigDecimal orderTotal = deliveryFee.add(cartTotal.add(cartTotal.multiply(BigDecimal.valueOf(discount))));
+
+            if (user.getWallet().getWalletBalance().compareTo(orderTotal) < 0)
+                return responseCodeUtil.updateResponseData(new OrderResponse(), ResponseCodeEnum.ERROR, "Insufficient balance Please fund your wallet");
+
+            Wallet wallet = user.getWallet();
+            wallet.setWalletBalance(wallet.getWalletBalance().subtract(orderTotal));
+            walletRepository.save(wallet);
+
+            Address orderAddress = Address.builder()
+                    .streetAddress(checkoutDto.getStreetAddress())
+                    .city(checkoutDto.getCity())
+                    .state(checkoutDto.getState())
+                    .build();
+            addressRepository.save(orderAddress);
+
+            List<Address> usersAddresses = user.getAddress();
+            usersAddresses.add(orderAddress);
+            userRepository.save(user);
 
             List<OrderedItem> orderedItemList = new ArrayList<>();
             for (CartItem item : userCart.getCartItemList()) {
@@ -74,15 +94,13 @@ public class CheckoutServiceImpl implements CheckoutService {
                     .orderStatus(OrderStatus.PENDING)
                     .user(user)
                     .orderedItem(orderedItemList)
-                    .address(user.getAddress().get(0))
-                    .paymentMethod(checkoutDto.getPaymentMethod())
+                    .address(orderAddress)
+                    .paymentMethod(PaymentMethod.WALLET)
                     .deliveryMethod(checkoutDto.getDeliveryMethod())
                     .deliveryFee(deliveryFee)
-                    .discount(discount)
+                    .discount(cartTotal.multiply(BigDecimal.valueOf(discount)))
                     .subTotal(cartTotal)
-                    .totalOrderPrice(
-                            deliveryFee.add(cartTotal.add(cartTotal.multiply(BigDecimal.valueOf(discount))))
-                    )
+                    .totalOrderPrice(orderTotal)
                     .build();
             Order savedOrder = orderRepository.save(order);
             List<CartItemDto> cartItemDtos = new ArrayList<>();
@@ -102,7 +120,7 @@ public class CheckoutServiceImpl implements CheckoutService {
                     .quantity(savedOrder.getQuantity())
                     .orderStatus(savedOrder.getOrderStatus())
                     .cartItemDtoList(cartItemDtos)
-                    .address(savedOrder.getAddress().getAddressName())
+                    .address(savedOrder.getAddress())
                     .paymentMethod(savedOrder.getPaymentMethod())
                     .deliveryFee(savedOrder.getDeliveryFee())
                     .discount(discount)

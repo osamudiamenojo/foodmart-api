@@ -45,7 +45,7 @@ public class Order {
     private Address address;
     private PaymentMethod paymentMethod;
     private BigDecimal deliveryFee;
-    private Double discount;
+    private BigDecimal discount;
     private DeliveryMethod deliveryMethod;
     private BigDecimal subTotal;
     private BigDecimal totalOrderPrice;
