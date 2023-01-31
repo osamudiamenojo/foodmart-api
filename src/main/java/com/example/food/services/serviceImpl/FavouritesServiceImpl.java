@@ -97,7 +97,6 @@ public class FavouritesServiceImpl implements FavouritesService {
 
     static ProductDto productToProductDto(Product product) {
         ProductDto productDto = new ProductDto();
-        productDto.setId(product.getId());
         productDto.setDescription(product.getDescription());
         productDto.setProductName(product.getProductName());
         productDto.setQuantity(product.getQuantity());
