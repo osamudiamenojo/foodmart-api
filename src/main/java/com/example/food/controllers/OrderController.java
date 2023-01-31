@@ -1,6 +1,8 @@
 package com.example.food.controllers;
 
+
 import com.example.food.Enum.OrderStatus;
+import com.example.food.pojos.OrderResponse;
 import com.example.food.pojos.OrderResponseDto;
 import com.example.food.restartifacts.BaseResponse;
 import com.example.food.pojos.ViewAllOrderResponse;
@@ -23,10 +25,9 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping("/order/{orderId}")
-    public ResponseEntity<OrderResponseDto> viewDetailsOfAParticularOrder(@PathVariable Long orderId){
-        return new ResponseEntity<>(orderService.viewDetailsOfAParticularOrder(orderId), HttpStatus.ACCEPTED);
+    public ResponseEntity<OrderResponse> viewDetailsOfAParticularOrder(@PathVariable Long orderId){
+        return new ResponseEntity<>(orderService.viewParticularOrder(orderId), HttpStatus.ACCEPTED);
     }
-
     @GetMapping("/order")
     public BaseResponse viewOrderHistory(){
         return orderService.viewOrderHistory();
