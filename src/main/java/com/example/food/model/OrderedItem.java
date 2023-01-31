@@ -23,10 +23,5 @@ public class OrderedItem {
     private @NotNull int quantity;
     @Column(name = "subTotal")
     private @NotNull BigDecimal subTotal;
-//    @JsonIgnore
-//    @ManyToOne(targetEntity = Cart.class, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-//    @JoinColumn(name = "order_Id", referencedColumnName = "id",
-//            foreignKey = @ForeignKey
-//                    (name = "order_orderedItem_fk"))
-//    private Order order;
+
 }
