@@ -11,5 +11,6 @@ import java.math.BigDecimal;
 @Getter
 @Builder
 public class WalletResponse extends BaseResponse {
+    private String userName;
     private BigDecimal walletBalance;
 }

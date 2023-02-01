@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:8080"})
 @RequestMapping("/wallet")
 public class WalletController {
     private final WalletService walletService;
@@ -35,14 +36,14 @@ public class WalletController {
     }
     @PostMapping("/fundWallet")
     public ResponseEntity<String> fundWallet(@RequestParam BigDecimal amount){
-        return walletService.fundWallet(amount,"fundwallet");
+        return walletService.fundWallet(amount, "fundwallet");
     }
-    @PostMapping("/makepayment")
-    public ResponseEntity<String> makepayment(@RequestParam BigDecimal amount){
+    @PostMapping("/makePayment")
+    public ResponseEntity<String> makePayment(@RequestParam BigDecimal amount){
         return walletService.fundWallet(amount,"makepayment");
     }
-    @GetMapping("/verifyPayment/{reference}/{makePayment}")
-    public ResponseEntity<String> verifyPayment(@PathVariable  String reference, @PathVariable  String makePayment){
-        return walletService.verifyPayment(reference,makePayment);
+    @GetMapping("/verifyPayment/{reference}/{paymentMethod}")
+    public ResponseEntity<String> verifyPayment(@PathVariable  String reference, @PathVariable  String paymentMethod){
+        return walletService.verifyPayment(reference,paymentMethod);
     }
 }
