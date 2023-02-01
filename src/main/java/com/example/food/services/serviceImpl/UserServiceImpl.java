@@ -62,6 +62,8 @@ public class UserServiceImpl implements UserService {
 
         LoginResponseDto loginResponseDto = LoginResponseDto.builder()
                 .firstname(users.getFirstName())
+                .lastName(users.getLastName())
+                .email(users.getEmail())
                 .token(token)
                 .build();
 
