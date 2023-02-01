@@ -55,7 +55,7 @@ public class CheckoutServiceImpl implements CheckoutService {
 
             BigDecimal deliveryFee = checkoutDto.getDeliveryMethod().getFee();
             BigDecimal cartTotal = userCart.getCartTotal();
-            BigDecimal discount = userCart.getCartTotal().compareTo(BigDecimal.valueOf(10_000)) < 0 ? (cartTotal.multiply(BigDecimal.valueOf(0.05))) : BigDecimal.valueOf(0);
+            BigDecimal discount = userCart.getCartTotal().compareTo(BigDecimal.valueOf(10_000)) >= 0 ? (cartTotal.multiply(BigDecimal.valueOf(0.05))) : BigDecimal.valueOf(0);
             BigDecimal orderTotal = deliveryFee.add(cartTotal.subtract(discount));
 
             if (user.getWallet().getWalletBalance().compareTo(orderTotal) < 0)

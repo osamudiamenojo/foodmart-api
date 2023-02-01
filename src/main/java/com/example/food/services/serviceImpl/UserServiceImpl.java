@@ -11,6 +11,7 @@ import com.example.food.model.PasswordResetTokenEntity;
 import com.example.food.model.Users;
 import com.example.food.model.Wallet;
 import com.example.food.pojos.CreateUserRequest;
+import com.example.food.pojos.LoginResponseDto;
 import com.example.food.repositories.CartRepository;
 import com.example.food.repositories.PasswordResetTokenRepository;
 import com.example.food.repositories.UserRepository;
@@ -49,16 +50,25 @@ public class UserServiceImpl implements UserService {
     private final CartRepository cartRepository;
 
     @Override
-    public ResponseEntity<String> login(LoginRequestDto request) {
+    public ResponseEntity<LoginResponseDto> login(LoginRequestDto request) {
         authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
         UserDetails user = customUserDetailsService.loadUserByUsername(request.getEmail());
 
+        String token = jwtUtil.generateToken(user);
+
+        Users users = userRepository.findByEmail(user.getUsername()).get();
+
+        LoginResponseDto loginResponseDto = LoginResponseDto.builder()
+                .firstname(users.getFirstName())
+                .token(token)
+                .build();
+
         if(user!= null ){
-            return ResponseEntity.ok(jwtUtil.generateToken(user));
+            return ResponseEntity.ok(loginResponseDto);
         }
-        return ResponseEntity.status(400).body("Some Error Occurred");
+        return ResponseEntity.status(400).body(null);
     }
 
     @Override
