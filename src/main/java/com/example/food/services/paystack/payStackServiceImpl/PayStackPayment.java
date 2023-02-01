@@ -20,6 +20,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.net.URI;
 
 //@AllArgsConstructor
 @Service
@@ -84,7 +85,8 @@ public class PayStackPayment implements PaystackPaymentService {
             if(response.getStatusCodeValue()==200){
                 System.out.println(response);
                 if(transactionType.equalsIgnoreCase("makepayment")){
-                    return new ResponseEntity<>("Your payment was successful. Order completed!",HttpStatus.OK);
+                    return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("http://localhost:3000/")).build();
+
                 }else{
                 //UPDATE WALLET AND WALLET TRANSACTION IN DATABASE
                 wallet.setWalletBalance(wallet.getWalletBalance().add(fundingAmount));
@@ -97,12 +99,14 @@ public class PayStackPayment implements PaystackPaymentService {
                         .transactionReference(paymentReference)
                         .build();
                 walletTransactionRepository.save(walletTransaction);
-                return new ResponseEntity<>("Your Account has been successfully Funded",HttpStatus.OK);
+                    return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("http://localhost:3000/walletdashboard")).build();
+
                 }
             }
-            return new ResponseEntity<>("Payment could not be verified",HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("http://localhost:3000/")).build();
+
         } catch (HttpClientErrorException e) {
-            return new ResponseEntity<>("Payment Failed", HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("http://localhost:3000/")).build();
         }
     }
 }

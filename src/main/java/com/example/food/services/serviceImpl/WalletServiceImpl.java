@@ -35,7 +35,6 @@ public class WalletServiceImpl implements WalletService {
         String authentication = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByEmail(authentication).orElseThrow(() -> new RuntimeException("User not authorized"));
     }
-
     @Override
     public WalletResponse getWalletBalance() {
         WalletResponse walletResponse;
@@ -43,6 +42,7 @@ public class WalletServiceImpl implements WalletService {
             Users walletOwner = getLoggedInUser();
             Wallet wallet = walletRepository.findWalletByUser_Email(walletOwner.getEmail());
             walletResponse = WalletResponse.builder()
+                    .userName(walletOwner.getFirstName()+" " + walletOwner.getLastName())
                     .walletBalance(wallet.getWalletBalance())
                     .build();
             return responseCodeUtil.updateResponseData(walletResponse, ResponseCodeEnum.SUCCESS, "Wallet Balance");
