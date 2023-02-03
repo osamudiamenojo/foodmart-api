@@ -3,9 +3,8 @@ package com.example.food.controllers;
 
 import com.example.food.Enum.OrderStatus;
 import com.example.food.pojos.OrderResponse;
-import com.example.food.pojos.OrderResponseDto;
-import com.example.food.restartifacts.BaseResponse;
 import com.example.food.pojos.ViewAllOrderResponse;
+import com.example.food.restartifacts.BaseResponse;
 import com.example.food.services.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

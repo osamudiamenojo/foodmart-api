@@ -80,9 +80,10 @@ public class ProductServiceImpl implements ProductService {
 
         product.setProductName(productDto.getProductName());
         product.setProductPrice(productDto.getPrice());
+        product.setQuantity(productDto.getQuantity());
         productRepository.save(product);
 
-        return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS, "Product updated successfully");
+        return responseCodeUtil.updateResponseData(response, ResponseCodeEnum.SUCCESS, product.getProductName() + " updated successfully");
     }
 
 
@@ -97,7 +98,7 @@ public class ProductServiceImpl implements ProductService {
         }
         Optional<Product> newProduct = productRepository.findByProductName(productDto.getProductName());
         if (newProduct.isPresent()) {
-            return responseCodeUtil.updateResponseData(createProductResponse, ResponseCodeEnum.ERROR, "Product Already Exists!");
+            return responseCodeUtil.updateResponseData(createProductResponse, ResponseCodeEnum.ERROR, newProduct.get().getProductName() + " Already Exists!");
         }
         Product product = Product.builder()
                 .category(category)
@@ -108,7 +109,7 @@ public class ProductServiceImpl implements ProductService {
                 .quantity(productDto.getQuantity())
                 .build();
         productRepository.save(product);
-        return responseCodeUtil.updateResponseData(createProductResponse, ResponseCodeEnum.SUCCESS, "New Product Has Been Added");
+        return responseCodeUtil.updateResponseData(createProductResponse, ResponseCodeEnum.SUCCESS, product.getProductName() + " Has Been Added");
     }
     
 
