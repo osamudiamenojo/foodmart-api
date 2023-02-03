@@ -1,21 +1,16 @@
 package com.example.food.services.serviceImpl;
+
 import com.example.food.Enum.ResponseCodeEnum;
 import com.example.food.Enum.Role;
 import com.example.food.dto.ProductDto;
-import com.example.food.dto.ProductSearchDto;
 import com.example.food.dto.UpdateProductDto;
 import com.example.food.model.Category;
 import com.example.food.model.Product;
 import com.example.food.model.Users;
-import com.example.food.pojos.UpdatedProductResponse;
-import com.example.food.repositories.CartRepository;
+import com.example.food.pojos.*;
 import com.example.food.repositories.CategoryRepository;
-import com.example.food.repositories.UserRepository;
-import com.example.food.pojos.CreateProductResponse;
-import com.example.food.pojos.PaginatedProductResponse;
-import com.example.food.pojos.ProductResponse;
-import com.example.food.pojos.ProductResponseDto;
 import com.example.food.repositories.ProductRepository;
+import com.example.food.repositories.UserRepository;
 import com.example.food.services.ProductService;
 import com.example.food.util.ResponseCodeUtil;
 import com.example.food.util.UserUtil;
@@ -26,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,7 +30,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
-    private final CartRepository cartRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;

@@ -5,6 +5,7 @@ import com.example.food.Enum.PaymentMethod;
 import com.example.food.Enum.ResponseCodeEnum;
 import com.example.food.dto.CartItemDto;
 import com.example.food.dto.CheckoutDto;
+import com.example.food.dto.UpdateProductDto;
 import com.example.food.model.*;
 import com.example.food.pojos.OrderResponse;
 import com.example.food.repositories.*;
@@ -84,10 +85,11 @@ public class CheckoutServiceImpl implements CheckoutService {
                 orderedItemList.add(orderedItem);
                 orderedItemRepository.save(orderedItem);
             }
-            //
-//            for()
-//            productService.updateProduct()
-            //
+
+            for(CartItem item : userCart.getCartItemList()){
+                UpdateProductDto updateProduct = new UpdateProductDto(item.getProduct().getProductName(), item.getProduct().getQuantity() - item.getQuantity(), item.getProduct().getProductPrice());
+                productService.updateProduct(item.getProduct().getId(), updateProduct);
+            }
 
             Order order = Order.builder()
                     .imageUrl("image")

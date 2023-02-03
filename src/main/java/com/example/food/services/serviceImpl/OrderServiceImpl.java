@@ -35,7 +35,6 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final UserUtil userUtil;
     private final ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
-    private BaseResponse baseResponse;
     private Users getLoggedInUser() {
         String authentication = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByEmail(authentication)
