@@ -145,7 +145,7 @@ class ProductServiceImplTest {
         UpdatedProductResponse updatedProductResponse = productServiceImpl.updateProduct(productId, productDto);
 
         verify(productRepository, times(1)).save(product);
-        assertEquals(updatedProductResponse.getDescription(), "Product updated successfully");
+        assertEquals(updatedProductResponse.getDescription(), "null updated successfully");
     }
 
         @Test

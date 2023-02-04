@@ -3,13 +3,14 @@ package com.example.food.services.serviceImpl;
 import com.example.food.Enum.OrderStatus;
 import com.example.food.Enum.PaymentMethod;
 import com.example.food.Enum.ResponseCodeEnum;
-import com.example.food.controllers.WalletController;
 import com.example.food.dto.CartItemDto;
 import com.example.food.dto.CheckoutDto;
+import com.example.food.dto.UpdateProductDto;
 import com.example.food.model.*;
 import com.example.food.pojos.OrderResponse;
 import com.example.food.repositories.*;
 import com.example.food.services.CheckoutService;
+import com.example.food.services.ProductService;
 import com.example.food.util.ResponseCodeUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class CheckoutServiceImpl implements CheckoutService {
-    private final WalletTransactionRepository walletTransactionRepository;
     private final WalletRepository walletRepository;
     private final AddressRepository addressRepository;
     private final OrderedItemRepository orderedItemRepository;
@@ -34,8 +34,7 @@ public class CheckoutServiceImpl implements CheckoutService {
     private final OrderRepository orderRepository;
     private final CartRepository cartRepository;
     private final CartServiceImpl cartService;
-    private final WalletServiceImpl walletService;
-    private final WalletController walletController;
+    private final ProductService productService;
     private final ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
 
     private Users getLoggedInUser() {
@@ -85,6 +84,11 @@ public class CheckoutServiceImpl implements CheckoutService {
                         .build();
                 orderedItemList.add(orderedItem);
                 orderedItemRepository.save(orderedItem);
+            }
+
+            for(CartItem item : userCart.getCartItemList()){
+                UpdateProductDto updateProduct = new UpdateProductDto(item.getProduct().getProductName(), item.getProduct().getQuantity() - item.getQuantity(), item.getProduct().getProductPrice());
+                productService.updateProduct(item.getProduct().getId(), updateProduct);
             }
 
             Order order = Order.builder()

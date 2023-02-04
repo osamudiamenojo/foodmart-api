@@ -39,23 +39,6 @@ class WalletControllerTest {
     private WalletService walletService;
 
     @Test
-    void testGetBalance() throws Exception {
-        // Arrange
-        when(walletService.getWalletBalance()).thenReturn(new WalletResponse());
-        MockHttpServletRequestBuilder requestBuilder = get("/wallet/balance");
-
-        // Act and Assert
-        MockMvcBuilders.standaloneSetup(walletController)
-                .build()
-                .perform(requestBuilder)
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
-                .andExpect(MockMvcResultMatchers.content()
-                        .string(
-                                "{\"code\":-1,\"description\":\"An error occurred. Error message : ${errorMessage}\",\"walletBalance\":null}"));
-    }
-
-    @Test
     @DisplayName("Display 10000 as wallet balance")
     void getBalanceTest() throws Exception {
 

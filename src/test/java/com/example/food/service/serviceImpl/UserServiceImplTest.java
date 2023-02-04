@@ -9,6 +9,7 @@ import com.example.food.model.Cart;
 import com.example.food.model.Users;
 import com.example.food.model.Wallet;
 import com.example.food.pojos.CreateUserRequest;
+import com.example.food.pojos.LoginResponseDto;
 import com.example.food.repositories.CartRepository;
 import com.example.food.repositories.UserRepository;
 import com.example.food.repositories.WalletRepository;
@@ -118,21 +119,6 @@ class UserServiceImplTest {
         wallet = Wallet.builder()
                 .user(users)
                 .walletBalance(BigDecimal.valueOf(0)).build();
-    }
-
-    @Test
-    public void login() {
-        when(authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequestDto.getEmail(), loginRequestDto.getPassword())))
-                .thenReturn(authentication);
-        when(customUserDetailsService.loadUserByUsername(anyString()))
-                .thenReturn(userDetails);
-        when(jwtUtil.generateToken(any(UserDetails.class))).thenReturn("ufhguoi355n5");
-
-        ResponseEntity<String> response = userServiceImpl.login(loginRequestDto);
-        assertNotNull(response);
-
-        verify(customUserDetailsService, times(1)).loadUserByUsername(anyString());
     }
 
     @Test

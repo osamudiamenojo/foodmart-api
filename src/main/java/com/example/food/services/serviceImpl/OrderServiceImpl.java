@@ -3,15 +3,13 @@ package com.example.food.services.serviceImpl;
 import com.example.food.Enum.OrderStatus;
 import com.example.food.Enum.ResponseCodeEnum;
 import com.example.food.dto.CartItemDto;
-import com.example.food.dto.OrderDto;
 import com.example.food.model.Order;
 import com.example.food.model.OrderedItem;
 import com.example.food.model.Users;
 import com.example.food.pojos.OrderResponse;
-import com.example.food.pojos.OrderResponseDto;
 import com.example.food.pojos.UpdateOrderStatusResponse;
-import com.example.food.pojos.ViewOrderHistoryResponse;
 import com.example.food.pojos.ViewAllOrderResponse;
+import com.example.food.pojos.ViewOrderHistoryResponse;
 import com.example.food.repositories.OrderRepository;
 import com.example.food.repositories.UserRepository;
 import com.example.food.restartifacts.BaseResponse;
@@ -26,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -38,7 +35,6 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final UserUtil userUtil;
     private final ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
-    private BaseResponse baseResponse;
     private Users getLoggedInUser() {
         String authentication = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByEmail(authentication)

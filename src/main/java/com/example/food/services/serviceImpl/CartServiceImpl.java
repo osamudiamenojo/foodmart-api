@@ -76,6 +76,8 @@ public class CartServiceImpl implements CartService {
             Optional<CartItem> DbCartItem = cartItemRepository.findCartItemByCartIdAndProductId(userCart.getId(), productId);
             CartItem cartItem;
             if (DbCartItem.isEmpty() && userCart.getCartItemList().isEmpty()) {
+                if (product.getQuantity() < 1)
+                    return responseCodeUtil.updateResponseData(new CartResponse(), ResponseCodeEnum.ERROR, product.getProductName() + " is out of stock");
                 cartItem = new CartItem();
                 cartItem.setCart(userCart);
                 cartItem.setProduct(product);
@@ -89,6 +91,8 @@ public class CartServiceImpl implements CartService {
                 cartRepository.save(userCart);
 
             } else if (DbCartItem.isEmpty()) {
+                if (product.getQuantity() < 1)
+                    return responseCodeUtil.updateResponseData(new CartResponse(), ResponseCodeEnum.ERROR, product.getProductName() + " is out of stock");
                 cartItem = new CartItem();
                 cartItem.setCart(userCart);
                 cartItem.setProduct(product);
@@ -102,14 +106,17 @@ public class CartServiceImpl implements CartService {
                 cartRepository.save(userCart);
             } else {
                 cartItem = DbCartItem.get();
+                if (cartItem.getQuantity() == product.getQuantity()) {
+                    CartResponse cartResponse = mapCartItemToDto(userCart);
+                    return responseCodeUtil.updateResponseData(cartResponse, ResponseCodeEnum.ERROR, "we have only " + product.getQuantity() + " " + product.getProductName() + " in stock");
+                }
                 cartItem.setQuantity(cartItem.getQuantity() + 1);
                 cartItem.setSubTotal(cartItem.getSubTotal().add(product.getProductPrice()));
                 cartItem.setCart(userCart);
-                CartItem savedCartItem = cartItemRepository.save(cartItem);
+                cartItemRepository.save(cartItem);
 
                 userCart.setCartTotal(userCart.getCartTotal().add(product.getProductPrice()));
                 userCart.setQuantity(userCart.getCartItemList().size());
-                userCart.getCartItemList().add(savedCartItem);
                 userCart = cartRepository.save(userCart);
             }
             CartResponse cartResponse = mapCartItemToDto(userCart);

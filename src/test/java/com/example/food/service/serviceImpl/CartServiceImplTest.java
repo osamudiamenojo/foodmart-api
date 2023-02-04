@@ -106,8 +106,6 @@ public class CartServiceImplTest {
         Mockito.when(cartRepository.findByUsersEmail(anyString())).thenReturn(Optional.of(cart));
         Mockito.when(cartItemRepository.findCartItemByCartIdAndProductId(anyLong(), anyLong())).thenReturn(Optional.ofNullable(cartItem2));
         Mockito.when(userRepository.findByEmail(any())).thenReturn(Optional.ofNullable(user));
-        Mockito.when(cartRepository.save(any())).thenReturn(cart);
-        Mockito.when(cartItemRepository.save(any())).thenReturn(cartItem1);
 
         CartResponse response = cartServiceImpl.addCartItem(1L);
         Assertions.assertThat(cart).isNotNull();

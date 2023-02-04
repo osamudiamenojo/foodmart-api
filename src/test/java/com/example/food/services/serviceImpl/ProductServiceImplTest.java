@@ -119,7 +119,7 @@ class ProductServiceImplTest {
         CreateProductResponse actualAddNewProductResult = productServiceImpl.addNewProduct(productDto);
         assertEquals(-1, actualAddNewProductResult.getCode());
         assertEquals("Product Name", actualAddNewProductResult.getProductName());
-        assertEquals("Product Already Exists!", actualAddNewProductResult.getDescription());
+        assertEquals("Product Name Already Exists!", actualAddNewProductResult.getDescription());
         verify(productRepository).findByProductName((String) any());
     }
 

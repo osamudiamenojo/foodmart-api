@@ -7,7 +7,6 @@ import com.example.food.configurations.security.JwtUtil;
 import com.example.food.dto.AdminPasswordResetDto;
 import com.example.food.dto.AdminPasswordResetRequestDto;
 import com.example.food.dto.EmailSenderDto;
-import com.example.food.model.Order;
 import com.example.food.model.PasswordResetTokenEntity;
 import com.example.food.model.Product;
 import com.example.food.model.Users;
@@ -16,7 +15,6 @@ import com.example.food.pojos.ApplicationStatisticsResponse;
 import com.example.food.pojos.CreateUserResponse;
 import com.example.food.pojos.UsersBasicInformationDetails;
 import com.example.food.repositories.AdminPasswordResetTokenRepository;
-import com.example.food.repositories.OrderRepository;
 import com.example.food.repositories.ProductRepository;
 import com.example.food.repositories.UserRepository;
 import com.example.food.restartifacts.BaseResponse;
@@ -42,8 +40,6 @@ public class AdminServiceImpl implements AdminService {
     private final CustomUserDetailsService customUserDetailsService;
     private final EmailService emailService;
     private final ProductRepository productRepository;
-    private final OrderRepository orderRepository;
-
     private final ResponseCodeUtil responseCodeUtil = new ResponseCodeUtil();
 
     public static  Users unwrapUsers(Optional<Users> users) {
